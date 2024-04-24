@@ -1,0 +1,19 @@
+program: wandb_llm_classes.py
+name: demostracion
+method: random
+metric:
+  goal: maximize
+  name: val_accuracy
+parameters:
+  batch_size:
+    values:
+    - 16
+    - 32
+  epochs:
+    values:
+    - 2
+    - 3
+    - 4
+  learning_rate:
+    min: 0.0001
+    max: 0.1
