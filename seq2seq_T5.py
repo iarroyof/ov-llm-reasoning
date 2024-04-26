@@ -1,7 +1,10 @@
 import wandb
+import yaml
+from pathlib import Path
 from datasets import load_dataset
-from torch.optim import Adam
+from torch.optim import Adam, AdamW
 import torch
+import torch.nn.functional as F
 from sacrebleu.metrics import BLEU #from sacrebleu import BLEU  # Install sacrebleu library: pip install sacrebleu
 from rouge import Rouge  # Install py-rouge library: pip install rouge
 from torch.utils.data import DataLoader,Dataset
@@ -18,7 +21,9 @@ class OVNeuralReasoningPipeline:
         self.score_type = gen_test_score
 
     def get_data(self, data):
-        source_ids, source_mask, target_ids = data["source_ids"].to(self.device), data["source_masks"].to(self.device), data["target_ids"].to(self.device)
+        source_ids, source_mask, target_ids = (data["source_ids"].to(self.device),
+                                               data["source_masks"].to(self.device),
+                                               data["target_ids"].to(self.device))
         y_ids = target_ids[:, :-1].contiguous()
         lm_labels = target_ids[:, 1:].clone().detach()
         lm_labels[lm_labels == self.tokenizer.pad_token_id] = -100
@@ -58,12 +63,20 @@ class OVNeuralReasoningPipeline:
                 labels=lm_labels,
             )
             loss = outputs[0]
-            
+            try:
+                logits = outputs.logits
+                preds = F.softmax(logits, dim=-1).argmax(dim=-1)
+            #generated_output = self.tokenizer.batch_decode(sequences=preds, skip_special_tokens=True)
+                test_score = self.calculate_validation_score(data, preds)
+            except:
+                st()        
             if step % 10 == 0:
-                wandb.log({"test_loss": loss})
-                print(f"Epoch: {epoch} | Test Loss: {loss}")
-
-    def generate(self, loader, epoch, return_predictions=False):
+                wandb.log({"test_loss": loss})    
+                wandb.log({f"test_score ({self.score_type})": test_score})
+                print(f"Epoch: {epoch} | Test Loss: {loss} | Test score ({self.score_type}): {test_score}")
+                
+    #def generate_batch(self, loader, epoch, return_predictions=False)
+    def generate(self, loader, epoch, return_predictions=False, evaluate=False):
         self.model.eval()
         predictions, targets = [], []
         with torch.no_grad():
@@ -80,11 +93,12 @@ class OVNeuralReasoningPipeline:
                     early_stopping=True,
                     length_penalty=1.0,
                 )
-                gen_score = self.calculate_validation_score(data, generated_ids)
                 
-                if step % 10 == 0:
-                    wandb.log({"generation_score": gen_score})
-                    print(f"Epoch: {epoch} | Gen score ({self.score_type}): {gen_score}")
+                if evaluate:
+                    gen_score = self.calculate_validation_score(data, generated_ids)
+                    if step % 10 == 0:
+                        #wandb.log({"generation_score": gen_score})
+                        print(f"Epoch: {epoch} | Gen score ({self.score_type}): {gen_score}")
 
                 if return_predictions:
                     preds = [self.tokenizer.decode(
@@ -110,8 +124,8 @@ class OVNeuralReasoningPipeline:
                 latter returns a list with all scores)
 
         Returns:
-            score: A float/List[float] representing the validation score; either 'bleu', 'rouge', 'combined', 'all' (this 
-                latter returns a list with all scores).
+            score: A float/List[float] representing the validation score; either
+            'bleu', 'rouge', 'combined', 'all' (this latter returns a list with all scores).
         """
         target_ids = data["target_ids"].to(self.device)
         # Decode target summaries
@@ -155,8 +169,10 @@ class CustomDataset(Dataset):
     summary = ' '.join(summary.split())
     text = str(self.text[i])
     text = ' '.join(text.split())
-    source = self.tokenizer.batch_encode_plus([text],max_length=self.text_len,return_tensors='pt',pad_to_max_length=True) # Each source sequence is encoded and padded to max length in batches
-    target = self.tokenizer.batch_encode_plus([summary],max_length=self.summ_len,return_tensors='pt',pad_to_max_length=True) # Each target sequence is encoded and padded to max lenght in batches
+    source = self.tokenizer.batch_encode_plus(
+        [text], max_length=self.text_len, return_tensors='pt', pad_to_max_length=True) # Each source sequence is encoded and padded to max length in batches
+    target = self.tokenizer.batch_encode_plus(
+        [summary], max_length=self.summ_len, return_tensors='pt', pad_to_max_length=True) # Each target sequence is encoded and padded to max lenght in batches
 
     source_ids = source['input_ids'].squeeze()
     source_masks = source['attention_mask'].squeeze()
@@ -169,15 +185,29 @@ class CustomDataset(Dataset):
         'target_ids':target_ids.to(torch.long),
         'target_masks':target_masks.to(torch.long)
     }
-  
+
+def get_sweep_config(path2sweep_config: str) -> dict:
+    """ Get sweep config from path """
+    config_path = Path(path2sweep_config).expanduser()
+    with open(config_path, 'r') as file:
+        sweep_config = yaml.safe_load(file)
+    return sweep_config
 
 def main():
-  wandb.init(project='huggingface')
-  epochs = 2
+  wandb.init(project=project_name)
+  
   source_len=270
   target_len=160
+  model_name = 't5-base'
+  epochs = wandb.config["epochs"]
+  lr = wandb.config["learning_rate"] #3e-4
+  batch_size = wandb.config["batch_size"]
+  optimizer_name = wandb.config["optimizer"]
+
   source_key = 'article'
   target_key = 'highlights'
+  generate = False
+  
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
   ## Prepare Dataset ##
@@ -188,7 +218,7 @@ def main():
   train_dataset = dataset['train'][:8000]
   val_dataset = dataset['validation'][:4000]
 
-  model_name = 't5-base'
+  
   tokenizer = T5TokenizerFast.from_pretrained(model_name)
   model = T5ForConditionalGeneration.from_pretrained(model_name).to(device)
 
@@ -197,17 +227,29 @@ def main():
   val_dataset = CustomDataset(
       val_dataset,tokenizer, source_len, target_len, source_key, target_key)
   
-  train_loader = DataLoader(dataset=train_dataset, batch_size=4, shuffle=True, num_workers=0)
-  val_loader = DataLoader(dataset = val_dataset, batch_size=2, num_workers=0)
+  train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+  val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
   
   reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device)
  
-  optimizer = Adam(model.parameters(), lr=3e-4, amsgrad=True)
+  if optimizer_name == "adam":
+    optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
+  elif optimizer_name == "adamw":
+    optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
+
   wandb.watch(model, log='all')
   # Call train function
   for epoch in range(epochs): #optimizer, train_loader, epoch
     reasoning_pipeline.train(optimizer, train_loader, epoch)
     reasoning_pipeline.test(val_loader, epoch)
-    reasoning_pipeline.generate(val_loader, epoch)
+    if generate:
+        reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
 
-main()
+
+project_name = 'huggingface'
+path2sweep_config = "config_seq2seq_T5.yaml"
+sweep_configuration = get_sweep_config(path2sweep_config)
+# Initialize sweep by passing in config.
+sweep_id = wandb.sweep(sweep=sweep_configuration, project=project_name)
+# Start sweep job.
+wandb.agent(sweep_id, function=main, count=2)

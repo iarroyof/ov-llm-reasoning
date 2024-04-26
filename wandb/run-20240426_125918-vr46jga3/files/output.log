@@ -1,0 +1,901 @@
+Truncation was not explicitly activated but `max_length` is provided a specific value, please use `truncation=True` to explicitly truncate examples to max length. Defaulting to 'longest_first' truncation strategy. If you encode pairs of sequences (GLUE-style) with the tokenizer you can select this strategy more precisely by providing a specific strategy to `truncation`.
+/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2674: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+Epoch: 0 | Train Loss: 8.987126350402832
+Epoch: 0 | Train Loss: 2.4696242809295654
+Epoch: 0 | Train Loss: 2.2812182903289795
+Epoch: 0 | Train Loss: 1.7075762748718262
+Epoch: 0 | Train Loss: 2.9214091300964355
+Epoch: 0 | Train Loss: 2.721008777618408
+Epoch: 0 | Train Loss: 1.7073599100112915
+Epoch: 0 | Train Loss: 2.4853646755218506
+Epoch: 0 | Train Loss: 2.750171422958374
+Epoch: 0 | Train Loss: 2.2167813777923584
+Epoch: 0 | Train Loss: 2.063817262649536
+Epoch: 0 | Train Loss: 2.6125667095184326
+Epoch: 0 | Train Loss: 2.3643572330474854
+Epoch: 0 | Train Loss: 1.990011215209961
+Epoch: 0 | Train Loss: 1.6264944076538086
+Epoch: 0 | Train Loss: 2.6661744117736816
+Epoch: 0 | Train Loss: 2.486137866973877
+Epoch: 0 | Train Loss: 2.8971099853515625
+Epoch: 0 | Train Loss: 1.740459680557251
+Epoch: 0 | Train Loss: 1.5561494827270508
+Epoch: 0 | Train Loss: 2.1489176750183105
+Epoch: 0 | Train Loss: 2.670924663543701
+Epoch: 0 | Train Loss: 2.219143867492676
+Epoch: 0 | Train Loss: 2.2754204273223877
+Epoch: 0 | Train Loss: 2.0613558292388916
+Epoch: 0 | Train Loss: 1.486877202987671
+Epoch: 0 | Train Loss: 2.2530460357666016
+Epoch: 0 | Train Loss: 2.3080132007598877
+Epoch: 0 | Train Loss: 2.1482858657836914
+Epoch: 0 | Train Loss: 2.1346542835235596
+Epoch: 0 | Train Loss: 2.155780076980591
+Epoch: 0 | Train Loss: 1.784807801246643
+Epoch: 0 | Train Loss: 2.3456735610961914
+Epoch: 0 | Train Loss: 1.9561976194381714
+Epoch: 0 | Train Loss: 1.773255705833435
+Epoch: 0 | Train Loss: 2.6634860038757324
+Epoch: 0 | Train Loss: 1.8616527318954468
+Epoch: 0 | Train Loss: 2.9643144607543945
+Epoch: 0 | Train Loss: 2.773289203643799
+Epoch: 0 | Train Loss: 1.8612983226776123
+Epoch: 0 | Train Loss: 2.2238237857818604
+Epoch: 0 | Train Loss: 2.3135809898376465
+Epoch: 0 | Train Loss: 2.263631582260132
+Epoch: 0 | Train Loss: 2.0794475078582764
+Epoch: 0 | Train Loss: 2.0304760932922363
+Epoch: 0 | Train Loss: 2.39803147315979
+Epoch: 0 | Train Loss: 2.3100996017456055
+Epoch: 0 | Train Loss: 2.5053956508636475
+Epoch: 0 | Train Loss: 2.4345815181732178
+Epoch: 0 | Train Loss: 2.082083225250244
+Epoch: 0 | Train Loss: 2.2780563831329346
+Epoch: 0 | Train Loss: 2.146184206008911
+Epoch: 0 | Train Loss: 1.6829818487167358
+Epoch: 0 | Train Loss: 1.9341092109680176
+Epoch: 0 | Train Loss: 2.0657124519348145
+Epoch: 0 | Train Loss: 1.993287444114685
+Epoch: 0 | Train Loss: 2.60107159614563
+Epoch: 0 | Train Loss: 1.972270131111145
+Epoch: 0 | Train Loss: 1.8116124868392944
+Epoch: 0 | Train Loss: 1.7584666013717651
+Epoch: 0 | Train Loss: 3.018275260925293
+Epoch: 0 | Train Loss: 2.6783246994018555
+Epoch: 0 | Train Loss: 2.237637996673584
+Epoch: 0 | Train Loss: 2.6312808990478516
+Epoch: 0 | Train Loss: 2.1650445461273193
+Epoch: 0 | Train Loss: 2.245589256286621
+Epoch: 0 | Train Loss: 2.6526875495910645
+Epoch: 0 | Train Loss: 2.3429834842681885
+Epoch: 0 | Train Loss: 2.252380847930908
+Epoch: 0 | Train Loss: 1.55661141872406
+Epoch: 0 | Train Loss: 1.7775683403015137
+Epoch: 0 | Train Loss: 2.43937611579895
+Epoch: 0 | Train Loss: 1.9935802221298218
+Epoch: 0 | Train Loss: 2.6656482219696045
+Epoch: 0 | Train Loss: 2.5277159214019775
+Epoch: 0 | Train Loss: 2.854550361633301
+Epoch: 0 | Train Loss: 2.386813163757324
+Epoch: 0 | Train Loss: 1.9562448263168335
+Epoch: 0 | Train Loss: 2.399171829223633
+Epoch: 0 | Train Loss: 2.045757293701172
+Epoch: 0 | Train Loss: 2.0121941566467285
+Epoch: 0 | Train Loss: 1.6793612241744995
+Epoch: 0 | Train Loss: 1.8044977188110352
+Epoch: 0 | Train Loss: 2.780576467514038
+Epoch: 0 | Train Loss: 2.724169969558716
+Epoch: 0 | Train Loss: 2.084287643432617
+Epoch: 0 | Train Loss: 2.2011711597442627
+Epoch: 0 | Train Loss: 2.441220283508301
+Epoch: 0 | Train Loss: 2.0169484615325928
+Epoch: 0 | Train Loss: 2.0352275371551514
+Epoch: 0 | Train Loss: 1.8656142950057983
+Epoch: 0 | Train Loss: 2.4601080417633057
+Epoch: 0 | Train Loss: 1.76235032081604
+Epoch: 0 | Train Loss: 2.1157517433166504
+Epoch: 0 | Train Loss: 1.410882592201233
+Epoch: 0 | Train Loss: 1.9393420219421387
+Epoch: 0 | Train Loss: 1.723143219947815
+Epoch: 0 | Train Loss: 1.9149960279464722
+Epoch: 0 | Train Loss: 1.9507312774658203
+Epoch: 0 | Train Loss: 2.05562424659729
+Epoch: 0 | Train Loss: 1.7773045301437378
+Epoch: 0 | Train Loss: 2.315966844558716
+Epoch: 0 | Train Loss: 2.095010995864868
+Epoch: 0 | Train Loss: 1.994848608970642
+Epoch: 0 | Train Loss: 1.5477250814437866
+Epoch: 0 | Train Loss: 2.8637118339538574
+Epoch: 0 | Train Loss: 2.129288911819458
+Epoch: 0 | Train Loss: 2.514634370803833
+Epoch: 0 | Train Loss: 2.1034841537475586
+Epoch: 0 | Train Loss: 2.401890277862549
+Epoch: 0 | Train Loss: 2.4484832286834717
+Epoch: 0 | Train Loss: 2.709378957748413
+Epoch: 0 | Train Loss: 2.3432273864746094
+Epoch: 0 | Train Loss: 2.391132354736328
+Epoch: 0 | Train Loss: 2.1883890628814697
+Epoch: 0 | Train Loss: 1.938301920890808
+Epoch: 0 | Train Loss: 2.3315210342407227
+Epoch: 0 | Train Loss: 1.547741174697876
+Epoch: 0 | Train Loss: 2.5662641525268555
+Epoch: 0 | Train Loss: 1.9273319244384766
+Epoch: 0 | Train Loss: 2.1162607669830322
+Epoch: 0 | Train Loss: 2.367863893508911
+Epoch: 0 | Train Loss: 2.6682958602905273
+Epoch: 0 | Train Loss: 1.8352773189544678
+Epoch: 0 | Train Loss: 1.80556321144104
+Epoch: 0 | Train Loss: 2.6404500007629395
+Epoch: 0 | Train Loss: 1.5238813161849976
+Epoch: 0 | Train Loss: 2.3817925453186035
+Epoch: 0 | Train Loss: 1.763651967048645
+Epoch: 0 | Train Loss: 2.360178232192993
+Epoch: 0 | Train Loss: 2.1346120834350586
+Epoch: 0 | Train Loss: 2.362137794494629
+Epoch: 0 | Train Loss: 2.1295974254608154
+Epoch: 0 | Train Loss: 2.3799822330474854
+Epoch: 0 | Train Loss: 2.2719264030456543
+Epoch: 0 | Train Loss: 2.150129556655884
+Epoch: 0 | Train Loss: 1.561991810798645
+Epoch: 0 | Train Loss: 1.6389641761779785
+Epoch: 0 | Train Loss: 1.87606680393219
+Epoch: 0 | Train Loss: 2.2788937091827393
+Epoch: 0 | Train Loss: 2.7521331310272217
+Epoch: 0 | Train Loss: 1.819758653640747
+Epoch: 0 | Train Loss: 2.2987749576568604
+Epoch: 0 | Train Loss: 2.4290239810943604
+Epoch: 0 | Train Loss: 1.6654856204986572
+Epoch: 0 | Train Loss: 1.801278829574585
+Epoch: 0 | Train Loss: 1.9011461734771729
+Epoch: 0 | Train Loss: 2.6732304096221924
+Epoch: 0 | Train Loss: 1.9657944440841675
+Epoch: 0 | Train Loss: 2.0208542346954346
+Epoch: 0 | Train Loss: 2.1344144344329834
+Epoch: 0 | Train Loss: 2.8303935527801514
+Epoch: 0 | Train Loss: 2.119354009628296
+Epoch: 0 | Train Loss: 2.2991223335266113
+Epoch: 0 | Train Loss: 2.2326791286468506
+Epoch: 0 | Train Loss: 1.673565149307251
+Epoch: 0 | Train Loss: 1.5233418941497803
+Epoch: 0 | Train Loss: 1.9457449913024902
+Epoch: 0 | Train Loss: 2.4911794662475586
+Epoch: 0 | Train Loss: 1.5926294326782227
+Epoch: 0 | Train Loss: 2.963186502456665
+Epoch: 0 | Train Loss: 2.3121886253356934
+Epoch: 0 | Train Loss: 2.1162679195404053
+Epoch: 0 | Train Loss: 2.4193882942199707
+Epoch: 0 | Train Loss: 2.3161380290985107
+Epoch: 0 | Train Loss: 1.7015360593795776
+Epoch: 0 | Train Loss: 2.5150949954986572
+Epoch: 0 | Train Loss: 2.2073957920074463
+Epoch: 0 | Train Loss: 1.9940500259399414
+Epoch: 0 | Train Loss: 2.212381601333618
+Epoch: 0 | Train Loss: 2.2663252353668213
+Epoch: 0 | Train Loss: 2.773271322250366
+Epoch: 0 | Train Loss: 2.7547292709350586
+Epoch: 0 | Train Loss: 2.1256446838378906
+Epoch: 0 | Train Loss: 2.271585464477539
+Epoch: 0 | Train Loss: 2.7000467777252197
+Epoch: 0 | Train Loss: 2.2789931297302246
+Epoch: 0 | Train Loss: 2.2276668548583984
+Epoch: 0 | Train Loss: 2.0790274143218994
+Epoch: 0 | Train Loss: 2.1037254333496094
+Epoch: 0 | Train Loss: 2.5437562465667725
+Epoch: 0 | Train Loss: 2.6568644046783447
+Epoch: 0 | Train Loss: 1.9626814126968384
+Epoch: 0 | Train Loss: 1.8064162731170654
+Epoch: 0 | Train Loss: 2.0824332237243652
+Epoch: 0 | Train Loss: 2.1056783199310303
+Epoch: 0 | Train Loss: 1.4657213687896729
+Epoch: 0 | Train Loss: 2.1122398376464844
+Epoch: 0 | Train Loss: 1.5238951444625854
+Epoch: 0 | Train Loss: 2.340235948562622
+Epoch: 0 | Train Loss: 1.7056424617767334
+Epoch: 0 | Train Loss: 2.278787612915039
+Epoch: 0 | Train Loss: 2.1442675590515137
+Epoch: 0 | Train Loss: 2.0670814514160156
+Epoch: 0 | Train Loss: 1.8534736633300781
+Epoch: 0 | Train Loss: 1.9252691268920898
+Epoch: 0 | Train Loss: 2.1719324588775635
+Epoch: 0 | Train Loss: 1.4547345638275146
+Epoch: 0 | Train Loss: 2.347108840942383
+Epoch: 0 | Train Loss: 1.5577526092529297
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.391599178314209
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.6308612823486328
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.4666647911071777
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0178472995758057
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.497494697570801
+Epoch: 0 | Gen score (bleu): 0.2859066122691646
+Epoch: 0 | Test Loss: 2.217069387435913
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.830807685852051
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5246250629425049
+Epoch: 0 | Gen score (bleu): 0.2578571354943003
+Epoch: 0 | Test Loss: 1.7037248611450195
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9854788780212402
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8632107973098755
+Epoch: 0 | Gen score (bleu): 0.24710248291016895
+Epoch: 0 | Test Loss: 2.9616527557373047
+Epoch: 0 | Gen score (bleu): 0.16469080851432993
+Epoch: 0 | Test Loss: 2.48934268951416
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.8654329776763916
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.335249662399292
+Epoch: 0 | Gen score (bleu): 0.2938560308116112
+Epoch: 0 | Test Loss: 2.4784553050994873
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.9235856533050537
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.760436534881592
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9207507371902466
+Epoch: 0 | Gen score (bleu): 0.21694403723803884
+Epoch: 0 | Test Loss: 1.6247329711914062
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3653199672698975
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7828576564788818
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.342979669570923
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.6272032260894775
+Epoch: 0 | Gen score (bleu): 0.3708778042094108
+Epoch: 0 | Test Loss: 1.882390022277832
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.4401285648345947
+Epoch: 0 | Gen score (bleu): 0.40705800062187425
+Epoch: 0 | Test Loss: 1.8689991235733032
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.531399726867676
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4945218563079834
+Epoch: 0 | Gen score (bleu): 0.23720940120555417
+Epoch: 0 | Test Loss: 2.650892734527588
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8276320695877075
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.4225873947143555
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8738396167755127
+Epoch: 0 | Gen score (bleu): 0.4046777521777734
+Epoch: 0 | Test Loss: 2.2942683696746826
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3558961153030396
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.9026150703430176
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.454258918762207
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3548367023468018
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.2200653553009033
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4644877910614014
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.854402542114258
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.539902925491333
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0798499584198
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0275580883026123
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5929784774780273
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9390642642974854
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.911357581615448
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3874125480651855
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.9079086780548096
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9261082410812378
+Epoch: 0 | Gen score (bleu): 0.1888539438999665
+Epoch: 0 | Test Loss: 1.26926851272583
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.987475872039795
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.95817232131958
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.6196558475494385
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0509886741638184
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.388572096824646
+Epoch: 0 | Gen score (bleu): 0.2068466209567924
+Epoch: 0 | Test Loss: 2.441011428833008
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.316097617149353
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3977391719818115
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7077654600143433
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.887761116027832
+Epoch: 0 | Gen score (bleu): 0.12265454565976386
+Epoch: 0 | Test Loss: 1.7896264791488647
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.1871607303619385
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3590338230133057
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8234339952468872
+Epoch: 0 | Gen score (bleu): 0.17102794647059869
+Epoch: 0 | Test Loss: 2.206090211868286
+Epoch: 0 | Gen score (bleu): 0.18337651269639849
+Epoch: 0 | Test Loss: 2.0100085735321045
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4364309310913086
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5942965745925903
+Epoch: 0 | Gen score (bleu): 0.17102794647059869
+Epoch: 0 | Test Loss: 1.458923101425171
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.5026357173919678
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.871234893798828
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0757267475128174
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 3.1480178833007812
+Epoch: 0 | Gen score (bleu): 0.23720940120555417
+Epoch: 0 | Test Loss: 2.0217349529266357
+Epoch: 0 | Gen score (bleu): 0.1662306444973684
+Epoch: 0 | Test Loss: 2.272953987121582
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 3.278294086456299
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.527800440788269
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.9275288581848145
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3548202514648438
+Epoch: 0 | Gen score (bleu): 0.14578509895239003
+Epoch: 0 | Test Loss: 2.2134714126586914
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0542333126068115
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.531221628189087
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.488264799118042
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.135911464691162
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4102532863616943
+Epoch: 0 | Gen score (bleu): 0.14343295508087428
+Epoch: 0 | Test Loss: 2.4051058292388916
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5329605340957642
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.096553087234497
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5431631803512573
+Epoch: 0 | Gen score (bleu): 0.15740068313232503
+Epoch: 0 | Test Loss: 2.236422061920166
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.7942440509796143
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3915517330169678
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.8202102184295654
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.8947601914405823
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.78231942653656
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.906639814376831
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.1907246112823486
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8230476379394531
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2434935569763184
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0663552284240723
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.31400203704834
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3600013256072998
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2841155529022217
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.579877495765686
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.031388282775879
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.879045844078064
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.403954029083252
+Epoch: 0 | Gen score (bleu): 0.16169518051644294
+Epoch: 0 | Test Loss: 1.8767837285995483
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8061009645462036
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2208995819091797
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8769370317459106
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.665442943572998
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.6521111726760864
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8255269527435303
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9813103675842285
+Epoch: 0 | Gen score (bleu): 0.18923221804694126
+Epoch: 0 | Test Loss: 1.5206998586654663
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.1356866359710693
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7537226676940918
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.490484595298767
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.8845105171203613
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.8900282382965088
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4211058616638184
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0950794219970703
+Epoch: 0 | Gen score (bleu): 0.14115551831791986
+Epoch: 0 | Test Loss: 2.302877187728882
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8267754316329956
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9638617038726807
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3027793169021606
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0924649238586426
+Epoch: 0 | Gen score (bleu): 0.12795032881182675
+Epoch: 0 | Test Loss: 2.2442433834075928
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9549214839935303
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7627499103546143
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.5807149410247803
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.911695957183838
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.177849531173706
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3060226440429688
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7826567888259888
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.9540457129478455
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7988277673721313
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.3909800052642822
+Epoch: 0 | Gen score (bleu): 0.14343295508087428
+Epoch: 0 | Test Loss: 1.893972635269165
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.01825213432312
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4650208950042725
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.899007797241211
+Epoch: 0 | Gen score (bleu): 0.14699034448238954
+Epoch: 0 | Test Loss: 2.481814384460449
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.8592796325683594
+Epoch: 0 | Gen score (bleu): 0.13272590091813868
+Epoch: 0 | Test Loss: 2.0199074745178223
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8938301801681519
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.216179370880127
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7930275201797485
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2168726921081543
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7883530855178833
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.20068621635437
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0640547275543213
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.428416132926941
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.6701972484588623
+Epoch: 0 | Gen score (bleu): 0.18150434375532462
+Epoch: 0 | Test Loss: 2.5616021156311035
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.9470891952514648
+Epoch: 0 | Gen score (bleu): 0.16023787294278133
+Epoch: 0 | Test Loss: 2.525331974029541
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4566426277160645
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.047887086868286
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.6421005725860596
+Epoch: 0 | Gen score (bleu): 0.14699034448238954
+Epoch: 0 | Test Loss: 2.348184585571289
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.9645065665245056
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.296613335609436
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3290889263153076
+Epoch: 0 | Gen score (bleu): 0.219624389849582
+Epoch: 0 | Test Loss: 2.821338415145874
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4623210430145264
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8330191373825073
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0499305725097656
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.6783509254455566
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.7485154867172241
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.866023540496826
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2334728240966797
+Epoch: 0 | Gen score (bleu): 0.24710248291016895
+Epoch: 0 | Test Loss: 1.2777076959609985
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0858101844787598
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.3369662761688232
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5031661987304688
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.5338070392608643
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4476637840270996
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.39754056930542
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 0.8900957107543945
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 3.1110098361968994
+Epoch: 0 | Gen score (bleu): 0.18150434375532462
+Epoch: 0 | Test Loss: 2.1788458824157715
+Epoch: 0 | Gen score (bleu): 0.13272590091813868
+Epoch: 0 | Test Loss: 2.575498342514038
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5359495878219604
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.8130583763122559
+Epoch: 0 | Gen score (bleu): 0.20214248749550776
+Epoch: 0 | Test Loss: 1.395613193511963
+Epoch: 0 | Gen score (bleu): 0.16779955322001247
+Epoch: 0 | Test Loss: 1.31619131565094
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.2406973838806152
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.1262279748916626
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.0615272521972656
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.816576361656189
+Epoch: 0 | Gen score (bleu): 0.12350651809411874
+Epoch: 0 | Test Loss: 3.2777786254882812
+Epoch: 0 | Gen score (bleu): 0.12181424821751968
+Epoch: 0 | Test Loss: 2.113144636154175
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.1219241619110107
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 2.4764277935028076
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.5402883291244507
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.6687196493148804
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Test Loss: 1.806760549545288
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.26959109960424926
+Epoch: 0 | Gen score (bleu): 0.2824446075980142
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.24041784535447416
+Epoch: 0 | Gen score (bleu): 0.3235912122544165
+Epoch: 0 | Gen score (bleu): 0.2870060567321096
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.25416966962970644
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.16469080851432993
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.219624389849582
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.24041784535447416
+Epoch: 0 | Gen score (bleu): 0.18078024700119755
+Epoch: 0 | Gen score (bleu): 0.3708778042094108
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.3422936135232783
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.19547435301444357
+Epoch: 0 | Gen score (bleu): 0.169398366075639
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.36488217749165
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.2824446075980142
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.15880660443200792
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.3016200863100729
+Epoch: 0 | Gen score (bleu): 0.3708778042094108
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.2340855011088534
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.14343295508087428
+Epoch: 0 | Gen score (bleu): 0.14343295508087428
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.08717579659020551
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.18337651269639849
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.1337241211789236
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.18923221804694126
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.14004371144601924
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.15740068313232503
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.18150434375532462
+Epoch: 0 | Gen score (bleu): 0.14699034448238954
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.13272590091813868
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.16779955322001247
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.3422936135232783
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.12524647504020428
+Epoch: 0 | Gen score (bleu): 0.219624389849582
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.13473747245442944
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.19126814422004573
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.18150434375532462
+Epoch: 0 | Gen score (bleu): 0.13272590091813868
+Epoch: 0 | Gen score (bleu): 0.15601944149122968
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.20214248749550776
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.1872391895200192
+Epoch: 0 | Gen score (bleu): 0.1307735176166633
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.15072871321367579
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 1 | Train Loss: 1.9349435567855835
+Epoch: 1 | Train Loss: 2.086482286453247
+Epoch: 1 | Train Loss: 1.6324236392974854
+Epoch: 1 | Train Loss: 1.6675736904144287
+Epoch: 1 | Train Loss: 2.041957378387451
+Epoch: 1 | Train Loss: 1.8270686864852905
+Epoch: 1 | Train Loss: 1.3468526601791382
+Epoch: 1 | Train Loss: 2.0320587158203125
+Epoch: 1 | Train Loss: 1.7279175519943237
+Epoch: 1 | Train Loss: 1.780784249305725
+Epoch: 1 | Train Loss: 1.7015049457550049
+Epoch: 1 | Train Loss: 1.975714921951294
+Epoch: 1 | Train Loss: 2.4698219299316406
+Epoch: 1 | Train Loss: 2.394177198410034
+Epoch: 1 | Train Loss: 1.4662340879440308
+Epoch: 1 | Train Loss: 2.3058929443359375
+Epoch: 1 | Train Loss: 1.7005280256271362
+Epoch: 1 | Train Loss: 1.9061967134475708
+Epoch: 1 | Train Loss: 1.4069337844848633
+Epoch: 1 | Train Loss: 1.8248116970062256
+Epoch: 1 | Train Loss: 2.0437605381011963
+Epoch: 1 | Train Loss: 1.0386728048324585
+Epoch: 1 | Train Loss: 1.8890670537948608
+Epoch: 1 | Train Loss: 1.345566987991333
+Epoch: 1 | Train Loss: 1.064896821975708
+Epoch: 1 | Train Loss: 1.9439536333084106
+Epoch: 1 | Train Loss: 1.659816861152649
+Epoch: 1 | Train Loss: 1.6852495670318604
+Epoch: 1 | Train Loss: 2.1116905212402344
+Epoch: 1 | Train Loss: 2.17136549949646
+Epoch: 1 | Train Loss: 1.5191640853881836
+Epoch: 1 | Train Loss: 1.8700617551803589
+Epoch: 1 | Train Loss: 1.4680615663528442
+Epoch: 1 | Train Loss: 2.1759841442108154
+Epoch: 1 | Train Loss: 2.20229172706604
+Epoch: 1 | Train Loss: 1.3499311208724976
+Epoch: 1 | Train Loss: 1.945192813873291
+Epoch: 1 | Train Loss: 2.14896821975708
+Epoch: 1 | Train Loss: 1.491072654724121
+Traceback (most recent call last):
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 227, in <module>
+    for epoch in range(epochs): #optimizer, train_loader, epoch
+    ^^^^^^
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 223, in main
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 35, in train
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1582, in _call_impl
+    result = forward_call(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 1742, in forward
+    decoder_outputs = self.decoder(
+                      ^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 1109, in forward
+    layer_outputs = layer_module(
+                    ^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 689, in forward
+    self_attention_outputs = self.layer[0](
+                             ^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 596, in forward
+    attention_output = self.SelfAttention(
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 518, in forward
+    key_states = project(
+                 ^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 492, in project
+    hidden_states = shape(proj_layer(hidden_states))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 481, in shape
+    return states.view(batch_size, -1, self.n_heads, self.key_value_proj_dim).transpose(1, 2)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Epoch: 1 | Train Loss: 1.8065085411071777

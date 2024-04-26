@@ -1,0 +1,29 @@
+2024-04-26 14:13:58,876 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-04-26 14:13:58,876 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Configure stats pid to 417689
+2024-04-26 14:13:58,876 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/.config/wandb/settings
+2024-04-26 14:13:58,876 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/Projects/ov-llm-reasoning/wandb/settings
+2024-04-26 14:13:58,876 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'project': 'huggingface', 'entity': 'red_neuronal_utm', 'root_dir': '/home/iarroyof/Projects/ov-llm-reasoning', 'sweep_id': 'hg3op0di', 'run_id': 'm7fpo7zb', 'sweep_param_path': '/home/iarroyof/Projects/ov-llm-reasoning/wandb/sweep-hg3op0di/config-m7fpo7zb.yaml'}
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'seq2seq_T5.py', 'program_abspath': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py', 'program': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py'}
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:_log_setup():521] Logging user logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/logs/debug.log
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:_log_setup():522] Logging internal logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/logs/debug-internal.log
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():561] calling init triggers
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():568] wandb.init called with sweep_config: {'batch_size': 32, 'epochs': 2, 'learning_rate': 0.04370851870450731, 'optimizer': 'adam'}
+config: {}
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():611] starting backend
+2024-04-26 14:13:58,877 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():615] setting up manager
+2024-04-26 14:13:58,879 INFO    Thread-2 (_run_job):417689 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-04-26 14:13:58,880 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():623] backend started and connected
+2024-04-26 14:13:58,889 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_config_callback():1347] config_cb None None {'batch_size': 32, 'epochs': 2, 'learning_rate': 0.04370851870450731, 'optimizer': 'adam'}
+2024-04-26 14:13:58,891 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():715] updated telemetry
+2024-04-26 14:13:58,895 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-04-26 14:13:59,119 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_on_init():2357] communicating current version
+2024-04-26 14:13:59,382 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_on_init():2366] got version response 
+2024-04-26 14:13:59,383 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():799] starting run threads in backend
+2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_console_start():2335] atexit reg
+2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():842] run started, returning control to user process
+2024-04-26 14:14:05,194 INFO    Thread-2 (_run_job):417689 [wandb_watch.py:watch():51] Watching

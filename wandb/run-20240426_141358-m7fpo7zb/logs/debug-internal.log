@@ -1,0 +1,479 @@
+2024-04-26 14:13:58,882 INFO    StreamThr :417772 [internal.py:wandb_internal():86] W&B internal server running at pid: 417772, started at: 2024-04-26 14:13:58.881260
+2024-04-26 14:13:58,885 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status
+2024-04-26 14:13:58,891 INFO    WriterThread:417772 [datastore.py:open_for_write():87] open: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/run-m7fpo7zb.wandb
+2024-04-26 14:13:58,891 DEBUG   SenderThread:417772 [sender.py:send():379] send: header
+2024-04-26 14:13:58,896 DEBUG   SenderThread:417772 [sender.py:send():379] send: run
+2024-04-26 14:13:59,114 INFO    SenderThread:417772 [dir_watcher.py:__init__():211] watching files in: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files
+2024-04-26 14:13:59,114 INFO    SenderThread:417772 [sender.py:_start_run_threads():1124] run started: m7fpo7zb with start time 1714162438.880157
+2024-04-26 14:13:59,120 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: check_version
+2024-04-26 14:13:59,121 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: check_version
+2024-04-26 14:13:59,388 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: run_start
+2024-04-26 14:13:59,397 DEBUG   HandlerThread:417772 [system_info.py:__init__():26] System info init
+2024-04-26 14:13:59,397 DEBUG   HandlerThread:417772 [system_info.py:__init__():41] System info init done
+2024-04-26 14:13:59,397 INFO    HandlerThread:417772 [system_monitor.py:start():194] Starting system monitor
+2024-04-26 14:13:59,397 INFO    SystemMonitor:417772 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-04-26 14:13:59,398 INFO    HandlerThread:417772 [system_monitor.py:probe():214] Collecting system info
+2024-04-26 14:13:59,398 INFO    SystemMonitor:417772 [interfaces.py:start():190] Started cpu monitoring
+2024-04-26 14:13:59,399 INFO    SystemMonitor:417772 [interfaces.py:start():190] Started disk monitoring
+2024-04-26 14:13:59,400 INFO    SystemMonitor:417772 [interfaces.py:start():190] Started gpu monitoring
+2024-04-26 14:13:59,401 INFO    SystemMonitor:417772 [interfaces.py:start():190] Started memory monitoring
+2024-04-26 14:13:59,402 INFO    SystemMonitor:417772 [interfaces.py:start():190] Started network monitoring
+2024-04-26 14:13:59,414 DEBUG   HandlerThread:417772 [system_info.py:probe():150] Probing system
+2024-04-26 14:13:59,416 DEBUG   HandlerThread:417772 [system_info.py:_probe_git():135] Probing git
+2024-04-26 14:13:59,424 DEBUG   HandlerThread:417772 [system_info.py:_probe_git():143] Probing git done
+2024-04-26 14:13:59,424 DEBUG   HandlerThread:417772 [system_info.py:probe():198] Probing system done
+2024-04-26 14:13:59,424 DEBUG   HandlerThread:417772 [system_monitor.py:probe():223] {'os': 'Linux-6.5.0-1020-oem-x86_64-with-glibc2.35', 'python': '3.11.9', 'heartbeatAt': '2024-04-26T20:13:59.414596', 'startedAt': '2024-04-26T20:13:58.875854', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py', 'codePathLocal': 'seq2seq_T5.py', 'codePath': 'seq2seq_T5.py', 'git': {'remote': 'https://github.com/iarroyof/ov-llm-reasoning.git', 'commit': '14bd1d4ad3522aac4af038ba630285fb74e8ead5'}, 'email': 'iarroyof@lizmark.utm.mx', 'root': '/home/iarroyof/Projects/ov-llm-reasoning', 'host': 'lizmark', 'username': 'iarroyof', 'executable': '/home/iarroyof/miniconda3/envs/pt/bin/python', 'cpu_count': 12, 'cpu_count_logical': 24, 'cpu_freq': {'current': 1128.4409166666667, 'min': 800.0, 'max': 4050.0}, 'cpu_freq_per_core': [{'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 799.445, 'min': 800.0, 'max': 4100.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 1791.009, 'min': 800.0, 'max': 4100.0}, {'current': 800.0, 'min': 800.0, 'max': 4200.0}, {'current': 1475.862, 'min': 800.0, 'max': 4200.0}, {'current': 805.611, 'min': 800.0, 'max': 4000.0}, {'current': 926.36, 'min': 800.0, 'max': 4000.0}, {'current': 1928.391, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 1117.67, 'min': 800.0, 'max': 4000.0}, {'current': 2930.923, 'min': 800.0, 'max': 4000.0}, {'current': 795.776, 'min': 800.0, 'max': 4000.0}, {'current': 800.52, 'min': 800.0, 'max': 4100.0}, {'current': 1507.961, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4100.0}, {'current': 800.0, 'min': 800.0, 'max': 4200.0}, {'current': 2603.054, 'min': 800.0, 'max': 4200.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}], 'disk': {'/': {'total': 455.7536849975586, 'used': 51.23826217651367}}, 'gpu': 'NVIDIA RTX 6000 Ada Generation', 'gpu_count': 2, 'gpu_devices': [{'name': 'NVIDIA RTX 6000 Ada Generation', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX 6000 Ada Generation', 'memory_total': 51527024640}], 'memory': {'total': 30.588653564453125}}
+2024-04-26 14:13:59,424 INFO    HandlerThread:417772 [system_monitor.py:probe():224] Finished collecting system info
+2024-04-26 14:13:59,424 INFO    HandlerThread:417772 [system_monitor.py:probe():227] Publishing system info
+2024-04-26 14:13:59,424 DEBUG   HandlerThread:417772 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-04-26 14:14:00,116 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/conda-environment.yaml
+2024-04-26 14:14:00,540 DEBUG   HandlerThread:417772 [system_info.py:_save_conda():222] Saving conda packages done
+2024-04-26 14:14:00,542 INFO    HandlerThread:417772 [system_monitor.py:probe():229] Finished publishing system info
+2024-04-26 14:14:00,544 DEBUG   SenderThread:417772 [sender.py:send():379] send: files
+2024-04-26 14:14:00,544 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-04-26 14:14:00,581 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: python_packages
+2024-04-26 14:14:00,582 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: python_packages
+2024-04-26 14:14:00,582 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:14:00,583 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:14:00,586 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:14:00,789 DEBUG   SenderThread:417772 [sender.py:send():379] send: telemetry
+2024-04-26 14:14:01,115 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/conda-environment.yaml
+2024-04-26 14:14:01,115 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/requirements.txt
+2024-04-26 14:14:01,116 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-metadata.json
+2024-04-26 14:14:01,131 INFO    wandb-upload_0:417772 [upload_job.py:push():131] Uploaded file /tmp/tmp1pm9rtwrwandb/hb880hrd-wandb-metadata.json
+2024-04-26 14:14:04,790 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:05,195 DEBUG   SenderThread:417772 [sender.py:send():379] send: telemetry
+2024-04-26 14:14:05,826 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:05,828 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:05,828 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:05,829 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:06,117 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:06,118 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:08,119 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:09,832 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:10,996 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:10,997 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:10,997 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:10,999 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:11,120 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:12,121 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:14,999 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:15,582 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:14:15,583 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:14:15,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:14:16,117 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:16,118 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:16,118 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:16,121 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:16,122 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:18,123 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:20,162 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:21,291 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:21,293 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:21,293 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:21,294 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:22,125 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:22,126 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:25,295 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:26,514 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:26,515 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:26,515 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:26,517 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:27,128 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:28,128 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:30,522 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:30,582 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:14:30,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:14:30,605 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:14:31,130 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/config.yaml
+2024-04-26 14:14:31,799 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:31,800 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:31,801 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:31,801 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:32,130 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:34,131 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:35,842 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:37,154 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:37,155 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:37,156 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:37,156 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:38,133 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:38,134 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:41,158 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:42,578 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:42,579 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:42,580 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:42,583 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:43,136 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:44,136 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:45,582 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:14:45,583 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:14:45,586 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:14:46,689 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:48,042 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:48,043 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:48,043 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:48,046 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:48,138 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:50,139 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:52,086 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:53,589 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:53,590 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:53,591 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:53,591 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:54,141 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:14:54,142 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:14:57,592 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:14:59,185 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:14:59,187 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:14:59,187 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:14:59,188 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:14:59,403 DEBUG   SystemMonitor:417772 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-04-26 14:14:59,405 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:15:00,143 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:00,144 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:00,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:15:00,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:15:00,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:15:02,699 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:04,828 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:04,830 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:04,830 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:04,832 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:05,146 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:06,146 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:07,870 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:10,532 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:10,533 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:10,534 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:10,534 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:11,150 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:12,151 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:13,536 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:15,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:15:15,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:15:15,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:15:16,295 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:16,297 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:16,297 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:16,300 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:17,153 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:18,154 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:19,338 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:22,145 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:22,146 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:22,147 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:22,147 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:22,156 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:24,157 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:25,148 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:27,952 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:27,953 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:27,953 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:27,955 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:28,158 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:29,407 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:15:30,159 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:30,408 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:30,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:15:30,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:15:30,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:15:33,702 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:33,704 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:33,704 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:33,704 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:34,161 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:34,161 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:35,746 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:39,475 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:39,476 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:39,477 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:39,479 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:40,163 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:40,163 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:41,480 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:45,228 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:45,230 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:45,230 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:45,231 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:45,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:15:45,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:15:45,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:15:46,165 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:46,166 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:46,756 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:50,949 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:50,951 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:50,951 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:50,954 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:51,167 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:51,993 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:52,168 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:56,678 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:15:56,679 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:15:56,680 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:15:56,680 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:15:57,170 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:15:57,681 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:15:58,171 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:15:59,408 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:16:00,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:16:00,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:16:00,585 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:16:02,378 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:02,379 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:02,379 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:02,382 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:03,172 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:03,422 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:04,173 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:08,105 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:08,106 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:08,106 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:08,107 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:08,174 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:09,108 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:10,175 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:13,810 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:13,812 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:13,812 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:13,813 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:14,176 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:14,177 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:14,814 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:15,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:16:15,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:16:15,585 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:16:19,507 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:19,509 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:19,509 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:19,510 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:20,179 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:20,179 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:20,549 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:25,215 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:25,216 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:25,217 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:25,218 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:25,219 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:25,219 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:25,219 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:25,227 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:26,181 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:26,181 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:26,227 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:28,146 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:28,147 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:28,148 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:28,149 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:28,150 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:28,150 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:28,150 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:28,157 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:28,182 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:29,409 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:16:30,183 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:30,583 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:16:30,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:16:30,586 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:16:31,183 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:31,185 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:31,185 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:31,185 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:31,225 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:31,226 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:31,226 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:31,226 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:32,185 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:32,186 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:32,227 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:34,261 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:34,262 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:34,263 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:34,264 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:34,264 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:34,264 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:34,264 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:34,272 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:35,186 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:36,187 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:37,273 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:37,293 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:37,294 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:37,294 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:37,295 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:37,295 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:37,295 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:37,295 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:37,296 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:38,187 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:38,188 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:40,121 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:40,122 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:40,123 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:40,123 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:40,124 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:40,124 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:40,124 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:40,132 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:40,188 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:42,188 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:42,984 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:42,985 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:42,986 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:42,986 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:42,987 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:42,988 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:42,988 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:42,988 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:42,995 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:43,189 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:44,189 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:45,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:16:45,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:16:45,585 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:16:45,846 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:45,847 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:45,847 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:45,848 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:45,889 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:45,890 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:45,890 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:45,893 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:46,190 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:48,191 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:48,670 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:48,671 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:48,672 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:48,673 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:48,673 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:48,673 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:48,673 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:48,673 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:48,681 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:49,191 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:50,192 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:51,437 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:51,438 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:51,439 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:51,440 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:51,440 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:51,441 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:51,441 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:51,448 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:52,193 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:52,193 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:54,274 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:54,275 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:54,276 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:54,277 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:54,277 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:16:54,278 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:54,278 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:54,278 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:54,279 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:55,194 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:56,194 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:57,141 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:57,142 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:16:57,144 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:57,144 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:57,145 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:57,145 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:16:57,145 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:16:57,152 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:16:57,195 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:16:58,195 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:16:59,410 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:16:59,411 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:00,037 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:00,038 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:00,039 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:00,039 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:00,040 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:00,040 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:00,040 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:00,047 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:00,196 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:00,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:17:00,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:17:00,585 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:17:01,460 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:01,462 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:01,462 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:01,463 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:02,196 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:02,197 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:04,502 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:07,060 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:07,062 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:07,062 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:07,064 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:07,198 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:08,198 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:10,065 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:12,682 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:12,683 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:12,684 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:12,684 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:13,200 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:14,200 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:15,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:17:15,584 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:17:15,588 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:17:15,696 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:18,306 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:18,307 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:18,308 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:18,310 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:19,202 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:20,202 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:21,350 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:23,953 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:23,955 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:23,955 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:23,956 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:24,204 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:26,204 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:26,957 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:29,412 DEBUG   SenderThread:417772 [sender.py:send():379] send: stats
+2024-04-26 14:17:29,620 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:29,622 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:29,622 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:29,622 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:30,206 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:30,206 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:30,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:17:30,585 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:17:30,585 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:17:32,769 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:35,297 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:35,298 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:35,298 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:35,299 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:36,209 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:36,209 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:38,342 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:40,977 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:40,979 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:40,979 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:40,982 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:41,210 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:42,211 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:43,983 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:45,584 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:17:45,585 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:17:45,587 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:17:46,675 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:46,676 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:46,677 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:46,677 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:47,213 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:48,213 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
+2024-04-26 14:17:49,718 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:17:52,374 DEBUG   HandlerThread:417772 [handler.py:handle_request():146] handle_request: partial_history
+2024-04-26 14:17:52,376 DEBUG   SenderThread:417772 [sender.py:send():379] send: history
+2024-04-26 14:17:52,376 DEBUG   SenderThread:417772 [sender.py:send_request():406] send_request: summary_record
+2024-04-26 14:17:52,377 INFO    SenderThread:417772 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:17:53,214 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/wandb-summary.json
+2024-04-26 14:17:54,215 INFO    Thread-12 :417772 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_141358-m7fpo7zb/files/output.log
