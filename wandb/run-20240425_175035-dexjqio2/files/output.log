@@ -1,0 +1,39 @@
+Truncation was not explicitly activated but `max_length` is provided a specific value, please use `truncation=True` to explicitly truncate examples to max length. Defaulting to 'longest_first' truncation strategy. If you encode pairs of sequences (GLUE-style) with the tokenizer you can select this strategy more precisely by providing a specific strategy to `truncation`.
+/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2674: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.2824446075980142
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.38481697196530784
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.2578571354943003
+Epoch: 0 | Gen score (bleu): 0.25416966962970644
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.19585148126079188
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.2251889061850022
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Epoch: 0 | Gen score (bleu): 0.0
+Traceback (most recent call last):
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 210, in <module>
+    main()
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 208, in main
+    reasoning_pipeline.generate(val_loader, epoch)
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 75, in generate
+    generated_ids = self.model.generate(
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/generation/utils.py", line 1655, in generate
+    result = self._beam_search(
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/generation/utils.py", line 3213, in _beam_search
+    next_token_scores = next_token_scores.view(batch_size, num_beams * vocab_size)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

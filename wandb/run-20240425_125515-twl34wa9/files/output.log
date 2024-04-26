@@ -1,0 +1,88 @@
+<torch.utils.data.dataloader.DataLoader object at 0x7946efb3c0d0>
+Epoch:0 | Loss:8.94413948059082
+Epoch:0 | Loss:2.8464901447296143
+Truncation was not explicitly activated but `max_length` is provided a specific value, please use `truncation=True` to explicitly truncate examples to max length. Defaulting to 'longest_first' truncation strategy. If you encode pairs of sequences (GLUE-style) with the tokenizer you can select this strategy more precisely by providing a specific strategy to `truncation`.
+/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2674: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+Epoch:0 | Loss:2.576850414276123
+Epoch:0 | Loss:2.8251612186431885
+Epoch:0 | Loss:2.682481527328491
+Epoch:0 | Loss:2.394832134246826
+Epoch:0 | Loss:2.2477495670318604
+Epoch:0 | Loss:2.432800531387329
+Epoch:0 | Loss:2.5026886463165283
+Epoch:0 | Loss:3.1329286098480225
+Epoch:0 | Loss:2.0288896560668945
+Epoch:0 | Loss:2.5491106510162354
+Epoch:0 | Loss:2.1820943355560303
+Epoch:0 | Loss:2.0197982788085938
+Epoch:0 | Loss:2.7315144538879395
+Epoch:0 | Loss:1.7677866220474243
+Epoch:0 | Loss:2.624692678451538
+Epoch:0 | Loss:2.5657150745391846
+Epoch:0 | Loss:2.4233880043029785
+Epoch:0 | Loss:2.504197597503662
+Epoch:0 | Loss:2.4185585975646973
+Epoch:0 | Loss:1.899674892425537
+Epoch:0 | Loss:2.200624465942383
+Epoch:0 | Loss:2.168105125427246
+Epoch:0 | Loss:2.4596221446990967
+Epoch:0 | Loss:2.2735888957977295
+Epoch:0 | Loss:2.2380905151367188
+Epoch:0 | Loss:2.222271203994751
+Epoch:0 | Loss:2.460808277130127
+Epoch:0 | Loss:2.192206859588623
+Epoch:0 | Loss:2.13431715965271
+Epoch:0 | Loss:2.4835612773895264
+Epoch:0 | Loss:2.269880533218384
+Epoch:0 | Loss:2.1538851261138916
+Epoch:0 | Loss:2.0203075408935547
+Epoch:0 | Loss:2.1935055255889893
+Epoch:0 | Loss:2.42037296295166
+Epoch:0 | Loss:1.9798551797866821
+Epoch:0 | Loss:2.0934534072875977
+Epoch:0 | Loss:2.3817028999328613
+Epoch:0 | Loss:1.6455978155136108
+Epoch:0 | Loss:2.4941883087158203
+Epoch:0 | Loss:1.5143492221832275
+Epoch:0 | Loss:2.708137035369873
+Epoch:0 | Loss:2.71994686126709
+Epoch:0 | Loss:2.054661273956299
+Epoch:0 | Loss:2.2603108882904053
+Epoch:0 | Loss:2.4968361854553223
+Epoch:0 | Loss:2.0996880531311035
+Epoch:0 | Loss:2.451814651489258
+Epoch:0 | Loss:2.3918447494506836
+Epoch:0 | Loss:1.9030297994613647
+Epoch:0 | Loss:2.153442859649658
+Epoch:0 | Loss:2.811166286468506
+Epoch:0 | Loss:2.1216633319854736
+Epoch:0 | Loss:2.4110732078552246
+Epoch:0 | Loss:2.3076019287109375
+Epoch:0 | Loss:2.275188446044922
+Epoch:0 | Loss:2.3414103984832764
+Epoch:0 | Loss:2.3540873527526855
+Epoch:0 | Loss:1.9214162826538086
+Epoch:0 | Loss:2.6455113887786865
+Epoch:0 | Loss:2.2027437686920166
+Epoch:0 | Loss:2.371227502822876
+Epoch:0 | Loss:2.666445016860962
+Epoch:0 | Loss:3.1188712120056152
+Epoch:0 | Loss:1.8465018272399902
+Epoch:0 | Loss:1.9538406133651733
+Epoch:0 | Loss:2.04709792137146
+Epoch:0 | Loss:1.9198278188705444
+Epoch:0 | Loss:1.5678431987762451
+Epoch:0 | Loss:2.2982094287872314
+Epoch:0 | Loss:2.217566967010498
+Epoch:0 | Loss:2.2596893310546875
+Traceback (most recent call last):
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_trasnformer.py", line 134, in <module>
+    main()
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_trasnformer.py", line 127, in main
+    train(epoch,model,tokenizer,train_loader,optimizer,device)
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_trasnformer.py", line 49, in train
+    y = data['target_ids'].to(device)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Epoch:0 | Loss:2.3085460662841797

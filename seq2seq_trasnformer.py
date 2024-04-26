@@ -10,7 +10,6 @@ from transformers import T5ForConditionalGeneration,T5Tokenizer,T5PreTrainedMode
 from transformers.models.t5 import T5TokenizerFast
 
 
-
 class CustomDataset(Dataset):
   def __init__(self,dataset,tokenizer,source_len,summ_len):
     self.dataset = dataset 
@@ -102,6 +101,7 @@ def main():
   val_dataset = dataset['validation'][:4000]
 
   #!pip install regex
+  """
   import re
   def preprocess(dataset):
     dataset['article'] = [re.sub('\\(.*?\\)','',t) for t in dataset['article']]
@@ -110,7 +110,7 @@ def main():
 
   train_dataset = preprocess(train_dataset)
   val_dataset = preprocess(val_dataset)
-  
+  """
 
   train_dataset = CustomDataset(train_dataset,tokenizer,270,160)
   val_dataset = CustomDataset(val_dataset,tokenizer,270,160)

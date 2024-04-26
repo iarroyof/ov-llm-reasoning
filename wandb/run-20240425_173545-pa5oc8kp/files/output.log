@@ -1,0 +1,27 @@
+Truncation was not explicitly activated but `max_length` is provided a specific value, please use `truncation=True` to explicitly truncate examples to max length. Defaulting to 'longest_first' truncation strategy. If you encode pairs of sequences (GLUE-style) with the tokenizer you can select this strategy more precisely by providing a specific strategy to `truncation`.
+/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2674: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+> /home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py(133)calculate_validation_score()
+-> if self.score_type == 'combined':
+['Zully Broussard decided to give a kidney to a stranger. A new computer program helped her donation spur transplants for six kidney patients.', 'The 20th MLS season begins this weekend. League has changed dramatically since its inception in 1996. Some question whether rules regarding salary caps and transfers need to change.']
+['Zully Broussard gave one of her kidneys to a stranger. She did so with big data. Six patients received transplants. "I know this entire journey is much bigger than all of us," she said. "I also know I\'m just the messenger."', 'it was the first ever Major League Soccer match in a land its charms had yet to conquer. The 6th of April 1996 marked the "birth of a new era for American soccer." It\'s hard not to feel nostalgic about that historic occasion now, as the MLS prepares to mark the beginning of its 20th season.']
+*** TypeError: BLEU: Each element of `hyps` should be a string.
+0.0
+*** NameError: name 'rouge' is not defined
+0.21074932638689975
+Traceback (most recent call last):
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 208, in <module>
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 206, in main
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 84, in generate
+    gen_score = self.calculate_validation_score(data, generated_ids)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 133, in calculate_validation_score
+    # Combine BLEU and ROUGE scores (weighted average is common)
+       ^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/bdb.py", line 90, in trace_dispatch
+    return self.dispatch_line(frame)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/bdb.py", line 115, in dispatch_line
+    if self.quitting: raise BdbQuit
+                      ^^^^^^^^^^^^^
+bdb.BdbQuit
