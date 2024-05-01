@@ -1,0 +1,172 @@
+{
+    "os": "Linux-6.5.0-1020-oem-x86_64-with-glibc2.35",
+    "python": "3.11.9",
+    "heartbeatAt": "2024-04-26T20:20:10.845415",
+    "startedAt": "2024-04-26T20:20:10.289138",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py",
+    "codePathLocal": "seq2seq_T5.py",
+    "codePath": "seq2seq_T5.py",
+    "git": {
+        "remote": "https://github.com/iarroyof/ov-llm-reasoning.git",
+        "commit": "98e87e9688d0796df3ca568febd24b2966dcbe18"
+    },
+    "email": "iarroyof@lizmark.utm.mx",
+    "root": "/home/iarroyof/Projects/ov-llm-reasoning",
+    "host": "lizmark",
+    "username": "iarroyof",
+    "executable": "/home/iarroyof/miniconda3/envs/pt/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 993.6373333333332,
+        "min": 800.0,
+        "max": 4050.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 805.034,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2927.744,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.289,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.289,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2910.985,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 1149.121,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 1395.534,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2778.789,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 824.705,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2453.678,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 799.937,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 455.7536849975586,
+            "used": 51.267578125
+        }
+    },
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX 6000 Ada Generation",
+            "memory_total": 51527024640
+        },
+        {
+            "name": "NVIDIA RTX 6000 Ada Generation",
+            "memory_total": 51527024640
+        }
+    ],
+    "memory": {
+        "total": 30.588653564453125
+    }
+}

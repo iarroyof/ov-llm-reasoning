@@ -1,0 +1,367 @@
+2024-04-26 14:34:14 ERROR 400 response executing GraphQL.
+2024-04-26 14:34:14 ERROR {"errors":[{"message":"name required for project query","path":["project"]}],"data":{"project":null}}
+2024-04-26 14:34:14 ERROR Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 1055, in sweep
+    response = self.gql(
+               ^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 341, in gql
+    ret = self._retry_gql(
+          ^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 369, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 105, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 1757, in agent
+    wandb_agent.agent(sweep_id, entity=entity, project=project, count=count)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 570, in agent
+    return run_agent(
+           ^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 528, in run_agent
+    agent.run()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 190, in run
+    sweep_obj = self._api.sweep(self._sweep_id, "{}")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/internal.py", line 126, in sweep
+    return self.api.sweep(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 51, in wrapper
+    raise CommError(message, error)
+wandb.errors.CommError: name required for project query (Error 400: Bad Request)
+
+2024-04-26 14:37:38 ERROR 400 response executing GraphQL.
+2024-04-26 14:37:38 ERROR {"errors":[{"message":"name required for project query","path":["project"]}],"data":{"project":null}}
+2024-04-26 14:37:38 ERROR Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 1055, in sweep
+    response = self.gql(
+               ^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 341, in gql
+    ret = self._retry_gql(
+          ^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 369, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 105, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 1757, in agent
+    wandb_agent.agent(sweep_id, entity=entity, project=project, count=count)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 570, in agent
+    return run_agent(
+           ^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 528, in run_agent
+    agent.run()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 190, in run
+    sweep_obj = self._api.sweep(self._sweep_id, "{}")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/internal.py", line 126, in sweep
+    return self.api.sweep(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 51, in wrapper
+    raise CommError(message, error)
+wandb.errors.CommError: name required for project query (Error 400: Bad Request)
+
+2024-04-26 14:40:56 ERROR Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 1065, in sweep
+    raise ValueError(f"Sweep {entity}/{project}/{sweep} not found")
+ValueError: Sweep iarroyof/huggingface/bg11qv8i not found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 105, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/cli/cli.py", line 1757, in agent
+    wandb_agent.agent(sweep_id, entity=entity, project=project, count=count)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 570, in agent
+    return run_agent(
+           ^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 528, in run_agent
+    agent.run()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/wandb_agent.py", line 190, in run
+    sweep_obj = self._api.sweep(self._sweep_id, "{}")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/internal.py", line 126, in sweep
+    return self.api.sweep(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 87, in wrapper
+    raise CommError(message, err).with_traceback(sys.exc_info()[2])
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 1065, in sweep
+    raise ValueError(f"Sweep {entity}/{project}/{sweep} not found")
+wandb.errors.CommError: Sweep iarroyof/huggingface/bg11qv8i not found
+
+2024-04-26 14:41:48 INFO Running runs: []
+2024-04-26 14:41:49 INFO Agent received command: run
+2024-04-26 14:41:49 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 5
+	learning_rate: 0.06864623767577191
+	optimizer: adamw
+2024-04-26 14:41:49 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=5 --learning_rate=0.06864623767577191 --optimizer=adamw
+2024-04-26 14:41:54 INFO Running runs: ['wlwpjr79']
+2024-04-26 14:48:56 INFO Cleaning up finished run: wlwpjr79
+2024-04-26 14:48:56 INFO Agent received command: run
+2024-04-26 14:48:56 INFO Agent starting run with config:
+	batch_size: 128
+	epochs: 5
+	learning_rate: 0.026522130198894187
+	optimizer: adam
+2024-04-26 14:48:56 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=128 --epochs=5 --learning_rate=0.026522130198894187 --optimizer=adam
+2024-04-26 14:49:01 INFO Running runs: ['dqzhfoa9']
+2024-04-26 14:49:52 INFO Cleaning up finished run: dqzhfoa9
+2024-04-26 14:49:52 INFO Agent received command: run
+2024-04-26 14:49:52 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 5
+	learning_rate: 0.024583997621946935
+	optimizer: adamw
+2024-04-26 14:49:52 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=5 --learning_rate=0.024583997621946935 --optimizer=adamw
+2024-04-26 14:49:57 INFO Running runs: ['yg24g9xo']
+2024-04-26 14:50:38 INFO Cleaning up finished run: yg24g9xo
+2024-04-26 14:50:39 INFO Agent received command: run
+2024-04-26 14:50:39 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 2
+	learning_rate: 0.030935260695396236
+	optimizer: adam
+2024-04-26 14:50:39 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=2 --learning_rate=0.030935260695396236 --optimizer=adam
+2024-04-26 14:50:44 INFO Running runs: ['dci9yde8']
+2024-04-26 14:51:35 INFO Cleaning up finished run: dci9yde8
+2024-04-26 14:51:35 INFO Agent received command: run
+2024-04-26 14:51:35 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 2
+	learning_rate: 0.04911896181482925
+	optimizer: adamw
+2024-04-26 14:51:35 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=2 --learning_rate=0.04911896181482925 --optimizer=adamw
+2024-04-26 14:51:40 INFO Running runs: ['0r7lemn8']
+2024-04-26 14:52:21 INFO Cleaning up finished run: 0r7lemn8
+2024-04-26 14:52:21 INFO Agent received command: run
+2024-04-26 14:52:21 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 2
+	learning_rate: 0.08938420172706969
+	optimizer: adamw
+2024-04-26 14:52:21 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=2 --learning_rate=0.08938420172706969 --optimizer=adamw
+2024-04-26 14:52:26 INFO Running runs: ['a3p5fkxj']
+2024-04-26 15:26:29 INFO Cleaning up finished run: a3p5fkxj
+2024-04-26 15:26:29 INFO Agent received command: run
+2024-04-26 15:26:29 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 2
+	learning_rate: 0.051212577169316216
+	optimizer: adam
+2024-04-26 15:26:29 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=2 --learning_rate=0.051212577169316216 --optimizer=adam
+2024-04-26 15:26:34 INFO Running runs: ['e9b4obji']
+2024-04-26 15:27:15 INFO Cleaning up finished run: e9b4obji
+2024-04-26 15:27:15 INFO Agent received command: run
+2024-04-26 15:27:15 INFO Agent starting run with config:
+	batch_size: 128
+	epochs: 5
+	learning_rate: 0.04419121944628054
+	optimizer: adam
+2024-04-26 15:27:15 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=128 --epochs=5 --learning_rate=0.04419121944628054 --optimizer=adam
+2024-04-26 15:27:20 INFO Running runs: ['es1079gw']
+2024-04-26 15:28:11 INFO Cleaning up finished run: es1079gw
+2024-04-26 15:28:11 INFO Agent received command: run
+2024-04-26 15:28:11 INFO Agent starting run with config:
+	batch_size: 128
+	epochs: 10
+	learning_rate: 0.0012457246726726818
+	optimizer: adam
+2024-04-26 15:28:11 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=128 --epochs=10 --learning_rate=0.0012457246726726818 --optimizer=adam
+2024-04-26 15:28:16 INFO Running runs: ['wm8la5h7']
+2024-04-26 17:50:36 INFO Cleaning up finished run: wm8la5h7
+2024-04-26 17:50:36 INFO Agent received command: run
+2024-04-26 17:50:36 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 5
+	learning_rate: 0.06864623767577191
+	optimizer: adamw
+2024-04-26 17:50:36 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=5 --learning_rate=0.06864623767577191 --optimizer=adamw
+2024-04-26 17:50:41 INFO Running runs: ['wlwpjr79']
+2024-04-26 17:51:32 INFO Cleaning up finished run: wlwpjr79
+2024-04-26 17:51:32 INFO Agent received command: run
+2024-04-26 17:51:32 INFO Agent starting run with config:
+	batch_size: 128
+	epochs: 5
+	learning_rate: 0.026522130198894187
+	optimizer: adam
+2024-04-26 17:51:32 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=128 --epochs=5 --learning_rate=0.026522130198894187 --optimizer=adam
+2024-04-26 17:51:37 INFO Running runs: ['dqzhfoa9']
+2024-04-26 19:17:59 INFO Cleaning up finished run: dqzhfoa9
+2024-04-26 19:17:59 INFO Agent received command: run
+2024-04-26 19:17:59 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 5
+	learning_rate: 0.06864623767577191
+	optimizer: adamw
+2024-04-26 19:17:59 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=5 --learning_rate=0.06864623767577191 --optimizer=adamw
+2024-04-26 19:18:04 INFO Running runs: ['wlwpjr79']
+2024-04-26 19:19:00 INFO Cleaning up finished run: wlwpjr79
+2024-04-26 19:19:00 INFO Agent received command: run
+2024-04-26 19:19:00 INFO Agent starting run with config:
+	batch_size: 128
+	epochs: 5
+	learning_rate: 0.026522130198894187
+	optimizer: adam
+2024-04-26 19:19:00 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=128 --epochs=5 --learning_rate=0.026522130198894187 --optimizer=adam
+2024-04-26 19:19:05 INFO Running runs: ['dqzhfoa9']
+2024-04-26 19:20:01 INFO Cleaning up finished run: dqzhfoa9
+2024-04-26 19:20:01 INFO Agent received command: run
+2024-04-26 19:20:01 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 5
+	learning_rate: 0.024583997621946935
+	optimizer: adamw
+2024-04-26 19:20:01 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=5 --learning_rate=0.024583997621946935 --optimizer=adamw
+2024-04-26 19:20:06 INFO Running runs: ['yg24g9xo']
+2024-04-26 19:20:57 INFO Cleaning up finished run: yg24g9xo
+2024-04-26 19:20:57 INFO Agent received command: run
+2024-04-26 19:20:57 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 2
+	learning_rate: 0.030935260695396236
+	optimizer: adam
+2024-04-26 19:20:57 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=2 --learning_rate=0.030935260695396236 --optimizer=adam
+2024-04-26 19:21:02 INFO Running runs: ['dci9yde8']
+2024-04-26 19:53:23 INFO Cleaning up finished run: dci9yde8
+2024-04-26 19:53:23 INFO Agent received command: run
+2024-04-26 19:53:23 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 2
+	learning_rate: 0.04911896181482925
+	optimizer: adamw
+2024-04-26 19:53:23 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=2 --learning_rate=0.04911896181482925 --optimizer=adamw
+2024-04-26 19:53:28 INFO Running runs: ['0r7lemn8']
+2024-04-27 09:50:16 INFO Running runs: []
+2024-04-27 09:50:16 INFO Agent received command: run
+2024-04-27 09:50:16 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 8
+	learning_rate: 0.001
+	optimizer: adamw
+2024-04-27 09:50:16 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=8 --learning_rate=0.001 --optimizer=adamw
+2024-04-27 09:50:21 INFO Running runs: ['2t9en5wy']
+2024-04-27 09:51:12 INFO Cleaning up finished run: 2t9en5wy
+2024-04-27 09:51:12 INFO Agent received command: run
+2024-04-27 09:51:12 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 2
+	learning_rate: 0.001
+	optimizer: adamw
+2024-04-27 09:51:12 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=2 --learning_rate=0.001 --optimizer=adamw
+2024-04-27 09:51:17 INFO Running runs: ['sm4q52d3']
+2024-04-27 09:52:08 INFO Cleaning up finished run: sm4q52d3
+2024-04-27 09:52:08 INFO Agent received command: run
+2024-04-27 09:52:08 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 0.0001
+	optimizer: adamw
+2024-04-27 09:52:08 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=0.0001 --optimizer=adamw
+2024-04-27 09:52:13 INFO Running runs: ['9zew4cd7']
+2024-04-27 09:53:04 INFO Cleaning up finished run: 9zew4cd7
+2024-04-27 09:53:04 INFO Agent received command: run
+2024-04-27 09:53:04 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 0.0001
+	optimizer: adamw
+2024-04-27 09:53:04 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=0.0001 --optimizer=adamw
+2024-04-27 09:53:09 INFO Running runs: ['i4mhn98n']
+2024-04-27 10:52:47 INFO Cleaning up finished run: i4mhn98n
+2024-04-27 10:52:47 INFO Agent received command: run
+2024-04-27 10:52:47 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 8
+	learning_rate: 0.001
+	optimizer: adamw
+2024-04-27 10:52:47 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=8 --learning_rate=0.001 --optimizer=adamw
+2024-04-27 10:52:52 INFO Running runs: ['2t9en5wy']
+2024-04-27 11:21:52 INFO Cleaning up finished run: 2t9en5wy
+2024-04-27 11:21:52 INFO Agent received command: run
+2024-04-27 11:21:52 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 2
+	learning_rate: 0.001
+	optimizer: adamw
+2024-04-27 11:21:52 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=2 --learning_rate=0.001 --optimizer=adamw
+2024-04-27 11:21:57 INFO Running runs: ['sm4q52d3']
+2024-04-30 19:33:42 INFO Running runs: []
+2024-04-30 19:33:42 INFO Agent received command: run
+2024-04-30 19:33:42 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 0.01
+	optimizer: adamw
+2024-04-30 19:33:42 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=0.01 --optimizer=adamw
+2024-04-30 19:33:47 INFO Running runs: ['nescz2i9']
+2024-04-30 19:47:35 INFO Cleaning up finished run: nescz2i9
+2024-04-30 19:47:36 INFO Agent received command: run
+2024-04-30 19:47:36 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 2
+	learning_rate: 0.0001
+	optimizer: adamw
+2024-04-30 19:47:36 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=2 --learning_rate=0.0001 --optimizer=adamw
+2024-04-30 19:47:41 INFO Running runs: ['3fy1vt1r']
+2024-04-30 20:02:02 INFO Cleaning up finished run: 3fy1vt1r
+2024-04-30 20:02:02 INFO Agent received command: run
+2024-04-30 20:02:02 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	learning_rate: 0.01
+	optimizer: adam
+2024-04-30 20:02:02 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --learning_rate=0.01 --optimizer=adam
+2024-04-30 20:02:07 INFO Running runs: ['6yrd2ca7']

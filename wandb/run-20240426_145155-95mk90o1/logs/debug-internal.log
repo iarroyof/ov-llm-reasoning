@@ -1,0 +1,171 @@
+2024-04-26 14:51:55,884 INFO    StreamThr :431702 [internal.py:wandb_internal():86] W&B internal server running at pid: 431702, started at: 2024-04-26 14:51:55.883440
+2024-04-26 14:51:55,888 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: status
+2024-04-26 14:51:55,890 INFO    WriterThread:431702 [datastore.py:open_for_write():87] open: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/run-95mk90o1.wandb
+2024-04-26 14:51:55,891 DEBUG   SenderThread:431702 [sender.py:send():379] send: header
+2024-04-26 14:51:55,892 DEBUG   SenderThread:431702 [sender.py:send():379] send: run
+2024-04-26 14:51:56,136 INFO    SenderThread:431702 [dir_watcher.py:__init__():211] watching files in: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files
+2024-04-26 14:51:56,136 INFO    SenderThread:431702 [sender.py:_start_run_threads():1124] run started: 95mk90o1 with start time 1714164715.882428
+2024-04-26 14:51:56,145 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: check_version
+2024-04-26 14:51:56,145 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: check_version
+2024-04-26 14:51:56,419 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: run_start
+2024-04-26 14:51:56,426 DEBUG   HandlerThread:431702 [system_info.py:__init__():26] System info init
+2024-04-26 14:51:56,426 DEBUG   HandlerThread:431702 [system_info.py:__init__():41] System info init done
+2024-04-26 14:51:56,426 INFO    HandlerThread:431702 [system_monitor.py:start():194] Starting system monitor
+2024-04-26 14:51:56,426 INFO    SystemMonitor:431702 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-04-26 14:51:56,427 INFO    HandlerThread:431702 [system_monitor.py:probe():214] Collecting system info
+2024-04-26 14:51:56,428 INFO    SystemMonitor:431702 [interfaces.py:start():190] Started cpu monitoring
+2024-04-26 14:51:56,429 INFO    SystemMonitor:431702 [interfaces.py:start():190] Started disk monitoring
+2024-04-26 14:51:56,431 INFO    SystemMonitor:431702 [interfaces.py:start():190] Started gpu monitoring
+2024-04-26 14:51:56,431 INFO    SystemMonitor:431702 [interfaces.py:start():190] Started memory monitoring
+2024-04-26 14:51:56,432 INFO    SystemMonitor:431702 [interfaces.py:start():190] Started network monitoring
+2024-04-26 14:51:56,443 DEBUG   HandlerThread:431702 [system_info.py:probe():150] Probing system
+2024-04-26 14:51:56,446 DEBUG   HandlerThread:431702 [system_info.py:_probe_git():135] Probing git
+2024-04-26 14:51:56,450 DEBUG   HandlerThread:431702 [system_info.py:_probe_git():143] Probing git done
+2024-04-26 14:51:56,451 DEBUG   HandlerThread:431702 [system_info.py:probe():198] Probing system done
+2024-04-26 14:51:56,451 DEBUG   HandlerThread:431702 [system_monitor.py:probe():223] {'os': 'Linux-6.5.0-1020-oem-x86_64-with-glibc2.35', 'python': '3.11.9', 'heartbeatAt': '2024-04-26T20:51:56.443909', 'startedAt': '2024-04-26T20:51:55.878934', 'docker': None, 'cuda': None, 'args': ('--batch_size=64', '--epochs=2', '--learning_rate=0.04911896181482925', '--optimizer=adamw'), 'state': 'running', 'program': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py', 'codePathLocal': 'seq2seq_T5.py', 'codePath': 'seq2seq_T5.py', 'git': {'remote': 'https://github.com/iarroyof/ov-llm-reasoning.git', 'commit': '98e87e9688d0796df3ca568febd24b2966dcbe18'}, 'email': 'iarroyof@lizmark.utm.mx', 'root': '/home/iarroyof/Projects/ov-llm-reasoning', 'host': 'lizmark', 'username': 'iarroyof', 'executable': '/home/iarroyof/miniconda3/envs/pt/bin/python', 'cpu_count': 12, 'cpu_count_logical': 24, 'cpu_freq': {'current': 1016.7784166666667, 'min': 800.0, 'max': 4050.0}, 'cpu_freq_per_core': [{'current': 792.097, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4100.0}, {'current': 894.596, 'min': 800.0, 'max': 4000.0}, {'current': 1881.046, 'min': 800.0, 'max': 4100.0}, {'current': 1064.761, 'min': 800.0, 'max': 4200.0}, {'current': 3148.413, 'min': 800.0, 'max': 4200.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 2878.153, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 1551.854, 'min': 800.0, 'max': 4000.0}, {'current': 2845.256, 'min': 800.0, 'max': 4000.0}, {'current': 1529.295, 'min': 800.0, 'max': 4100.0}, {'current': 920.135, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4100.0}, {'current': 800.0, 'min': 800.0, 'max': 4200.0}, {'current': 800.0, 'min': 800.0, 'max': 4200.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}, {'current': 800.0, 'min': 800.0, 'max': 4000.0}], 'disk': {'/': {'total': 455.7536849975586, 'used': 51.26955795288086}}, 'gpu': 'NVIDIA RTX 6000 Ada Generation', 'gpu_count': 2, 'gpu_devices': [{'name': 'NVIDIA RTX 6000 Ada Generation', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX 6000 Ada Generation', 'memory_total': 51527024640}], 'memory': {'total': 30.588653564453125}}
+2024-04-26 14:51:56,451 INFO    HandlerThread:431702 [system_monitor.py:probe():224] Finished collecting system info
+2024-04-26 14:51:56,451 INFO    HandlerThread:431702 [system_monitor.py:probe():227] Publishing system info
+2024-04-26 14:51:56,451 DEBUG   HandlerThread:431702 [system_info.py:_save_conda():207] Saving list of conda packages installed into the current environment
+2024-04-26 14:51:57,139 INFO    Thread-12 :431702 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/conda-environment.yaml
+2024-04-26 14:51:57,517 DEBUG   HandlerThread:431702 [system_info.py:_save_conda():222] Saving conda packages done
+2024-04-26 14:51:57,518 INFO    HandlerThread:431702 [system_monitor.py:probe():229] Finished publishing system info
+2024-04-26 14:51:57,521 DEBUG   SenderThread:431702 [sender.py:send():379] send: files
+2024-04-26 14:51:57,521 INFO    SenderThread:431702 [sender.py:_save_file():1390] saving file wandb-metadata.json with policy now
+2024-04-26 14:51:57,562 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: python_packages
+2024-04-26 14:51:57,562 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: python_packages
+2024-04-26 14:51:57,563 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: stop_status
+2024-04-26 14:51:57,563 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: stop_status
+2024-04-26 14:51:57,566 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:51:57,740 DEBUG   SenderThread:431702 [sender.py:send():379] send: telemetry
+2024-04-26 14:51:57,945 INFO    wandb-upload_0:431702 [upload_job.py:push():131] Uploaded file /tmp/tmpmwilov1twandb/qept0wh8-wandb-metadata.json
+2024-04-26 14:51:58,138 INFO    Thread-12 :431702 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/conda-environment.yaml
+2024-04-26 14:51:58,138 INFO    Thread-12 :431702 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/wandb-metadata.json
+2024-04-26 14:51:58,138 INFO    Thread-12 :431702 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/requirements.txt
+2024-04-26 14:52:01,742 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:52:01,859 DEBUG   SenderThread:431702 [sender.py:send():379] send: telemetry
+2024-04-26 14:52:01,901 DEBUG   SenderThread:431702 [sender.py:send():379] send: exit
+2024-04-26 14:52:01,901 INFO    SenderThread:431702 [sender.py:send_exit():586] handling exit code: 1
+2024-04-26 14:52:01,902 INFO    SenderThread:431702 [sender.py:send_exit():588] handling runtime: 5
+2024-04-26 14:52:01,905 INFO    SenderThread:431702 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:52:01,905 INFO    SenderThread:431702 [sender.py:send_exit():594] send defer
+2024-04-26 14:52:01,905 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,905 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 0
+2024-04-26 14:52:01,906 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,906 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 0
+2024-04-26 14:52:01,906 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 1
+2024-04-26 14:52:01,906 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,906 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 1
+2024-04-26 14:52:01,906 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,906 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 1
+2024-04-26 14:52:01,906 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 2
+2024-04-26 14:52:01,906 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,906 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 2
+2024-04-26 14:52:01,906 INFO    HandlerThread:431702 [system_monitor.py:finish():203] Stopping system monitor
+2024-04-26 14:52:01,906 DEBUG   SystemMonitor:431702 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-04-26 14:52:01,907 DEBUG   SystemMonitor:431702 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-04-26 14:52:01,907 DEBUG   SystemMonitor:431702 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-04-26 14:52:01,908 INFO    HandlerThread:431702 [interfaces.py:finish():202] Joined cpu monitor
+2024-04-26 14:52:01,908 INFO    HandlerThread:431702 [interfaces.py:finish():202] Joined disk monitor
+2024-04-26 14:52:01,971 INFO    HandlerThread:431702 [interfaces.py:finish():202] Joined gpu monitor
+2024-04-26 14:52:01,972 INFO    HandlerThread:431702 [interfaces.py:finish():202] Joined memory monitor
+2024-04-26 14:52:01,972 INFO    HandlerThread:431702 [interfaces.py:finish():202] Joined network monitor
+2024-04-26 14:52:01,973 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,973 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 2
+2024-04-26 14:52:01,973 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 3
+2024-04-26 14:52:01,973 DEBUG   SenderThread:431702 [sender.py:send():379] send: stats
+2024-04-26 14:52:01,974 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,974 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 3
+2024-04-26 14:52:01,974 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,974 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 3
+2024-04-26 14:52:01,974 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 4
+2024-04-26 14:52:01,974 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,974 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 4
+2024-04-26 14:52:01,974 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,974 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 4
+2024-04-26 14:52:01,974 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 5
+2024-04-26 14:52:01,974 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,974 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 5
+2024-04-26 14:52:01,974 DEBUG   SenderThread:431702 [sender.py:send():379] send: summary
+2024-04-26 14:52:01,975 INFO    SenderThread:431702 [sender.py:_save_file():1390] saving file wandb-summary.json with policy end
+2024-04-26 14:52:01,975 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,975 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 5
+2024-04-26 14:52:01,975 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 6
+2024-04-26 14:52:01,975 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:01,975 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 6
+2024-04-26 14:52:01,975 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:01,975 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 6
+2024-04-26 14:52:01,978 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: status_report
+2024-04-26 14:52:02,062 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 7
+2024-04-26 14:52:02,062 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,062 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 7
+2024-04-26 14:52:02,062 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,062 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 7
+2024-04-26 14:52:02,062 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 8
+2024-04-26 14:52:02,062 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,063 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 8
+2024-04-26 14:52:02,063 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,063 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 8
+2024-04-26 14:52:02,063 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 9
+2024-04-26 14:52:02,063 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,063 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 9
+2024-04-26 14:52:02,063 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,063 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 9
+2024-04-26 14:52:02,063 INFO    SenderThread:431702 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-04-26 14:52:02,140 INFO    Thread-12 :431702 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/config.yaml
+2024-04-26 14:52:02,141 INFO    SenderThread:431702 [dir_watcher.py:_on_file_created():271] file/dir created: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/wandb-summary.json
+2024-04-26 14:52:02,141 INFO    SenderThread:431702 [dir_watcher.py:finish():388] scan: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [dir_watcher.py:finish():402] scan save: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/requirements.txt requirements.txt
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [dir_watcher.py:finish():402] scan save: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/conda-environment.yaml conda-environment.yaml
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [dir_watcher.py:finish():402] scan save: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/wandb-summary.json wandb-summary.json
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [dir_watcher.py:finish():402] scan save: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/config.yaml config.yaml
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [dir_watcher.py:finish():402] scan save: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/wandb-metadata.json wandb-metadata.json
+2024-04-26 14:52:02,142 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 10
+2024-04-26 14:52:02,143 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,147 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 10
+2024-04-26 14:52:02,152 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,152 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 10
+2024-04-26 14:52:02,152 INFO    SenderThread:431702 [file_pusher.py:finish():172] shutting down file pusher
+2024-04-26 14:52:02,409 INFO    wandb-upload_1:431702 [upload_job.py:push():131] Uploaded file /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/conda-environment.yaml
+2024-04-26 14:52:02,552 INFO    wandb-upload_0:431702 [upload_job.py:push():131] Uploaded file /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/requirements.txt
+2024-04-26 14:52:02,604 INFO    wandb-upload_3:431702 [upload_job.py:push():131] Uploaded file /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/config.yaml
+2024-04-26 14:52:02,615 INFO    wandb-upload_2:431702 [upload_job.py:push():131] Uploaded file /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/files/wandb-summary.json
+2024-04-26 14:52:02,816 INFO    Thread-11 (_thread_body):431702 [sender.py:transition_state():614] send defer: 11
+2024-04-26 14:52:02,816 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,817 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 11
+2024-04-26 14:52:02,817 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,817 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 11
+2024-04-26 14:52:02,817 INFO    SenderThread:431702 [file_pusher.py:join():178] waiting for file pusher
+2024-04-26 14:52:02,818 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 12
+2024-04-26 14:52:02,818 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:02,818 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 12
+2024-04-26 14:52:02,818 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:02,818 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 12
+2024-04-26 14:52:02,818 INFO    SenderThread:431702 [file_stream.py:finish():614] file stream finish called
+2024-04-26 14:52:02,860 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: poll_exit
+2024-04-26 14:52:03,072 INFO    SenderThread:431702 [file_stream.py:finish():618] file stream finish is done
+2024-04-26 14:52:03,072 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 13
+2024-04-26 14:52:03,073 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: poll_exit
+2024-04-26 14:52:03,073 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:03,073 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 13
+2024-04-26 14:52:03,074 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:03,074 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 13
+2024-04-26 14:52:03,074 INFO    SenderThread:431702 [sender.py:transition_state():614] send defer: 14
+2024-04-26 14:52:03,074 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: defer
+2024-04-26 14:52:03,074 INFO    HandlerThread:431702 [handler.py:handle_request_defer():172] handle defer: 14
+2024-04-26 14:52:03,075 DEBUG   SenderThread:431702 [sender.py:send():379] send: final
+2024-04-26 14:52:03,075 DEBUG   SenderThread:431702 [sender.py:send():379] send: footer
+2024-04-26 14:52:03,075 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: defer
+2024-04-26 14:52:03,075 INFO    SenderThread:431702 [sender.py:send_request_defer():610] handle sender defer: 14
+2024-04-26 14:52:03,076 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: poll_exit
+2024-04-26 14:52:03,076 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: poll_exit
+2024-04-26 14:52:03,076 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: internal_messages
+2024-04-26 14:52:03,077 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: server_info
+2024-04-26 14:52:03,077 DEBUG   SenderThread:431702 [sender.py:send_request():406] send_request: server_info
+2024-04-26 14:52:03,121 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: get_summary
+2024-04-26 14:52:03,121 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: sampled_history
+2024-04-26 14:52:03,166 DEBUG   HandlerThread:431702 [handler.py:handle_request():146] handle_request: shutdown
+2024-04-26 14:52:03,166 INFO    HandlerThread:431702 [handler.py:finish():866] shutting down handler
+2024-04-26 14:52:04,077 INFO    WriterThread:431702 [datastore.py:close():296] close: /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_145155-95mk90o1/run-95mk90o1.wandb
+2024-04-26 14:52:04,150 INFO    SenderThread:431702 [sender.py:finish():1546] shutting down sender
+2024-04-26 14:52:04,151 INFO    SenderThread:431702 [file_pusher.py:finish():172] shutting down file pusher
+2024-04-26 14:52:04,151 INFO    SenderThread:431702 [file_pusher.py:join():178] waiting for file pusher

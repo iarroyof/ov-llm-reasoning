@@ -186,6 +186,15 @@ class CustomDataset(Dataset):
         'target_masks':target_masks.to(torch.long)
     }
 
+
+class ClearCache:
+    def __enter__(self):
+        torch.cuda.empty_cache()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        torch.cuda.empty_cache()
+
+
 def get_sweep_config(path2sweep_config: str) -> dict:
     """ Get sweep config from path """
     config_path = Path(path2sweep_config).expanduser()
@@ -218,32 +227,32 @@ def main():
   train_dataset = dataset['train'][:8000]
   val_dataset = dataset['validation'][:4000]
 
-  
-  tokenizer = T5TokenizerFast.from_pretrained(model_name)
-  model = T5ForConditionalGeneration.from_pretrained(model_name).to(device)
+  with ClearCache():
+    tokenizer = T5TokenizerFast.from_pretrained(model_name)
+    model = T5ForConditionalGeneration.from_pretrained(model_name).to(device)
 
-  train_dataset = CustomDataset(
+    train_dataset = CustomDataset(
       train_dataset, tokenizer, source_len, target_len, source_key, target_key)
-  val_dataset = CustomDataset(
+    val_dataset = CustomDataset(
       val_dataset,tokenizer, source_len, target_len, source_key, target_key)
   
-  train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
-  val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
+    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
   
-  reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device)
+    reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device)
  
-  if optimizer_name == "adam":
-    optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
-  elif optimizer_name == "adamw":
-    optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
+    if optimizer_name == "adam":
+        optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
+    elif optimizer_name == "adamw":
+        optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
 
-  wandb.watch(model, log='all')
+    wandb.watch(model, log='all')
   # Call train function
-  for epoch in range(epochs): #optimizer, train_loader, epoch
-    reasoning_pipeline.train(optimizer, train_loader, epoch)
-    reasoning_pipeline.test(val_loader, epoch)
-    if generate:
-        reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
+    for epoch in range(epochs): #optimizer, train_loader, epoch
+        reasoning_pipeline.train(optimizer, train_loader, epoch)
+        reasoning_pipeline.test(val_loader, epoch)
+        if generate:
+            reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
 
 
 project_name = 'huggingface'
@@ -252,4 +261,7 @@ sweep_configuration = get_sweep_config(path2sweep_config)
 # Initialize sweep by passing in config.
 sweep_id = wandb.sweep(sweep=sweep_configuration, project=project_name)
 # Start sweep job.
-wandb.agent(sweep_id, function=main, count=2)
+wandb.agent(sweep_id,
+            function=main,
+            count=2,
+            project=project_name)

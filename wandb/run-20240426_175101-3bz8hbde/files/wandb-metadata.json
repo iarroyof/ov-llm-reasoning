@@ -1,0 +1,177 @@
+{
+    "os": "Linux-6.5.0-1020-oem-x86_64-with-glibc2.35",
+    "python": "3.11.9",
+    "heartbeatAt": "2024-04-26T23:51:02.148151",
+    "startedAt": "2024-04-26T23:51:01.569898",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--batch_size=64",
+        "--epochs=5",
+        "--learning_rate=0.06864623767577191",
+        "--optimizer=adamw"
+    ],
+    "state": "running",
+    "program": "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py",
+    "codePathLocal": "seq2seq_T5.py",
+    "codePath": "seq2seq_T5.py",
+    "git": {
+        "remote": "https://github.com/iarroyof/ov-llm-reasoning.git",
+        "commit": "98e87e9688d0796df3ca568febd24b2966dcbe18"
+    },
+    "email": "iarroyof@lizmark.utm.mx",
+    "root": "/home/iarroyof/Projects/ov-llm-reasoning",
+    "host": "lizmark",
+    "username": "iarroyof",
+    "executable": "/home/iarroyof/miniconda3/envs/pt/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 1003.163625,
+        "min": 800.0,
+        "max": 4050.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3151.296,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2818.251,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 798.454,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 799.663,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 804.746,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 1261.866,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 2975.667,
+            "min": 800.0,
+            "max": 4100.0
+        },
+        {
+            "current": 2161.452,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 799.301,
+            "min": 800.0,
+            "max": 4200.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 1721.224,
+            "min": 800.0,
+            "max": 4000.0
+        },
+        {
+            "current": 800.0,
+            "min": 800.0,
+            "max": 4000.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 455.7536849975586,
+            "used": 51.330570220947266
+        }
+    },
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX 6000 Ada Generation",
+            "memory_total": 51527024640
+        },
+        {
+            "name": "NVIDIA RTX 6000 Ada Generation",
+            "memory_total": 51527024640
+        }
+    ],
+    "memory": {
+        "total": 30.588653564453125
+    }
+}

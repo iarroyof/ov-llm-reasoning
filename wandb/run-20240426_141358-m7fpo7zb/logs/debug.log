@@ -27,3 +27,10 @@ config: {}
 2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_redirect():2280] Redirects installed.
 2024-04-26 14:14:00,583 INFO    Thread-2 (_run_job):417689 [wandb_init.py:init():842] run started, returning control to user process
 2024-04-26 14:14:05,194 INFO    Thread-2 (_run_job):417689 [wandb_watch.py:watch():51] Watching
+2024-04-26 14:19:59,780 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_finish():2064] finishing run red_neuronal_utm/huggingface/m7fpo7zb
+2024-04-26 14:19:59,780 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_atexit_cleanup():2304] got exitcode: 0
+2024-04-26 14:19:59,781 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_restore():2287] restore
+2024-04-26 14:19:59,781 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_restore():2293] restore done
+2024-04-26 14:20:04,553 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_footer_history_summary_info():3936] rendering history
+2024-04-26 14:20:04,554 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_footer_history_summary_info():3968] rendering summary
+2024-04-26 14:20:04,556 INFO    Thread-2 (_run_job):417689 [wandb_run.py:_footer_sync_info():3895] logging synced files

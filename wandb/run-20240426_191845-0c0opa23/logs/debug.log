@@ -1,0 +1,35 @@
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Configure stats pid to 490043
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/.config/wandb/settings
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/Projects/ov-llm-reasoning/wandb/settings
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'entity': 'red_neuronal_utm', 'project': 'huggingface', 'root_dir': '/home/iarroyof/Projects/ov-llm-reasoning', 'run_id': '0c0opa23', 'sweep_param_path': '/home/iarroyof/Projects/ov-llm-reasoning/wandb/sweep-yo45p00j/config-0c0opa23.yaml', 'sweep_id': 'yo45p00j'}
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'seq2seq_T5.py', 'program_abspath': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py', 'program': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py'}
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_init.py:_log_setup():521] Logging user logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_191845-0c0opa23/logs/debug.log
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_init.py:_log_setup():522] Logging internal logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_191845-0c0opa23/logs/debug-internal.log
+2024-04-26 19:18:45,274 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():561] calling init triggers
+2024-04-26 19:18:45,275 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():568] wandb.init called with sweep_config: {'batch_size': 32, 'epochs': 5, 'learning_rate': 0.035288026300704614, 'optimizer': 'adam'}
+config: {}
+2024-04-26 19:18:45,275 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():611] starting backend
+2024-04-26 19:18:45,275 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():615] setting up manager
+2024-04-26 19:18:45,277 INFO    Thread-9 (_run_job):490043 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-04-26 19:18:45,277 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():623] backend started and connected
+2024-04-26 19:18:45,282 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_config_callback():1347] config_cb None None {'batch_size': 32, 'epochs': 5, 'learning_rate': 0.035288026300704614, 'optimizer': 'adam'}
+2024-04-26 19:18:45,283 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():715] updated telemetry
+2024-04-26 19:18:45,287 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-04-26 19:18:45,508 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_on_init():2357] communicating current version
+2024-04-26 19:18:45,780 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_on_init():2366] got version response 
+2024-04-26 19:18:45,780 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():799] starting run threads in backend
+2024-04-26 19:18:46,978 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_console_start():2335] atexit reg
+2024-04-26 19:18:46,979 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-04-26 19:18:46,979 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-04-26 19:18:46,979 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-04-26 19:18:46,981 INFO    Thread-9 (_run_job):490043 [wandb_init.py:init():842] run started, returning control to user process
+2024-04-26 19:18:50,686 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_finish():2064] finishing run red_neuronal_utm/huggingface/0c0opa23
+2024-04-26 19:18:50,686 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_atexit_cleanup():2304] got exitcode: 1
+2024-04-26 19:18:50,686 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_restore():2287] restore
+2024-04-26 19:18:50,686 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_restore():2293] restore done
+2024-04-26 19:18:53,560 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_footer_history_summary_info():3936] rendering history
+2024-04-26 19:18:53,560 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_footer_history_summary_info():3968] rendering summary
+2024-04-26 19:18:53,564 INFO    Thread-9 (_run_job):490043 [wandb_run.py:_footer_sync_info():3895] logging synced files

@@ -1,0 +1,10 @@
+wandb_version: 1
+
+batch_size:
+  value: 64
+epochs:
+  value: 5
+learning_rate:
+  value: 0.06864623767577191
+optimizer:
+  value: adamw

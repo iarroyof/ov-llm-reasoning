@@ -1,0 +1,73 @@
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Configure stats pid to 503580
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/.config/wandb/settings
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Loading settings from /home/iarroyof/Projects/ov-llm-reasoning/wandb/settings
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'entity': 'red_neuronal_utm', 'project': 'huggingface', 'root_dir': '/home/iarroyof/Projects/ov-llm-reasoning', 'run_id': '3o9cxvyt', 'sweep_param_path': '/home/iarroyof/Projects/ov-llm-reasoning/wandb/sweep-c9p3lhph/config-3o9cxvyt.yaml', 'sweep_id': 'c9p3lhph'}
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'seq2seq_T5.py', 'program_abspath': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py', 'program': '/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py'}
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:_log_setup():521] Logging user logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_202505-3o9cxvyt/logs/debug.log
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:_log_setup():522] Logging internal logs to /home/iarroyof/Projects/ov-llm-reasoning/wandb/run-20240426_202505-3o9cxvyt/logs/debug-internal.log
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():561] calling init triggers
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():568] wandb.init called with sweep_config: {'batch_size': 16, 'epochs': 10, 'learning_rate': 0.04330465254481927, 'optimizer': 'adamw'}
+config: {}
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():611] starting backend
+2024-04-26 20:25:05,513 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():615] setting up manager
+2024-04-26 20:25:05,515 INFO    Thread-6 (_run_job):503580 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-04-26 20:25:05,516 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():623] backend started and connected
+2024-04-26 20:25:05,520 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_config_callback():1347] config_cb None None {'batch_size': 16, 'epochs': 10, 'learning_rate': 0.04330465254481927, 'optimizer': 'adamw'}
+2024-04-26 20:25:05,520 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():715] updated telemetry
+2024-04-26 20:25:05,525 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-04-26 20:25:05,786 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_on_init():2357] communicating current version
+2024-04-26 20:25:06,082 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_on_init():2366] got version response 
+2024-04-26 20:25:06,082 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():799] starting run threads in backend
+2024-04-26 20:25:07,281 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_console_start():2335] atexit reg
+2024-04-26 20:25:07,281 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-04-26 20:25:07,281 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-04-26 20:25:07,281 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-04-26 20:25:07,281 INFO    Thread-6 (_run_job):503580 [wandb_init.py:init():842] run started, returning control to user process
+2024-04-26 20:25:12,938 INFO    Thread-6 (_run_job):503580 [wandb_watch.py:watch():51] Watching
+2024-04-26 22:46:36,151 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_finish():2064] finishing run red_neuronal_utm/huggingface/3o9cxvyt
+2024-04-26 22:46:36,151 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_atexit_cleanup():2304] got exitcode: 1
+2024-04-26 22:46:36,151 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_restore():2287] restore
+2024-04-26 22:46:36,151 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_restore():2293] restore done
+2024-04-26 22:46:39,154 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_restore():2287] restore
+2024-04-26 22:46:39,154 INFO    Thread-6 (_run_job):503580 [wandb_run.py:_restore():2293] restore done
+2024-04-26 22:46:40,157 ERROR   Thread-6 (_run_job):503580 [wandb_run.py:_atexit_cleanup():2325] Problem finishing run
+Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/agents/pyagent.py", line 308, in _run_job
+    self._function()
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 243, in main
+    reasoning_pipeline.train(optimizer, train_loader, epoch)
+  File "/home/iarroyof/Projects/ov-llm-reasoning/seq2seq_T5.py", line 48, in train
+    print(f"Epoch: {epoch} | Train Loss: {loss}")
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/redirect.py", line 640, in write
+    self._old_write(data)
+OSError: [Errno 5] Input/output error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2313, in _atexit_cleanup
+    self._on_finish()
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2561, in _on_finish
+    _ = exit_handle.wait(timeout=-1, on_progress=self._on_progress_exit)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/mailbox.py", line 303, in wait
+    on_progress(progress_handle)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2540, in _on_progress_exit
+    self._footer_file_pusher_status_info(
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3749, in _footer_file_pusher_status_info
+    Run._footer_single_run_file_pusher_status_info(
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3800, in _footer_single_run_file_pusher_status_info
+    printer.progress_update(line, percent_done)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/sdk/lib/printer.py", line 172, in progress_update
+    wandb.termlog(f"{next(self._progress)} {text}", newline=False)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/errors/term.py", line 39, in termlog
+    _log(
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/wandb/errors/term.py", line 95, in _log
+    click.echo(line, file=sys.stderr, nl=newline)
+  File "/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/click/utils.py", line 318, in echo
+    file.write(out)  # type: ignore
+    ^^^^^^^^^^^^^^^
+OSError: [Errno 5] Input/output error

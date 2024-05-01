@@ -1,0 +1,193 @@
+Truncation was not explicitly activated but `max_length` is provided a specific value, please use `truncation=True` to explicitly truncate examples to max length. Defaulting to 'longest_first' truncation strategy. If you encode pairs of sequences (GLUE-style) with the tokenizer you can select this strategy more precisely by providing a specific strategy to `truncation`.
+/home/iarroyof/miniconda3/envs/pt/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2674: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+Epoch: 0 | Train Loss: 9.441874504089355
+Epoch: 0 | Train Loss: 7.2126593589782715
+Epoch: 0 | Train Loss: 7.0186543464660645
+Epoch: 0 | Train Loss: 7.010635852813721
+Epoch: 0 | Train Loss: 6.992722988128662
+Epoch: 0 | Train Loss: 6.853960990905762
+Epoch: 0 | Train Loss: 6.689892768859863
+Epoch: 0 | Train Loss: 6.68538236618042
+Epoch: 0 | Train Loss: 6.429553031921387
+Epoch: 0 | Train Loss: 6.555560111999512
+Epoch: 0 | Train Loss: 6.355800628662109
+Epoch: 0 | Train Loss: 6.501194000244141
+Epoch: 0 | Train Loss: 6.398347854614258
+Epoch: 0 | Train Loss: 6.373994827270508
+Epoch: 0 | Train Loss: 6.361563682556152
+Epoch: 0 | Train Loss: 6.405872344970703
+Epoch: 0 | Train Loss: 6.406793117523193
+Epoch: 0 | Train Loss: 6.343475341796875
+Epoch: 0 | Train Loss: 6.304554462432861
+Epoch: 0 | Train Loss: 6.252383708953857
+Epoch: 0 | Train Loss: 6.390964508056641
+Epoch: 0 | Train Loss: 6.223067283630371
+Epoch: 0 | Train Loss: 6.40258264541626
+Epoch: 0 | Train Loss: 6.326564311981201
+Epoch: 0 | Train Loss: 6.281550407409668
+Epoch: 0 | Test Loss: 6.338294982910156 | Test score (bleu): 0.04097354119026302
+Epoch: 0 | Test Loss: 6.228063583374023 | Test score (bleu): 0.03866836693938468
+Epoch: 0 | Test Loss: 6.170482158660889 | Test score (bleu): 0.03727477326124795
+Epoch: 0 | Test Loss: 6.228407859802246 | Test score (bleu): 0.03912141873966427
+Epoch: 0 | Test Loss: 6.456320762634277 | Test score (bleu): 0.024734000360814527
+Epoch: 0 | Test Loss: 6.392226696014404 | Test score (bleu): 0.02721905206169078
+Epoch: 0 | Test Loss: 6.5353922843933105 | Test score (bleu): 0.028296223047101547
+Epoch: 0 | Test Loss: 6.384951591491699 | Test score (bleu): 0.026996620441930647
+Epoch: 0 | Test Loss: 6.2630743980407715 | Test score (bleu): 0.027796677204790152
+Epoch: 0 | Test Loss: 6.519941329956055 | Test score (bleu): 0.02721975662896278
+Epoch: 0 | Test Loss: 6.507150173187256 | Test score (bleu): 0.02730764604116205
+Epoch: 0 | Test Loss: 6.477128028869629 | Test score (bleu): 0.02510236829090058
+Epoch: 0 | Test Loss: 6.525607585906982 | Test score (bleu): 0.02691200196120807
+Epoch: 1 | Train Loss: 6.134402751922607
+Epoch: 1 | Train Loss: 6.172231197357178
+Epoch: 1 | Train Loss: 6.32425594329834
+Epoch: 1 | Train Loss: 6.2749786376953125
+Epoch: 1 | Train Loss: 6.275392532348633
+Epoch: 1 | Train Loss: 6.142448902130127
+Epoch: 1 | Train Loss: 6.336493492126465
+Epoch: 1 | Train Loss: 6.087128639221191
+Epoch: 1 | Train Loss: 6.253865718841553
+Epoch: 1 | Train Loss: 6.294430255889893
+Epoch: 1 | Train Loss: 6.194218635559082
+Epoch: 1 | Train Loss: 6.16400671005249
+Epoch: 1 | Train Loss: 6.2466583251953125
+Epoch: 1 | Train Loss: 6.363992214202881
+Epoch: 1 | Train Loss: 6.200216770172119
+Epoch: 1 | Train Loss: 6.225474834442139
+Epoch: 1 | Train Loss: 6.199119567871094
+Epoch: 1 | Train Loss: 6.264444351196289
+Epoch: 1 | Train Loss: 6.392765045166016
+Epoch: 1 | Train Loss: 6.269814968109131
+Epoch: 1 | Train Loss: 6.4257917404174805
+Epoch: 1 | Train Loss: 6.4089155197143555
+Epoch: 1 | Train Loss: 6.245142936706543
+Epoch: 1 | Train Loss: 6.4376397132873535
+Epoch: 1 | Train Loss: 6.367338180541992
+Epoch: 1 | Test Loss: 6.384141445159912 | Test score (bleu): 0.04151635537143698
+Epoch: 1 | Test Loss: 6.2893967628479 | Test score (bleu): 0.037174187573218116
+Epoch: 1 | Test Loss: 6.2655029296875 | Test score (bleu): 0.03782714258592733
+Epoch: 1 | Test Loss: 6.305208206176758 | Test score (bleu): 0.040898378024909185
+Epoch: 1 | Test Loss: 6.471359729766846 | Test score (bleu): 0.026410717561934097
+Epoch: 1 | Test Loss: 6.416816711425781 | Test score (bleu): 0.02864035995746647
+Epoch: 1 | Test Loss: 6.5636491775512695 | Test score (bleu): 0.029437940507116667
+Epoch: 1 | Test Loss: 6.409045696258545 | Test score (bleu): 0.02829017510322928
+Epoch: 1 | Test Loss: 6.2973952293396 | Test score (bleu): 0.029016918394042895
+Epoch: 1 | Test Loss: 6.539622783660889 | Test score (bleu): 0.02721975662896278
+Epoch: 1 | Test Loss: 6.513662815093994 | Test score (bleu): 0.028733580083441863
+Epoch: 1 | Test Loss: 6.516208171844482 | Test score (bleu): 0.026305159046957426
+Epoch: 1 | Test Loss: 6.587065696716309 | Test score (bleu): 0.02802794614513389
+Epoch: 2 | Train Loss: 6.388891696929932
+Epoch: 2 | Train Loss: 6.435988426208496
+Epoch: 2 | Train Loss: 6.362966060638428
+Epoch: 2 | Train Loss: 6.338094234466553
+Epoch: 2 | Train Loss: 6.287068843841553
+Epoch: 2 | Train Loss: 6.339459419250488
+Epoch: 2 | Train Loss: 6.37081241607666
+Epoch: 2 | Train Loss: 6.25421667098999
+Epoch: 2 | Train Loss: 6.395610332489014
+Epoch: 2 | Train Loss: 6.295092582702637
+Epoch: 2 | Train Loss: 6.460017204284668
+Epoch: 2 | Train Loss: 6.395714282989502
+Epoch: 2 | Train Loss: 6.332770347595215
+Epoch: 2 | Train Loss: 6.3763861656188965
+Epoch: 2 | Train Loss: 6.287201881408691
+Epoch: 2 | Train Loss: 6.44451904296875
+Epoch: 2 | Train Loss: 6.45907735824585
+Epoch: 2 | Train Loss: 6.4662933349609375
+Epoch: 2 | Train Loss: 6.285229682922363
+Epoch: 2 | Train Loss: 6.406251907348633
+Epoch: 2 | Train Loss: 6.506269931793213
+Epoch: 2 | Train Loss: 6.433106899261475
+Epoch: 2 | Train Loss: 6.350540637969971
+Epoch: 2 | Train Loss: 6.473690509796143
+Epoch: 2 | Train Loss: 6.534243583679199
+Epoch: 2 | Test Loss: 6.477055549621582 | Test score (bleu): 0.04069384196846537
+Epoch: 2 | Test Loss: 6.448888301849365 | Test score (bleu): 0.035732428459534206
+Epoch: 2 | Test Loss: 6.409682750701904 | Test score (bleu): 0.03835632204873774
+Epoch: 2 | Test Loss: 6.480042934417725 | Test score (bleu): 0.039390310292975524
+Epoch: 2 | Test Loss: 6.629404067993164 | Test score (bleu): 0.02623976542457557
+Epoch: 2 | Test Loss: 6.542516231536865 | Test score (bleu): 0.029009989435265785
+Epoch: 2 | Test Loss: 6.709196090698242 | Test score (bleu): 0.028296223047101547
+Epoch: 2 | Test Loss: 6.579395294189453 | Test score (bleu): 0.028116073450712792
+Epoch: 2 | Test Loss: 6.45316743850708 | Test score (bleu): 0.02975210594091688
+Epoch: 2 | Test Loss: 6.706986427307129 | Test score (bleu): 0.028053125540784814
+Epoch: 2 | Test Loss: 6.6673054695129395 | Test score (bleu): 0.028347806958994512
+Epoch: 2 | Test Loss: 6.667006015777588 | Test score (bleu): 0.025638664469243053
+Epoch: 2 | Test Loss: 6.740311622619629 | Test score (bleu): 0.02802794614513389
+Epoch: 3 | Train Loss: 6.412760257720947
+Epoch: 3 | Train Loss: 6.4857258796691895
+Epoch: 3 | Train Loss: 6.465017318725586
+Epoch: 3 | Train Loss: 6.36601448059082
+Epoch: 3 | Train Loss: 6.671061038970947
+Epoch: 3 | Train Loss: 6.551417827606201
+Epoch: 3 | Train Loss: 6.536679744720459
+Epoch: 3 | Train Loss: 6.5810980796813965
+Epoch: 3 | Train Loss: 6.386837959289551
+Epoch: 3 | Train Loss: 6.455336570739746
+Epoch: 3 | Train Loss: 6.59290885925293
+Epoch: 3 | Train Loss: 6.547037601470947
+Epoch: 3 | Train Loss: 6.4600443840026855
+Epoch: 3 | Train Loss: 6.529361724853516
+Epoch: 3 | Train Loss: 6.515442371368408
+Epoch: 3 | Train Loss: 6.404155254364014
+Epoch: 3 | Train Loss: 6.482010364532471
+Epoch: 3 | Train Loss: 6.388104438781738
+Epoch: 3 | Train Loss: 6.350152015686035
+Epoch: 3 | Train Loss: 6.423744201660156
+Epoch: 3 | Train Loss: 6.502729415893555
+Epoch: 3 | Train Loss: 6.4610395431518555
+Epoch: 3 | Train Loss: 6.60892915725708
+Epoch: 3 | Train Loss: 6.594634532928467
+Epoch: 3 | Train Loss: 6.421554088592529
+Epoch: 3 | Test Loss: 6.527140140533447 | Test score (bleu): 0.03888063799587384
+Epoch: 3 | Test Loss: 6.453189373016357 | Test score (bleu): 0.03521064711344094
+Epoch: 3 | Test Loss: 6.414871692657471 | Test score (bleu): 0.03727477326124795
+Epoch: 3 | Test Loss: 6.463985919952393 | Test score (bleu): 0.037685943646934186
+Epoch: 3 | Test Loss: 6.630110263824463 | Test score (bleu): 0.025520182651621145
+Epoch: 3 | Test Loss: 6.567103862762451 | Test score (bleu): 0.02743595408567339
+Epoch: 3 | Test Loss: 6.729600429534912 | Test score (bleu): 0.026996717286564626
+Epoch: 3 | Test Loss: 6.592836380004883 | Test score (bleu): 0.025944133526075108
+Epoch: 3 | Test Loss: 6.461859226226807 | Test score (bleu): 0.027351786817263128
+Epoch: 3 | Test Loss: 6.744205951690674 | Test score (bleu): 0.02570150231120983
+Epoch: 3 | Test Loss: 6.693823337554932 | Test score (bleu): 0.026856124462882533
+Epoch: 3 | Test Loss: 6.638149738311768 | Test score (bleu): 0.024915720636559294
+Epoch: 3 | Test Loss: 6.736537456512451 | Test score (bleu): 0.026297635406211405
+Epoch: 4 | Train Loss: 6.395987510681152
+Epoch: 4 | Train Loss: 6.314180374145508
+Epoch: 4 | Train Loss: 6.254843235015869
+Epoch: 4 | Train Loss: 6.318890571594238
+Epoch: 4 | Train Loss: 6.3435564041137695
+Epoch: 4 | Train Loss: 6.495500087738037
+Epoch: 4 | Train Loss: 6.416470527648926
+Epoch: 4 | Train Loss: 6.439116477966309
+Epoch: 4 | Train Loss: 6.428872585296631
+Epoch: 4 | Train Loss: 6.824975967407227
+Epoch: 4 | Train Loss: 6.776307106018066
+Epoch: 4 | Train Loss: 6.5573530197143555
+Epoch: 4 | Train Loss: 6.5160932540893555
+Epoch: 4 | Train Loss: 6.474510192871094
+Epoch: 4 | Train Loss: 6.499919891357422
+Epoch: 4 | Train Loss: 6.478549957275391
+Epoch: 4 | Train Loss: 6.405170440673828
+Epoch: 4 | Train Loss: 6.49310302734375
+Epoch: 4 | Train Loss: 6.595938682556152
+Epoch: 4 | Train Loss: 6.386402606964111
+Epoch: 4 | Train Loss: 6.379502773284912
+Epoch: 4 | Train Loss: 6.972249507904053
+Epoch: 4 | Train Loss: 6.781265735626221
+Epoch: 4 | Train Loss: 6.623925685882568
+Epoch: 4 | Train Loss: 6.74045467376709
+Epoch: 4 | Test Loss: 6.706826210021973 | Test score (bleu): 0.039513050869696205
+Epoch: 4 | Test Loss: 6.5905442237854 | Test score (bleu): 0.034940813842748684
+Epoch: 4 | Test Loss: 6.593560218811035 | Test score (bleu): 0.03698912176637509
+Epoch: 4 | Test Loss: 6.634932518005371 | Test score (bleu): 0.03737827755562107
+Epoch: 4 | Test Loss: 6.7877092361450195 | Test score (bleu): 0.024937589549808726
+Epoch: 4 | Test Loss: 6.714696407318115 | Test score (bleu): 0.02743595408567339
+Epoch: 4 | Test Loss: 6.874520301818848 | Test score (bleu): 0.02766934979136197
+Epoch: 4 | Test Loss: 6.768066883087158 | Test score (bleu): 0.026590540544128596
+Epoch: 4 | Test Loss: 6.678360462188721 | Test score (bleu): 0.027796677204790152
+Epoch: 4 | Test Loss: 6.910179138183594 | Test score (bleu): 0.02570150231120983
+Epoch: 4 | Test Loss: 6.8913187980651855 | Test score (bleu): 0.02730764604116205
+Epoch: 4 | Test Loss: 6.8530731201171875 | Test score (bleu): 0.024724781504729156
+Epoch: 4 | Test Loss: 6.908519744873047 | Test score (bleu): 0.026297635406211405

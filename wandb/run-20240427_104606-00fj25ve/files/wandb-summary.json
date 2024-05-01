@@ -1,0 +1,1 @@
+{"training_loss": 2.426313877105713, "_timestamp": 1714236755.4551451, "_runtime": 388.5217010974884, "_step": 101, "test_loss": 1.989905595779419, "test_score (bleu)": 0.02263020597648079, "_wandb": {"runtime": 389}}
