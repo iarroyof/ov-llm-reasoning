@@ -365,3 +365,102 @@ wandb.errors.CommError: Sweep iarroyof/huggingface/bg11qv8i not found
 	optimizer: adam
 2024-04-30 20:02:02 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --learning_rate=0.01 --optimizer=adam
 2024-04-30 20:02:07 INFO Running runs: ['6yrd2ca7']
+2024-05-02 18:32:07 INFO Running runs: []
+2024-05-02 18:32:07 INFO Agent received command: run
+2024-05-02 18:32:07 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 4
+	learning_rate: 0.0001
+	optimizer: adam
+2024-05-02 18:32:07 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=4 --learning_rate=0.0001 --optimizer=adam
+2024-05-02 18:32:12 INFO Running runs: ['aoyq1weh']
+2024-05-02 18:38:36 INFO Cleaning up finished run: aoyq1weh
+2024-05-02 18:38:36 INFO Agent received command: run
+2024-05-02 18:38:36 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	learning_rate: 0.01
+	optimizer: adamw
+2024-05-02 18:38:36 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --learning_rate=0.01 --optimizer=adamw
+2024-05-02 18:38:41 INFO Running runs: ['0fef666o']
+2024-05-02 18:41:55 INFO Cleaning up finished run: 0fef666o
+2024-05-02 18:41:55 INFO Agent received command: run
+2024-05-02 18:41:55 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 4
+	learning_rate: 0.1
+	optimizer: adam
+2024-05-02 18:41:55 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=4 --learning_rate=0.1 --optimizer=adam
+2024-05-02 18:42:00 INFO Running runs: ['pnbx0lnm']
+2024-05-02 18:44:55 INFO Cleaning up finished run: pnbx0lnm
+2024-05-02 18:44:55 INFO Agent received command: run
+2024-05-02 18:44:55 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 4
+	learning_rate: 0.01
+	optimizer: adam
+2024-05-02 18:44:55 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=4 --learning_rate=0.01 --optimizer=adam
+2024-05-02 18:45:00 INFO Running runs: ['zm72k7m3']
+2024-05-02 18:47:28 INFO Cleaning up finished run: zm72k7m3
+2024-05-02 18:47:28 INFO Agent received command: run
+2024-05-02 18:47:28 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 8
+	learning_rate: 0.0001
+	optimizer: adam
+2024-05-02 18:47:28 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=8 --learning_rate=0.0001 --optimizer=adam
+2024-05-02 18:47:33 INFO Running runs: ['u6en6655']
+2024-05-02 18:48:14 INFO Cleaning up finished run: u6en6655
+2024-05-02 18:48:14 INFO Agent received command: run
+2024-05-02 18:48:14 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 1e-05
+	optimizer: adamw
+2024-05-02 18:48:14 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=1e-05 --optimizer=adamw
+2024-05-02 18:48:19 INFO Running runs: ['rhqwjvv8']
+2024-05-02 18:50:16 INFO Cleaning up finished run: rhqwjvv8
+2024-05-02 18:50:16 INFO Agent received command: run
+2024-05-02 18:50:16 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 0.0001
+	optimizer: adam
+2024-05-02 18:50:16 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=0.0001 --optimizer=adam
+2024-05-02 18:50:21 INFO Running runs: ['gas680gm']
+2024-05-02 18:52:16 INFO Cleaning up finished run: gas680gm
+2024-05-02 18:52:16 INFO Agent received command: run
+2024-05-02 18:52:16 INFO Agent starting run with config:
+	batch_size: 64
+	epochs: 4
+	learning_rate: 0.1
+	optimizer: adamw
+2024-05-02 18:52:16 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=64 --epochs=4 --learning_rate=0.1 --optimizer=adamw
+2024-05-02 18:52:21 INFO Running runs: ['fjspbut0']
+2024-05-02 18:56:17 INFO Cleaning up finished run: fjspbut0
+2024-05-02 18:56:21 INFO Agent received command: run
+2024-05-02 18:56:21 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 4
+	learning_rate: 0.0001
+	optimizer: adamw
+2024-05-02 18:56:21 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --learning_rate=0.0001 --optimizer=adamw
+2024-05-02 18:56:26 INFO Running runs: ['pnkvmg1a']
+2024-05-02 19:01:40 INFO Cleaning up finished run: pnkvmg1a
+2024-05-02 19:01:40 INFO Agent received command: run
+2024-05-02 19:01:40 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 4
+	learning_rate: 0.01
+	optimizer: adam
+2024-05-02 19:01:40 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --learning_rate=0.01 --optimizer=adam
+2024-05-02 19:01:45 INFO Running runs: ['c3nudg8o']
+2024-05-02 19:08:13 INFO Cleaning up finished run: c3nudg8o
+2024-05-02 19:08:20 INFO Agent received command: run
+2024-05-02 19:08:20 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	learning_rate: 0.0001
+	optimizer: adamw
+2024-05-02 19:08:20 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --learning_rate=0.0001 --optimizer=adamw
+2024-05-02 19:08:25 INFO Running runs: ['toh2882o']

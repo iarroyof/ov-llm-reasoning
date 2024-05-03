@@ -207,7 +207,7 @@ def main():
   
   source_len=270
   target_len=160
-  model_name = 't5-base'
+  model_name = wandb.config["hf_model_name"]#'t5-base'
   epochs = wandb.config["epochs"]
   lr = wandb.config["learning_rate"] #3e-4
   batch_size = wandb.config["batch_size"]
@@ -224,8 +224,8 @@ def main():
   dataset = load_dataset('cnn_dailymail','3.0.0')
   # As we can observe, dataset is too large so for now we will consider just 8k rows for training
   #  and 4k rows for validation
-  train_dataset = dataset['train'][:8000]
-  val_dataset = dataset['validation'][:4000]
+  train_dataset = dataset['train'][:800]
+  val_dataset = dataset['validation'][:400]
 
   with ClearCache():
     tokenizer = T5TokenizerFast.from_pretrained(model_name)
