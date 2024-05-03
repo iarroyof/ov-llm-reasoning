@@ -6,7 +6,7 @@ metric:
   name: validation_loss
 parameters:
   learning_rate:
-    values: [0.001, 0.0001, 0.00001]
+    values: [0.001, 0.0001, 0.00001, 0.0000055] #0.000001]
   batch_size:
     values: [4, 8, 16, 32]
   epochs:
@@ -14,4 +14,4 @@ parameters:
   optimizer:
     values: ["adam", "adamw"]
   hf_model_name:
-    values: ["t5-small", "t5-base", "t5-large", "google/t5-v1_1-base"]
+    values: ["t5-small", "t5-base", "t5-large", "google/t5-v1_1-base", "google/flan-t5-base", "google/flan-ul2", "google/umt5-small", "google/umt5-base"]

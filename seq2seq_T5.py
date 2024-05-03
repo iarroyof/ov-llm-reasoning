@@ -63,13 +63,13 @@ class OVNeuralReasoningPipeline:
                 labels=lm_labels,
             )
             loss = outputs[0]
-            try:
-                logits = outputs.logits
-                preds = F.softmax(logits, dim=-1).argmax(dim=-1)
+            #try:
+            logits = outputs.logits
+            preds = F.softmax(logits, dim=-1).argmax(dim=-1)
             #generated_output = self.tokenizer.batch_decode(sequences=preds, skip_special_tokens=True)
-                test_score = self.calculate_validation_score(data, preds)
-            except:
-                st()        
+            test_score = self.calculate_validation_score(data, preds)
+            #except:
+            #    st()        
             if step % 10 == 0:
                 wandb.log({"test_loss": loss})    
                 wandb.log({f"test_score ({self.score_type})": test_score})
@@ -203,7 +203,7 @@ def get_sweep_config(path2sweep_config: str) -> dict:
     return sweep_config
 
 def main():
-  wandb.init(project=project_name)
+  wandb.init()#project=project_name)
   
   source_len=270
   target_len=160
@@ -229,7 +229,11 @@ def main():
 
   with ClearCache():
     tokenizer = T5TokenizerFast.from_pretrained(model_name)
-    model = T5ForConditionalGeneration.from_pretrained(model_name).to(device)
+    model = T5ForConditionalGeneration.from_pretrained(
+        model_name,
+        #attn_implementation="flash_attention_2",
+        torch_dtype=torch.bfloat16
+        ).to(device)
 
     train_dataset = CustomDataset(
       train_dataset, tokenizer, source_len, target_len, source_key, target_key)
@@ -255,13 +259,14 @@ def main():
             reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
 
 
-project_name = 'huggingface'
+#project_name = 'nli_T5'
 path2sweep_config = "config_seq2seq_T5.yaml"
 sweep_configuration = get_sweep_config(path2sweep_config)
 # Initialize sweep by passing in config.
-sweep_id = wandb.sweep(sweep=sweep_configuration, project=project_name)
+sweep_id = wandb.sweep(sweep=sweep_configuration)#, project=project_name)
 # Start sweep job.
 wandb.agent(sweep_id,
             function=main,
             count=2,
-            project=project_name)
+            #project=project_name
+            )
