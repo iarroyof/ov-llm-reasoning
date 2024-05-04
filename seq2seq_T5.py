@@ -2,7 +2,7 @@ import wandb
 import yaml
 from pathlib import Path
 from datasets import load_dataset
-from torch.optim import Adam, AdamW
+from torch.optim import Adam, AdamW, SGD, ASGD
 import torch
 import torch.nn.functional as F
 from sacrebleu.metrics import BLEU #from sacrebleu import BLEU  # Install sacrebleu library: pip install sacrebleu
@@ -249,10 +249,14 @@ def main():
         optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
     elif optimizer_name == "adamw":
         optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
+    elif optimizer_name == "sgd":
+        optimizer = SGD(model.parameters(), lr=lr)
+    elif optimizer_name == "asgd":
+        optimizer = ASGD(model.parameters(), lr=lr)
 
     wandb.watch(model, log='all')
   # Call train function
-    for epoch in range(epochs): #optimizer, train_loader, epoch
+    for epoch in range(epochs):
         reasoning_pipeline.train(optimizer, train_loader, epoch)
         reasoning_pipeline.test(val_loader, epoch)
         if generate:
@@ -263,10 +267,9 @@ def main():
 path2sweep_config = "config_seq2seq_T5.yaml"
 sweep_configuration = get_sweep_config(path2sweep_config)
 # Initialize sweep by passing in config.
-sweep_id = wandb.sweep(sweep=sweep_configuration)#, project=project_name)
+sweep_id = wandb.sweep(sweep=sweep_configuration)
 # Start sweep job.
 wandb.agent(sweep_id,
             function=main,
-            count=2,
-            #project=project_name
+            count=2
             )

@@ -12,6 +12,6 @@ parameters:
   epochs:
     values: [2, 4, 8]
   optimizer:
-    values: ["adam", "adamw"]
+    values: ["adam", "adamw", "sgd", "asgd"]
   hf_model_name:
-    values: ["t5-small", "t5-base", "t5-large", "google/t5-v1_1-base", "google/flan-t5-base", "google/flan-ul2", "google/umt5-small", "google/umt5-base"]
+    values: ["t5-small", "t5-base", "t5-large", "google/t5-v1_1-base", "google/flan-t5-base", "google/flan-t5-large", "google/flan-ul2", "google/umt5-small", "google/umt5-base"]
