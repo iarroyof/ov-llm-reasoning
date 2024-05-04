@@ -71,9 +71,14 @@ class OVNeuralReasoningPipeline:
             #except:
             #    st()        
             if step % 10 == 0:
-                wandb.log({"test_loss": loss})    
-                wandb.log({f"test_score ({self.score_type})": test_score})
-                print(f"Epoch: {epoch} | Test Loss: {loss} | Test score ({self.score_type}): {test_score}")
+                wandb.log({"test_loss": loss})
+                if self.score_type == 'all':
+                    wandb.log({f"test_score (bleu)": test_score[0]})
+                    wandb.log({f"test_score (rouge)": test_score[1]})
+                    wandb.log({f"test_score (combined)": test_score[2]})
+                else:    
+                    wandb.log({f"test_score ({self.score_type})": test_score})
+                print(f"Epoch: {epoch} | Test Loss: {loss} | Test score ({'bleu, rouge, combined' if self.score_type=='all' else self.score_type}): {test_score}")
                 
     #def generate_batch(self, loader, epoch, return_predictions=False)
     def generate(self, loader, epoch, return_predictions=False, evaluate=False):
@@ -141,7 +146,7 @@ class OVNeuralReasoningPipeline:
             rouge = Rouge()
             rouge_score = rouge.get_scores(target_text, generated_text, avg=True)["rouge-l"]["f"]
 
-        if self.score_type == 'combined':
+        if self.score_type in ['combined', 'all']:
         # Combine BLEU and ROUGE scores (weighted average is common)
             score = (bleu_score + rouge_score) / 2.0  # Adjust weights as needed
         if self.score_type == 'all':
@@ -203,13 +208,13 @@ def get_sweep_config(path2sweep_config: str) -> dict:
     return sweep_config
 
 def main():
-  wandb.init()#project=project_name)
+  wandb.init()
   
-  source_len=270
-  target_len=160
-  model_name = wandb.config["hf_model_name"]#'t5-base'
+  source_len=wandb.config["source_seq_len"]
+  target_len=wandb.config["target_seq_len"] 
+  model_name = wandb.config["hf_model_name"]
   epochs = wandb.config["epochs"]
-  lr = wandb.config["learning_rate"] #3e-4
+  lr = wandb.config["learning_rate"]
   batch_size = wandb.config["batch_size"]
   optimizer_name = wandb.config["optimizer"]
 
@@ -231,8 +236,7 @@ def main():
     tokenizer = T5TokenizerFast.from_pretrained(model_name)
     model = T5ForConditionalGeneration.from_pretrained(
         model_name,
-        #attn_implementation="flash_attention_2",
-        torch_dtype=torch.bfloat16
+        torch_dtype=torch.bfloat16  # flotante de precisión media para cargar modelos grandes
         ).to(device)
 
     train_dataset = CustomDataset(
@@ -243,7 +247,7 @@ def main():
     train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
   
-    reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device)
+    reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device, 'all')
  
     if optimizer_name == "adam":
         optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
@@ -273,3 +277,6 @@ wandb.agent(sweep_id,
             function=main,
             count=2
             )
+
+# En caso de necesitar entrenar Bloom para Text2Text Generation
+#https://huggingface.co/bigscience/bloom/discussions/234
