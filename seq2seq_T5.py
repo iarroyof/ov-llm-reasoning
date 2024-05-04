@@ -63,13 +63,17 @@ class OVNeuralReasoningPipeline:
                 labels=lm_labels,
             )
             loss = outputs[0]
-            #try:
+            
             logits = outputs.logits
             preds = F.softmax(logits, dim=-1).argmax(dim=-1)
-            #generated_output = self.tokenizer.batch_decode(sequences=preds, skip_special_tokens=True)
-            test_score = self.calculate_validation_score(data, preds)
-            #except:
-            #    st()        
+            try:
+                test_score = self.calculate_validation_score(data, preds)
+            except:
+                if self.score_type == 'all':
+                    test_score = ['InvalidPreds'] * 3 # Model didn't learn so outputs
+                else:                                 # invalid predictions metrics 
+                    test_score = 'InvalidPreds'       # are incable of operate on.
+
             if step % 10 == 0:
                 wandb.log({"test_loss": loss})
                 if self.score_type == 'all':
