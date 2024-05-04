@@ -5222,3 +5222,255 @@ wandb.errors.CommError: Sweep iarroyof/huggingface/bg11qv8i not found
 	target_seq_len: 10
 2024-05-04 14:07:58 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --hf_model_name=google/flan-t5-large --learning_rate=0.001 --optimizer=sgd --source_seq_len=200 --target_seq_len=10
 2024-05-04 14:08:03 INFO Running runs: ['fsiazh3l']
+2024-05-04 14:11:47 INFO Cleaning up finished run: fsiazh3l
+2024-05-04 14:11:48 INFO Agent received command: run
+2024-05-04 14:11:48 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 4
+	hf_model_name: google/t5-v1_1-base
+	learning_rate: 0.001
+	optimizer: adam
+	source_seq_len: 200
+	target_seq_len: 10
+2024-05-04 14:11:48 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=4 --hf_model_name=google/t5-v1_1-base --learning_rate=0.001 --optimizer=adam --source_seq_len=200 --target_seq_len=10
+2024-05-04 14:11:53 INFO Running runs: ['bs6lz4m5']
+2024-05-04 14:14:30 INFO Cleaning up finished run: bs6lz4m5
+2024-05-04 14:14:30 INFO Agent received command: run
+2024-05-04 14:14:30 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 4
+	hf_model_name: google/flan-t5-large
+	learning_rate: 1e-05
+	optimizer: asgd
+	source_seq_len: 100
+	target_seq_len: 100
+2024-05-04 14:14:30 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --hf_model_name=google/flan-t5-large --learning_rate=1e-05 --optimizer=asgd --source_seq_len=100 --target_seq_len=100
+2024-05-04 14:14:35 INFO Running runs: ['o9cqxxtf']
+2024-05-04 14:18:40 INFO Cleaning up finished run: o9cqxxtf
+2024-05-04 14:18:41 INFO Agent received command: run
+2024-05-04 14:18:41 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 4
+	hf_model_name: t5-large
+	learning_rate: 5.5e-06
+	optimizer: sgd
+	source_seq_len: 10
+	target_seq_len: 100
+2024-05-04 14:18:41 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=4 --hf_model_name=t5-large --learning_rate=5.5e-06 --optimizer=sgd --source_seq_len=10 --target_seq_len=100
+2024-05-04 14:18:46 INFO Running runs: ['210p3wts']
+2024-05-04 14:20:12 INFO Cleaning up finished run: 210p3wts
+2024-05-04 14:20:12 INFO Agent received command: run
+2024-05-04 14:20:12 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 2
+	hf_model_name: google/flan-ul2
+	learning_rate: 1e-05
+	optimizer: sgd
+	source_seq_len: 200
+	target_seq_len: 200
+2024-05-04 14:20:12 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=2 --hf_model_name=google/flan-ul2 --learning_rate=1e-05 --optimizer=sgd --source_seq_len=200 --target_seq_len=200
+2024-05-04 14:20:17 INFO Running runs: ['8fo28ta2']
+2024-05-04 14:22:24 INFO Cleaning up finished run: 8fo28ta2
+2024-05-04 14:22:25 INFO Agent received command: run
+2024-05-04 14:22:25 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 4
+	hf_model_name: google/t5-v1_1-base
+	learning_rate: 5.5e-06
+	optimizer: sgd
+	source_seq_len: 50
+	target_seq_len: 50
+2024-05-04 14:22:25 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --hf_model_name=google/t5-v1_1-base --learning_rate=5.5e-06 --optimizer=sgd --source_seq_len=50 --target_seq_len=50
+2024-05-04 14:22:30 INFO Running runs: ['3ftj6hbm']
+2024-05-04 14:24:21 INFO Cleaning up finished run: 3ftj6hbm
+2024-05-04 14:24:22 INFO Agent received command: run
+2024-05-04 14:24:22 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 8
+	hf_model_name: t5-base
+	learning_rate: 0.0001
+	optimizer: adam
+	source_seq_len: 50
+	target_seq_len: 100
+2024-05-04 14:24:22 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=8 --hf_model_name=t5-base --learning_rate=0.0001 --optimizer=adam --source_seq_len=50 --target_seq_len=100
+2024-05-04 14:24:27 INFO Running runs: ['p8iq9fxg']
+2024-05-04 14:26:24 INFO Cleaning up finished run: p8iq9fxg
+2024-05-04 14:26:24 INFO Agent received command: run
+2024-05-04 14:26:24 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 4
+	hf_model_name: t5-small
+	learning_rate: 0.0001
+	optimizer: adamw
+	source_seq_len: 100
+	target_seq_len: 10
+2024-05-04 14:26:24 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=4 --hf_model_name=t5-small --learning_rate=0.0001 --optimizer=adamw --source_seq_len=100 --target_seq_len=10
+2024-05-04 14:26:29 INFO Running runs: ['lfyevlzk']
+2024-05-04 14:29:37 INFO Cleaning up finished run: lfyevlzk
+2024-05-04 14:29:37 INFO Agent received command: run
+2024-05-04 14:29:37 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 4
+	hf_model_name: google/t5-v1_1-base
+	learning_rate: 0.001
+	optimizer: adamw
+	source_seq_len: 100
+	target_seq_len: 50
+2024-05-04 14:29:37 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=4 --hf_model_name=google/t5-v1_1-base --learning_rate=0.001 --optimizer=adamw --source_seq_len=100 --target_seq_len=50
+2024-05-04 14:29:42 INFO Running runs: ['6q328r3h']
+2024-05-04 14:31:04 INFO Cleaning up finished run: 6q328r3h
+2024-05-04 14:31:04 INFO Agent received command: run
+2024-05-04 14:31:04 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	hf_model_name: google/flan-t5-base
+	learning_rate: 0.0001
+	optimizer: sgd
+	source_seq_len: 100
+	target_seq_len: 10
+2024-05-04 14:31:04 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --hf_model_name=google/flan-t5-base --learning_rate=0.0001 --optimizer=sgd --source_seq_len=100 --target_seq_len=10
+2024-05-04 14:31:09 INFO Running runs: ['nt4ptzrp']
+2024-05-04 14:32:15 INFO Cleaning up finished run: nt4ptzrp
+2024-05-04 14:32:15 INFO Agent received command: run
+2024-05-04 14:32:15 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 4
+	hf_model_name: t5-base
+	learning_rate: 0.001
+	optimizer: sgd
+	source_seq_len: 100
+	target_seq_len: 50
+2024-05-04 14:32:15 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=4 --hf_model_name=t5-base --learning_rate=0.001 --optimizer=sgd --source_seq_len=100 --target_seq_len=50
+2024-05-04 14:32:20 INFO Running runs: ['ucxh1i4m']
+2024-05-04 14:35:08 INFO Cleaning up finished run: ucxh1i4m
+2024-05-04 14:35:08 INFO Agent received command: run
+2024-05-04 14:35:08 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 2
+	hf_model_name: t5-small
+	learning_rate: 0.0001
+	optimizer: adam
+	source_seq_len: 200
+	target_seq_len: 50
+2024-05-04 14:35:08 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=2 --hf_model_name=t5-small --learning_rate=0.0001 --optimizer=adam --source_seq_len=200 --target_seq_len=50
+2024-05-04 14:35:13 INFO Running runs: ['axz79thr']
+2024-05-04 14:37:35 INFO Cleaning up finished run: axz79thr
+2024-05-04 14:37:36 INFO Agent received command: run
+2024-05-04 14:37:36 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 4
+	hf_model_name: google/umt5-base
+	learning_rate: 5.5e-06
+	optimizer: adamw
+	source_seq_len: 100
+	target_seq_len: 10
+2024-05-04 14:37:36 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=4 --hf_model_name=google/umt5-base --learning_rate=5.5e-06 --optimizer=adamw --source_seq_len=100 --target_seq_len=10
+2024-05-04 14:37:41 INFO Running runs: ['phi89r4p']
+2024-05-04 14:40:18 INFO Cleaning up finished run: phi89r4p
+2024-05-04 14:40:18 INFO Agent received command: run
+2024-05-04 14:40:18 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	hf_model_name: google/t5-v1_1-base
+	learning_rate: 0.001
+	optimizer: adamw
+	source_seq_len: 100
+	target_seq_len: 50
+2024-05-04 14:40:18 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --hf_model_name=google/t5-v1_1-base --learning_rate=0.001 --optimizer=adamw --source_seq_len=100 --target_seq_len=50
+2024-05-04 14:40:23 INFO Running runs: ['uf7m9gzv']
+2024-05-04 14:42:00 INFO Cleaning up finished run: uf7m9gzv
+2024-05-04 14:42:00 INFO Agent received command: run
+2024-05-04 14:42:00 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 2
+	hf_model_name: t5-base
+	learning_rate: 5.5e-06
+	optimizer: asgd
+	source_seq_len: 10
+	target_seq_len: 10
+2024-05-04 14:42:00 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=2 --hf_model_name=t5-base --learning_rate=5.5e-06 --optimizer=asgd --source_seq_len=10 --target_seq_len=10
+2024-05-04 14:42:05 INFO Running runs: ['c06j6vvs']
+2024-05-04 14:43:26 INFO Cleaning up finished run: c06j6vvs
+2024-05-04 14:43:27 INFO Agent received command: run
+2024-05-04 14:43:27 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 8
+	hf_model_name: t5-small
+	learning_rate: 0.001
+	optimizer: adamw
+	source_seq_len: 100
+	target_seq_len: 50
+2024-05-04 14:43:27 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=8 --hf_model_name=t5-small --learning_rate=0.001 --optimizer=adamw --source_seq_len=100 --target_seq_len=50
+2024-05-04 14:43:32 INFO Running runs: ['5izn043l']
+2024-05-04 14:45:13 INFO Cleaning up finished run: 5izn043l
+2024-05-04 14:45:14 INFO Agent received command: run
+2024-05-04 14:45:14 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 8
+	hf_model_name: t5-small
+	learning_rate: 1e-05
+	optimizer: sgd
+	source_seq_len: 200
+	target_seq_len: 50
+2024-05-04 14:45:14 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=8 --hf_model_name=t5-small --learning_rate=1e-05 --optimizer=sgd --source_seq_len=200 --target_seq_len=50
+2024-05-04 14:45:19 INFO Running runs: ['5p999r05']
+2024-05-04 14:47:41 INFO Cleaning up finished run: 5p999r05
+2024-05-04 14:47:41 INFO Agent received command: run
+2024-05-04 14:47:41 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 2
+	hf_model_name: t5-base
+	learning_rate: 0.001
+	optimizer: sgd
+	source_seq_len: 100
+	target_seq_len: 200
+2024-05-04 14:47:41 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=2 --hf_model_name=t5-base --learning_rate=0.001 --optimizer=sgd --source_seq_len=100 --target_seq_len=200
+2024-05-04 14:47:46 INFO Running runs: ['gc62u2oy']
+2024-05-04 14:51:04 INFO Cleaning up finished run: gc62u2oy
+2024-05-04 14:51:04 INFO Agent received command: run
+2024-05-04 14:51:04 INFO Agent starting run with config:
+	batch_size: 32
+	epochs: 4
+	hf_model_name: google/flan-t5-base
+	learning_rate: 0.0001
+	optimizer: sgd
+	source_seq_len: 10
+	target_seq_len: 200
+2024-05-04 14:51:04 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=32 --epochs=4 --hf_model_name=google/flan-t5-base --learning_rate=0.0001 --optimizer=sgd --source_seq_len=10 --target_seq_len=200
+2024-05-04 14:51:09 INFO Running runs: ['xvn6p5aq']
+2024-05-04 14:53:52 INFO Cleaning up finished run: xvn6p5aq
+2024-05-04 14:53:52 INFO Agent received command: run
+2024-05-04 14:53:52 INFO Agent starting run with config:
+	batch_size: 4
+	epochs: 8
+	hf_model_name: t5-large
+	learning_rate: 0.001
+	optimizer: sgd
+	source_seq_len: 200
+	target_seq_len: 100
+2024-05-04 14:53:52 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=4 --epochs=8 --hf_model_name=t5-large --learning_rate=0.001 --optimizer=sgd --source_seq_len=200 --target_seq_len=100
+2024-05-04 14:53:57 INFO Running runs: ['tyhjivvi']
+2024-05-04 14:55:34 INFO Cleaning up finished run: tyhjivvi
+2024-05-04 14:55:34 INFO Agent received command: run
+2024-05-04 14:55:34 INFO Agent starting run with config:
+	batch_size: 16
+	epochs: 4
+	hf_model_name: t5-base
+	learning_rate: 0.0001
+	optimizer: adamw
+	source_seq_len: 10
+	target_seq_len: 200
+2024-05-04 14:55:34 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=16 --epochs=4 --hf_model_name=t5-base --learning_rate=0.0001 --optimizer=adamw --source_seq_len=10 --target_seq_len=200
+2024-05-04 14:55:39 INFO Running runs: ['emvkqxi1']
+2024-05-04 14:57:25 INFO Cleaning up finished run: emvkqxi1
+2024-05-04 14:57:26 INFO Agent received command: run
+2024-05-04 14:57:26 INFO Agent starting run with config:
+	batch_size: 8
+	epochs: 4
+	hf_model_name: t5-small
+	learning_rate: 0.001
+	optimizer: asgd
+	source_seq_len: 100
+	target_seq_len: 200
+2024-05-04 14:57:26 INFO About to run command: /usr/bin/env python seq2seq_T5.py --batch_size=8 --epochs=4 --hf_model_name=t5-small --learning_rate=0.001 --optimizer=asgd --source_seq_len=100 --target_seq_len=200
+2024-05-04 14:57:31 INFO Running runs: ['jm51g18g']
