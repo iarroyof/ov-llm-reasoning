@@ -13,6 +13,7 @@ from transformers import T5ForConditionalGeneration # SentencePiece library is r
 from transformers.models.t5 import T5TokenizerFast
 from pdb import set_trace as st
 
+
 class OVNeuralReasoningPipeline:
     def __init__(self, model, tokenizer, device, gen_test_score='bleu'):
         self.model = model
@@ -70,9 +71,9 @@ class OVNeuralReasoningPipeline:
                 test_score = self.calculate_validation_score(data, preds)
             except:
                 if self.score_type == 'all':
-                    test_score = ['InvalidPreds'] * 3 # Model didn't learn so outputs
-                else:                                 # invalid predictions metrics 
-                    test_score = 'InvalidPreds'       # are incable of operate on.
+                    test_score = [-1] * 3 # Model didn't learn so outputs
+                else:                     # invalid predictions metrics 
+                    test_score = -1       # are incable of operate on.
 
             if step % 10 == 0:
                 wandb.log({"test_loss": loss})
@@ -84,7 +85,7 @@ class OVNeuralReasoningPipeline:
                     wandb.log({f"test_score ({self.score_type})": test_score})
                 print(f"Epoch: {epoch} | Test Loss: {loss} | Test score ({'bleu, rouge, combined' if self.score_type=='all' else self.score_type}): {test_score}")
                 
-    #def generate_batch(self, loader, epoch, return_predictions=False)
+
     def generate(self, loader, epoch, return_predictions=False, evaluate=False):
         self.model.eval()
         predictions, targets = [], []
@@ -161,6 +162,7 @@ class OVNeuralReasoningPipeline:
             score = rouge_score
         return score
 
+
 class CustomDataset(Dataset):
   def __init__(self, dataset, tokenizer, source_len, target_len, source_key, target_key):
     self.dataset = dataset 
@@ -210,6 +212,7 @@ def get_sweep_config(path2sweep_config: str) -> dict:
     with open(config_path, 'r') as file:
         sweep_config = yaml.safe_load(file)
     return sweep_config
+
 
 def main():
   wandb.init()
