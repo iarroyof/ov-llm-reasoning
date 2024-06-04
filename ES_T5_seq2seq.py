@@ -1,20 +1,24 @@
 import wandb
 import yaml
 from pathlib import Path
-from datasets import load_dataset
 from torch.optim import Adam, AdamW, SGD, ASGD
 import torch
 import torch.nn.functional as F
-from sacrebleu.metrics import BLEU #from sacrebleu import BLEU  # Install sacrebleu library: pip install sacrebleu
-from rouge import Rouge  # Install py-rouge library: pip install rouge
-from torch.utils.data import DataLoader,Dataset
-from transformers import T5ForConditionalGeneration # SentencePiece library is required to download pretrained t5tokenizer
+#from sacrebleu import BLEU  # Install sacrebleu library: pip install sacrebleu
+from sacrebleu.metrics import BLEU
+# Install py-rouge library: pip install rouge
+from rouge import Rouge
+from torch.utils.data import DataLoader
+# SentencePiece library is required to download pretrained t5tokenizer
+from transformers import T5ForConditionalGeneration
 # Let's try T5TokenizerFast
 from transformers.models.t5 import T5TokenizerFast
 from elastic_pytorch_loader.es_dataset import ElasticSearchDataset
-
-from pdb import set_trace as st
-
+import logging
+logging.basicConfig(
+    level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+#from pdb import set_trace as st
 
 class OVNeuralReasoningPipeline:
     def __init__(self, model, tokenizer, device, gen_test_score='bleu'):
@@ -93,9 +97,10 @@ class OVNeuralReasoningPipeline:
         predictions, targets = [], []
         with torch.no_grad():
             for step, data in enumerate(loader):
-                source_ids, source_mask, target_ids = (data["source_ids"].to(self.device),
-                                                       data["source_masks"].to(self.device),
-                                                       data["target_ids"].to(self.device))
+                source_ids, source_mask, target_ids = (
+                    data["source_ids"].to(self.device),
+                    data["source_masks"].to(self.device),
+                    data["target_ids"].to(self.device))
                 generated_ids = self.model.generate(
                     input_ids=source_ids,
                     attention_mask=source_mask,
@@ -109,7 +114,6 @@ class OVNeuralReasoningPipeline:
                 if evaluate:
                     gen_score = self.calculate_validation_score(data, generated_ids)
                     if step % 10 == 0:
-                        #wandb.log({"generation_score": gen_score})
                         print(f"Epoch: {epoch} | Gen score ({self.score_type}): {gen_score}")
 
                 if return_predictions:
@@ -139,17 +143,21 @@ class OVNeuralReasoningPipeline:
         """
         target_ids = data["target_ids"].to(self.device)
         # Decode target summaries
-        target_text = [self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
+        target_text = [
+            self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
         # Decode generated summaries
-        generated_text = [self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
+        generated_text = [
+            self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
         # Calculate BLEU score
         if self.score_type in ['all', 'bleu', 'combined']:
             bleu = BLEU(smooth_method='floor')
-            bleu_score = bleu.corpus_score([ref for ref in target_text], generated_text).score
+            bleu_score = bleu.corpus_score(
+                [ref for ref in target_text], generated_text).score
         # Calculate ROUGE score (using py-rouge)
         if self.score_type in ['all', 'rouge', 'combined']:
             rouge = Rouge()
-            rouge_score = rouge.get_scores(target_text, generated_text, avg=True)["rouge-l"]["f"]
+            rouge_score = rouge.get_scores(
+                target_text, generated_text, avg=True)["rouge-l"]["f"]
 
         if self.score_type in ['combined', 'all']:
         # Combine BLEU and ROUGE scores (weighted average is common)
@@ -194,11 +202,11 @@ def main():
   # Amount of sentences to load from ElasticSearch in memory 
   es_page_size = 100
   # Total amount of sentences to get their triplets
-  max_docs2load = 10000
+  max_docs2load = 2000
   generate = False
   
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+  logger.info(f"Device found: {device}")
   with ClearCache():
     ## Prepare Dataset ##
     tokenizer = T5TokenizerFast.from_pretrained(model_name)
@@ -206,7 +214,7 @@ def main():
         model_name,
         torch_dtype=torch.bfloat16  # flotante de precisión media para cargar modelos grandes
         ).to(device)
-        
+    logger.info("Model loaded.")
     true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
     train_dataset = ElasticSearchDataset(
         url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
@@ -215,8 +223,9 @@ def main():
     val_dataset = ElasticSearchDataset(
         url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
         true_sample_f=true_sample, max_documents=int(max_docs2load * 0.3),
-        shuffle=False, source_len=source_len, target_len=target_len, batch_size=1)
-  
+        shuffle=False, source_len=source_len, target_len=target_len,
+        batch_size=1, exclude_docs=train_dataset.document_ids)
+    logger.info("Data loaded from ElasticSearch.")
     train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, num_workers=0)
     val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
   
@@ -232,14 +241,15 @@ def main():
         optimizer = ASGD(model.parameters(), lr=lr)
 
     wandb.watch(model, log='all')
-  # Call train function
+    # Call train function
+    logger.info("Training started.")
     for epoch in range(epochs):
         reasoning_pipeline.train(optimizer, train_loader, epoch)
         reasoning_pipeline.test(val_loader, epoch)
         if generate:
             reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
-
-
+        logger.info(f"Training epoch with parameters {wandb.config}")
+logger.info("Training finished.")
 #project_name = 'nli_T5'
 path2sweep_config = "config_seq2seq_T5.yaml"
 sweep_configuration = get_sweep_config(path2sweep_config)
