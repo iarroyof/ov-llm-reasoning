@@ -15,7 +15,7 @@ colors = ['blue' if label == 'high_info' else 'red' for label in labels]
 
 # Train and plot MLP
 mlp, X, y = pev.train_mlp(x_coords, y_coords, labels)
-pev.plot_mlp_decision_boundary(mlp, X, y, x_coords, y_coords, colors, 'MLP Decision Boundary')
+pev.plot_mlp_decision_boundary(mlp, X, y, x_coords, y_coords, colors)
 
 # Train and plot Online SVM
 svm, scaler, X, y = pev.train_svm(x_coords, y_coords, labels)
