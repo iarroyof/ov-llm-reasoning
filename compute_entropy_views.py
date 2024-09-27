@@ -1,4 +1,4 @@
-from phrase_entropy_views import PhraseEntropyViews
+from phenvs import PhraseEntropyViews
 
 pev = PhraseEntropyViews()
 
