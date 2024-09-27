@@ -1,3 +1,5 @@
+# This was prototype of https://colab.research.google.com/drive/1-FwFkgE6xnjGqgqASTfoAj3KEeOT8V6e?authuser=1#scrollTo=cUX13ZmHcojq&line=10&uniqifier=1
+# Training data was declared on https://colab.research.google.com/drive/1-FwFkgE6xnjGqgqASTfoAj3KEeOT8V6e?authuser=1#scrollTo=PlDNfl98DDAB&line=211&uniqifier=1
 from phenvs import PhraseEntropyViews
 
 pev = PhraseEntropyViews()
