@@ -53,16 +53,17 @@ class ElasticSearchDataset(IterableDataset):
     * The `true_sample_f` function allows for custom data transformations before feeding data to the model.
     """
     def __init__(self, url: str, index: str, tokenizer: PreTrainedTokenizer,
-            es_page_size: int = 500, batch_size: int = 8,
+            es_page_size: int = 500, batch_size: int = 8, yield_raw_triplets: bool=False, 
             async_loading: bool = False, shuffle: bool = True, seed: int = None,
             true_sample_f: Callable[[tuple[str, ...]], tuple[str, ...]] = None,
-            max_documents: int = 10000, cache_size_limit: int = 5000,
+            max_documents: int = 10000, cache_size_limit: int = 5000, 
             source_len:int=20, target_len:int=30, exclude_docs: List[str]=None):
         self.index = index
         self.es_page_size = es_page_size
         self.batch_size = batch_size
         self.async_loading = async_loading
         self.shuffle = shuffle
+        self.yield_raw_triplets = yield_raw_triplets
         self.seed = seed
         self.es_client: Elasticsearch = Elasticsearch(url)
         self.tokenizer = tokenizer
@@ -147,6 +148,12 @@ class ElasticSearchDataset(IterableDataset):
         if self.shuffle:
             random.shuffle(batch_data)
 
+		# Check if we should yield raw triplets or continue to tokenize sequences
+        if self.yield_raw_triplets:
+            return batch_data
+            
+        assert self.tokenizer is not None # Valid tokenizer is required to continue
+        # Otherwise, return tokenized sequences
         source_text, target_text = zip(*batch_data)
         source = self.tokenizer.batch_encode_plus(
                     source_text, max_length=self.source_len,
