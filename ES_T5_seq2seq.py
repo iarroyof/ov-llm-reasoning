@@ -202,7 +202,7 @@ def main():
   # Amount of sentences to load from ElasticSearch in memory 
   es_page_size = 100
   # Total amount of sentences to get their triplets
-  max_docs2load = 2000
+  max_docs2load = 1000
   generate = False
   
   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
