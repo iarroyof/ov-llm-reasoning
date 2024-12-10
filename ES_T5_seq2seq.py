@@ -188,78 +188,73 @@ def get_sweep_config(path2sweep_config: str) -> dict:
 
 
 def main():
-  wandb.init()
-  
-  source_len=wandb.config["source_seq_len"]
-  target_len=wandb.config["target_seq_len"] 
-  model_name = wandb.config["hf_model_name"]
-  epochs = wandb.config["epochs"]
-  lr = wandb.config["learning_rate"]
-  batch_size = wandb.config["batch_size"]
-  optimizer_name = wandb.config["optimizer"]
-  url = "http://192.168.241.210:9200"
-  index = 'triplets'
-  # Amount of sentences to load from ElasticSearch in memory 
-  es_page_size = 100
-  # Total amount of sentences to get their triplets
-  max_docs2load = 1000
-  generate = False
-  
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-  logger.info(f"Device found: {device}")
-  with ClearCache():
-    ## Prepare Dataset ##
-    tokenizer = T5TokenizerFast.from_pretrained(model_name)
-    model = T5ForConditionalGeneration.from_pretrained(
-        model_name,
-        torch_dtype=torch.bfloat16  # flotante de precisión media para cargar modelos grandes
-        ).to(device)
-    logger.info("Model loaded.")
-    true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
-    train_dataset = ElasticSearchDataset(
-        url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
-        true_sample_f=true_sample, max_documents=max_docs2load,
-        source_len=source_len, target_len=target_len, batch_size=1)
-    val_dataset = ElasticSearchDataset(
-        url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
-        true_sample_f=true_sample, max_documents=int(max_docs2load * 0.3),
-        shuffle=False, source_len=source_len, target_len=target_len,
-        batch_size=1, exclude_docs=train_dataset.document_ids)
-    logger.info("Data loaded from ElasticSearch.")
-    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, num_workers=0)
-    val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
-  
-    reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device, 'all')
- 
-    if optimizer_name == "adam":
-        optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
-    elif optimizer_name == "adamw":
-        optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
-    elif optimizer_name == "sgd":
-        optimizer = SGD(model.parameters(), lr=lr)
-    elif optimizer_name == "asgd":
-        optimizer = ASGD(model.parameters(), lr=lr)
+    with wandb.init() as run:
+      source_len=wandb.config["source_seq_len"]
+      target_len=wandb.config["target_seq_len"] 
+      model_name = wandb.config["hf_model_name"]
+      epochs = wandb.config["epochs"]
+      lr = wandb.config["learning_rate"]
+      batch_size = wandb.config["batch_size"]
+      optimizer_name = wandb.config["optimizer"]
+      url = "http://192.168.241.210:9200"
+      index = 'triplets'
+      # Amount of sentences to load from ElasticSearch in memory 
+      es_page_size = 100
+      # Total amount of sentences to get their triplets
+      max_docs2load = 1000
+      generate = False
+      
+      device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+      logger.info(f"Device found: {device}")
+      with ClearCache():
+        ## Prepare Dataset ##
+        tokenizer = T5TokenizerFast.from_pretrained(model_name)
+        model = T5ForConditionalGeneration.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16  # flotante de precisión media para cargar modelos grandes
+            ).to(device)
+        logger.info("Model loaded.")
+        true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
+        train_dataset = ElasticSearchDataset(
+            url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
+            true_sample_f=true_sample, max_documents=max_docs2load,
+            source_len=source_len, target_len=target_len, batch_size=1)
+        val_dataset = ElasticSearchDataset(
+            url=url, index=index, es_page_size=es_page_size, tokenizer=tokenizer,
+            true_sample_f=true_sample, max_documents=int(max_docs2load * 0.3),
+            shuffle=False, source_len=source_len, target_len=target_len,
+            batch_size=1, exclude_docs=train_dataset.document_ids)
+        logger.info("Data loaded from ElasticSearch.")
+        train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, num_workers=0)
+        val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
+      
+        reasoning_pipeline = OVNeuralReasoningPipeline(model, tokenizer, device, 'all')
+     
+        if optimizer_name == "adam":
+            optimizer = Adam(model.parameters(), lr=lr, amsgrad=True)
+        elif optimizer_name == "adamw":
+            optimizer = AdamW(model.parameters(), lr=lr, amsgrad=True)
+        elif optimizer_name == "sgd":
+            optimizer = SGD(model.parameters(), lr=lr)
+        elif optimizer_name == "asgd":
+            optimizer = ASGD(model.parameters(), lr=lr)
 
-    wandb.watch(model, log='all')
-    # Call train function
-    logger.info("Training started.")
-    for epoch in range(epochs):
-        reasoning_pipeline.train(optimizer, train_loader, epoch)
-        reasoning_pipeline.test(val_loader, epoch)
-        if generate:
-            reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
-        logger.info(f"Training epoch with parameters {wandb.config}")
-logger.info("Training finished.")
+        wandb.watch(model, log='all')
+        # Call train function
+        logger.info("Training started.")
+        for epoch in range(epochs):
+            reasoning_pipeline.train(optimizer, train_loader, epoch)
+            reasoning_pipeline.test(val_loader, epoch)
+            if generate:
+                reasoning_pipeline.generate(val_loader, epoch, return_predictions=True)
+            logger.info(f"Training epoch with parameters {wandb.config}")
+        logger.info("Training finished.")
+
 #project_name = 'nli_T5'
-path2sweep_config = "config_seq2seq_T5.yaml"
-sweep_configuration = get_sweep_config(path2sweep_config)
-# Initialize sweep by passing in config.
-sweep_id = wandb.sweep(sweep=sweep_configuration)
-# Start sweep job.
-wandb.agent(sweep_id,
-            function=main,
-            count=2
-            )
-
+if __name__ == "__main__":
+    path2sweep_config = "config_seq2seq_T5.yaml"
+    sweep_configuration = get_sweep_config(path2sweep_config)
+    sweep_id = wandb.sweep(sweep=sweep_configuration)
+    wandb.agent(sweep_id, function=main)
 # En caso de necesitar entrenar Bloom para Text2Text Generation
 #https://huggingface.co/bigscience/bloom/discussions/234
