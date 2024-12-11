@@ -15,6 +15,12 @@ from transformers import T5ForConditionalGeneration
 from transformers.models.t5 import T5TokenizerFast
 from elastic_pytorch_loader.es_dataset import ElasticSearchDataset
 import logging
+import argparse
+
+parser = argparse.ArgumentParser(description="Greet a YALM configuration file path/name")
+parser.add_argument("-y", "--yalm", default="config_seq2seq_T5.yaml", help="The path/name of the YALM configuration file")
+args = parser.parse_args()
+
 logging.basicConfig(
     level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -252,7 +258,7 @@ def main():
 
 #project_name = 'nli_T5'
 if __name__ == "__main__":
-    path2sweep_config = "config_seq2seq_T5.yaml"
+    path2sweep_config = args.yalm #"config_seq2seq_T5.yaml"
     sweep_configuration = get_sweep_config(path2sweep_config)
     sweep_id = wandb.sweep(sweep=sweep_configuration)
     wandb.agent(sweep_id, function=main)
