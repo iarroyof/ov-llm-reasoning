@@ -1,5 +1,5 @@
 program: ES_T5_seq2seq.py
-name: SweepT5
+name: SweepT5origin
 method: random
 metric:
   goal: minimize
