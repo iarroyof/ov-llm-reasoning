@@ -1,5 +1,5 @@
 program: ES_T5_seq2seq.py
-name: sweepT5
+name: SweepT5
 method: random
 metric:
   goal: minimize
@@ -18,5 +18,5 @@ parameters:
   optimizer:
     values: ["adam", "adamw", "sgd", "asgd"]
   hf_model_name:
-    values: ["t5-small"]
+    values: ["t5-small", "t5-base", "t5-large"]
     #values: ["t5-small", "t5-base", "t5-large", "google/t5-v1_1-base", "google/flan-t5-base", "google/flan-t5-large", "google/flan-ul2", "google/umt5-small", "google/umt5-base"]
