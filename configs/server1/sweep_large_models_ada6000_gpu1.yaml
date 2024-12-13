@@ -1,0 +1,25 @@
+program: ES_T5_seq2seq.py
+name: sweep_large_models_ada6000_gpu1
+method: random
+metric:
+  goal: minimize
+  name: validation_loss
+parameters:
+  learning_rate:
+    values: [0.001, 0.0001, 0.00001, 0.000005]
+  batch_size:
+    values: [4, 8, 16, 32, 48]
+  epochs:
+    values: [4, 8, 16]
+  target_seq_len:
+    values: [8, 16, 32, 64, 128]
+  source_seq_len:
+    values: [8, 16, 32, 64, 128]
+  optimizer:
+    values: ["adamw", "adam"]
+  hf_model_name:
+    values: [
+      "google/pegasus-large",
+      "google/pegasus-x-large",
+      "facebook/bart-large"
+    ]
