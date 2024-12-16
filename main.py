@@ -1,7 +1,5 @@
 # main.py
 
-# main.py
-
 import wandb
 import torch
 import logging
@@ -46,7 +44,7 @@ def main():
         url = "http://192.168.241.210:9200"
         index = 'triplets'
         es_page_size = 100
-        max_docs2load = 1000
+        max_docs2load = 2000
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Device found: {device}")
