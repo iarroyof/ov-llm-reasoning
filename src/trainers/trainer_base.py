@@ -23,6 +23,7 @@ class BaseNeuralReasoningTrainer:
 
     def train(self, optimizer, loader, epoch):
         self.model.train()
+        total_steps = len(loader)  # calculate total steps
         for step, data in enumerate(loader):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
             
@@ -49,6 +50,7 @@ class BaseNeuralReasoningTrainer:
 
     def test(self, loader, epoch):
         self.model.eval()
+        total_steps = len(loader)  # calculate total steps
         for step, data in enumerate(loader):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
             
