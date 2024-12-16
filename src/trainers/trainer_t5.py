@@ -29,10 +29,10 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
     @classmethod
     def from_pretrained(cls, model_name, device):
         # Use regular T5Tokenizer for v1_1 models, FastTokenizer for others
-        if 'v1_1' in model_name:
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
-        else:
-            tokenizer = T5TokenizerFast.from_pretrained(model_name)
+        #if 'v1_1' in model_name:
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        #else:
+        #    tokenizer = T5TokenizerFast.from_pretrained(model_name)
         model = T5ForConditionalGeneration.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16
