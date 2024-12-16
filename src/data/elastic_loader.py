@@ -80,7 +80,14 @@ class ElasticSearchDataset(IterableDataset):
 
         if self.async_loading:
             self.start_async_loading()
-    
+
+    def __len__(self):
+        """
+        Returns the number of batches in the dataset.
+        For elastic search, this is max_documents divided by batch_size, rounded up.
+        """
+        return (self.max_documents + self.batch_size - 1) // self.batch_size
+
     def _get_all_document_ids(self, max_documents: int) -> List[str]:
         search_query = {
             "size": max_documents,
