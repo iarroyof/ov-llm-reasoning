@@ -9,11 +9,11 @@ from torch.optim import Adam, AdamW
 from torch.utils.data import DataLoader
 
 # Local imports
-from src.trainers.trainer_t5 import T5ReasoningTrainer
-from src.trainers.trainer_bart import BartReasoningTrainer
-from src.trainers.trainer_pegasus import PegasusReasoningTrainer
-from src.data.elastic_loader import ElasticSearchDataset
-from src.utils.cache import ClearCache
+from src.trainers import T5ReasoningTrainer
+from src.trainers import BartReasoningTrainer
+from src.trainers import PegasusReasoningTrainer
+from src.data import ElasticSearchDataset
+from src.utils import ClearCache
 
 logging.basicConfig(
     level=logging.INFO,
