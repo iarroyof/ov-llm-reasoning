@@ -1,4 +1,4 @@
-program: ES_T5_seq2seq.py
+program: main.py
 name: sweep_xl_models_ada6000_gpu0
 method: random
 metric:
