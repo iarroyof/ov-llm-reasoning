@@ -1,4 +1,4 @@
-program: ES_T5_seq2seq.py
+program: main.py
 name: sweep_small_t5_rtx4090_2_gpu0
 method: random
 metric:
