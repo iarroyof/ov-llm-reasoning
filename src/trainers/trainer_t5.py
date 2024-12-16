@@ -1,7 +1,11 @@
 # src/trainers/trainer_t5.py
 
 import torch
-from transformers import T5ForConditionalGeneration, T5TokenizerFast
+from transformers import (
+    T5ForConditionalGeneration,
+    T5TokenizerFast, 
+    AutoTokenizer  # Better to use AutoTokenizer instead of both T5Tokenizer and T5TokenizerFast
+)
 from src.trainers.trainer_base import BaseNeuralReasoningTrainer
 
 class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
@@ -26,7 +30,7 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
     def from_pretrained(cls, model_name, device):
         # Use regular T5Tokenizer for v1_1 models, FastTokenizer for others
         if 'v1_1' in model_name:
-            tokenizer = T5Tokenizer.from_pretrained(model_name)
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
         else:
             tokenizer = T5TokenizerFast.from_pretrained(model_name)
         model = T5ForConditionalGeneration.from_pretrained(
