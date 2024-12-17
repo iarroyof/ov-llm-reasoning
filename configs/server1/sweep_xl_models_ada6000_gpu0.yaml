@@ -20,5 +20,5 @@ parameters:
   hf_model_name:
     values: [
       "google/flan-t5-xl",
-      "facebook/mbart-large-50"
+      "facebook/bart-large-mnli"
     ]
