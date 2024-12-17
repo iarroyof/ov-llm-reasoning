@@ -20,6 +20,6 @@ parameters:
   hf_model_name:
     values: [
       "facebook/bart-base",
-      "google/pegasus-x-base",
+      "google/pegasus-gigaword",
       "google/mt5-base"
     ]
