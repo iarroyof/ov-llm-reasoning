@@ -20,5 +20,5 @@ parameters:
   hf_model_name:
     values: [
       "google/flan-t5-xl",
-      "facebook/bart-large-mnli"
+      "facebook/bart-large-xsum"
     ]
