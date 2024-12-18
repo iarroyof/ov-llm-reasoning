@@ -21,5 +21,7 @@ parameters:
     values: [
       "google/pegasus-large",
       "google/pegasus-x-large",
-      "facebook/bart-large"
+      "facebook/bart-large",
+      "google-t5/t5-3b",
+      "google/t5_xxl_true_nli_mixture"
     ]
