@@ -21,5 +21,6 @@ parameters:
     values: [
       "facebook/bart-base",
       "google/pegasus-gigaword",
-      "google/mt5-base"
+      "google/mt5-base",
+      "facebook/bart-large-xsum"
     ]
