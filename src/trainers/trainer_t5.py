@@ -35,6 +35,6 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
             tokenizer = T5TokenizerFast.from_pretrained(model_name)
         model = T5ForConditionalGeneration.from_pretrained(
             model_name,
-            torch_dtype=torch.bfloat16
+            torch_dtype=torch.int8 if '11b' in model_name else torch.bfloat16
         ).to(device)
         return cls(model, tokenizer, device)
