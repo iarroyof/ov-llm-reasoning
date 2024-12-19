@@ -22,6 +22,13 @@ parameters:
       "google/pegasus-large",
       "google/pegasus-x-large",
       "google-t5/t5-3b",
-      "google/t5-3b-ssm-nq",
-      "google/t5_xxl_true_nli_mixture-bf16"
+      "google/t5-3b-ssm-nq"
     ]
+#T5 Version 1.1 includes the following improvements compared to the original T5 model
+#- GEGLU activation in feed-forward hidden layer, rather than ReLU - see here.
+#* Dropout was turned off in pre-training (quality win). Dropout should be re-enabled during fine-tuning.
+#* Pre-trained on C4 only without mixing in the downstream tasks.
+#* no parameter sharing between embedding and classifier layer
+#* "xl" and "xxl" replace "3B" and "11B". The model shapes are a bit different - larger d_model and smaller num_heads and d_ff.
+#Note: T5 Version 1.1 was only pre-trained on C4 excluding any supervised training. Therefore, this model has to be fine-tuned before it is useable on a downstream task.
+#Pretraining Dataset: C4
