@@ -22,5 +22,6 @@ parameters:
       "google/pegasus-large",
       "google/pegasus-x-large",
       "google-t5/t5-3b",
+      "google/t5-3b-ssm-nq",
       "google/t5_xxl_true_nli_mixture-bf16"
     ]
