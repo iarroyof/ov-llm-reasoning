@@ -21,5 +21,5 @@ parameters:
     values: [
       "google-t5/t5-11b",
       "google/flan-t5-xl",
-      "facebook/bart-large-xsum"
+      "google/t5-11b-ssm-nq"
     ]
