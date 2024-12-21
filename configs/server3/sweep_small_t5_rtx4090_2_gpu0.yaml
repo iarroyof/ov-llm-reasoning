@@ -22,5 +22,6 @@ parameters:
       "t5-small",
       "google/t5-v1_1-small",
       "google/flan-t5-small",
-      "lucadiliello/bart-small"
+      "lucadiliello/bart-small",
+      "google/pegasus-x-base" # 223M parameters
     ]
