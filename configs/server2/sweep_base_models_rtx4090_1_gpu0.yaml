@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_base_models_rtx4090_1_gpu0
-method: random
+method: grid
 metric:
   goal: minimize
   name: validation_loss
