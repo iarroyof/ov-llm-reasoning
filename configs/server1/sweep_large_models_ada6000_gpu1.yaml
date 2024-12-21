@@ -19,7 +19,7 @@ parameters:
     values: ["adamw", "adam"]
   hf_model_name:
     values: [
-      "google/pegasus-large",
+      "google/pegasus-large", #  568M parameters
       "google/pegasus-x-large",
       "google-t5/t5-3b",
       "google/t5-3b-ssm-nq",
