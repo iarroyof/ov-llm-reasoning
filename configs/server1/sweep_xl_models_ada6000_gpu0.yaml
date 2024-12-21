@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_xl_models_ada6000_gpu0
-method: random
+method: grid
 metric:
   goal: minimize
   name: validation_loss
