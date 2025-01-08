@@ -1,0 +1,17 @@
+program: main.py
+method: grid
+parameters:
+  batch_size:
+    value: 16
+  epochs:
+    value: 2
+  hf_model_name:
+    value: google/t5-11b-ssm-nq
+  learning_rate:
+    value: 0.0001
+  optimizer:
+    value: adamw
+  source_seq_len:
+    value: 8
+  target_seq_len:
+    value: 32
