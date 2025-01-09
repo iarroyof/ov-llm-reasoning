@@ -58,7 +58,7 @@ def main():
         with ClearCache():
             # Initialize appropriate trainer
             # Special handling for large models
-            if trainer_class == T5LargeReasoningTrainer:
+            if type(trainer_class).__name__ ==  "T5LargeReasoningTrainer":
                 quantization = wandb.config.get("quantization", "8bit")
                 reasoning_trainer = trainer_class.from_pretrained(
                     model_name,
