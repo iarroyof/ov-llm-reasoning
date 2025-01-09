@@ -7,11 +7,13 @@ from torch.optim import Adam, AdamW
 from torch.utils.data import DataLoader
 
 # Local imports
-from src.trainers import T5ReasoningTrainer
+from src.trainers import T5ReasoningTrainer, T5LargeReasoningTrainer
 from src.trainers import BartReasoningTrainer
 from src.trainers import PegasusReasoningTrainer
 from src.data import ElasticSearchDataset
+from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
+from src.utils import es_settings
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,7 +22,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def get_trainer_class(model_name):
-    if any(name in model_name.lower() for name in ['t5', 'flan', 'mt5', 'umt5']):
+    if '11b' in model_name.lower():
+        return T5LargeReasoningTrainer
+    elif any(name in model_name.lower() for name in ['t5', 'flan', 'mt5', 'umt5']):
         return T5ReasoningTrainer
     elif 'bart' in model_name.lower():
         return BartReasoningTrainer
@@ -40,19 +44,31 @@ def main():
         batch_size = wandb.config["batch_size"]
         optimizer_name = wandb.config["optimizer"]
 
-        # ElasticSearch settings
-        url = "http://192.168.241.210:9200"
-        index = 'triplets'
-        es_page_size = 100
-        max_docs2load = 1500
+        # ElasticSearch settings loaded from config/es_config.yaml
+        url = es_settings.get("url") #"http://192.168.241.210:9200"
+        index = es_settings.get("index") # 'triplets'
+        es_page_size = es_settings.get("es_page_size") #100
+        max_docs2load = es_settings.get("max_docs2load") #1500
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Device found: {device}")
+        # Log initial system state
+        wandb.log({"initial_system_state": log_gpu_memory_usage()})
 
         with ClearCache():
             # Initialize appropriate trainer
-            trainer_class = get_trainer_class(model_name)
-            reasoning_trainer = trainer_class.from_pretrained(model_name, device)
+            # Special handling for large models
+            if trainer_class == T5LargeReasoningTrainer:
+                quantization = wandb.config.get("quantization", "8bit")
+                reasoning_trainer = trainer_class.from_pretrained(
+                    model_name,
+                    device,
+                    quantization=quantization
+                )
+                # Force smaller batch size for large models
+                batch_size = min(batch_size, 2 if quantization == "4bit" else 1)
+            else:
+                reasoning_trainer = trainer_class.from_pretrained(model_name, device)
 
             # Prepare dataset
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
@@ -73,21 +89,24 @@ def main():
             val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
 
             # Initialize optimizer
-            if optimizer_name == "adam":
-                optimizer = Adam(reasoning_trainer.model.parameters(), lr=lr, amsgrad=True)
-            elif optimizer_name == "adamw":
-                optimizer = AdamW(reasoning_trainer.model.parameters(), lr=lr, amsgrad=True)
+            optimizer_class = AdamW if optimizer_name == "adamw" else Adam
+            optimizer = optimizer_class(
+                reasoning_trainer.model.parameters(),
+                lr=lr,
+                weight_decay=0.01 if optimizer_name == "adamw" else 0
+            )
 
             wandb.watch(reasoning_trainer.model, log='all')
             
             # Training loop
             logger.info("Training started.")
+            wandb.watch(reasoning_trainer.model, log='all')
             for epoch in range(epochs):
                 reasoning_trainer.train(optimizer, train_loader, epoch)
                 reasoning_trainer.test(val_loader, epoch)
-                logger.info(f"Training epoch with parameters {wandb.config}")
+                logger.info(f"Training epoch with hyperparameters {wandb.config}")
             
-            logger.info("Training finished.")
+            logger.info("Training completed.")
 
 if __name__ == "__main__":
     main()
