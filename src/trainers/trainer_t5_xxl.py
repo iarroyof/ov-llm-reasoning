@@ -27,7 +27,7 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
             quantization: '8bit' or '4bit' for different quantization schemes
         """
         use_8bit = quantization == '8bit'
-        
+        tokenizer = T5Tokenizer.from_pretrained("google/t5-11b-ssm-nq")
         # Adjust memory handling based on quantization
         if max_memory is None:
             max_memory = {
@@ -40,23 +40,20 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
         bnb_config = BitsAndBytesConfig(
             load_in_8bit=use_8bit,
             load_in_4bit=not use_8bit,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_use_double_quant=not use_8bit,
-            bnb_4bit_compute_dtype=torch.float16 if not use_8bit else None,
-            llm_int8_threshold=6.0 if use_8bit else None,
-            llm_int8_has_fp16_weight=True if use_8bit else None
-        )
+            bnb_4bit_quant_type="nf4" if not use_8bit else "fp4",  # Fixed invalid None
+            bnb_4bit_use_double_quant=True if not use_8bit else False,
+            bnb_4bit_compute_dtype=torch.float16 if not use_8bit else None  # Valid parameter
+            )
+        
 
         # Load model with adjusted settings
         model = T5ForConditionalGeneration.from_pretrained(
             model_name,
             device_map="auto",
-            max_memory=max_memory,
+            max_memory={0: "40GB", 1: "40GB", "cpu": "30GB"},
             low_cpu_mem_usage=True,
             quantization_config=bnb_config,
-        )
-
-        tokenizer = T5Tokenizer.from_pretrained(model_name)
+            )
         
         # Prepare model with optimized settings
         model = prepare_model_for_kbit_training(
@@ -73,10 +70,9 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
             lora_dropout=0.05,
             bias="none",
             task_type="SEQ_2_SEQ_LM",
-            inference_mode=False,
-            bits=4 if not use_8bit else 8,
-            double_quant=not use_8bit
-        )
+            )
+
+        # Apply LoRA
         model = get_peft_model(model, peft_config)
 
         return cls(model, tokenizer, device, quantization=quantization)
