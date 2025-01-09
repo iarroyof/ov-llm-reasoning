@@ -3,4 +3,4 @@ ElasticSearch:
   url: "http://192.168.241.210:9200"
   index: "triplets"
   es_page_size: 100
-  max_docs2load: 1500
+  max_docs2load: 1000
