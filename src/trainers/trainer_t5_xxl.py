@@ -19,7 +19,7 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
         wandb.log({"initial_memory_state": log_gpu_memory_usage()})
 
     @classmethod
-    def from_pretrained(cls, model_name, device, quantization='8bit'):
+    def from_pretrained(cls, model_name, device, quantization='8bit', max_memory=None):
         """
         Args:
             model_name: Name or path of the model
