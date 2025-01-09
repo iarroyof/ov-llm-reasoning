@@ -60,12 +60,16 @@ def main():
             trainer_class = get_trainer_class(model_name)
             # Special handling for large models
             if type(trainer_class).__name__ ==  "T5LargeReasoningTrainer":
-                quantization = wandb.config.get("quantization", "8bit")
+                quantization = wandb.config["quantization"]
+                max_memory = wandb.config["max_memory"]
+                
                 reasoning_trainer = trainer_class.from_pretrained(
-                    model_name,
-                    device,
-                    quantization=quantization
-                )
+                    model_name=model_name,
+                    device_map="auto",
+                    max_memory=max_memory,
+                    low_cpu_mem_usage=True,
+                    quantization=quantization,
+            )
                 # Force smaller batch size for large models
                 batch_size = min(batch_size, 2 if quantization == "4bit" else 1)
             else:
