@@ -29,11 +29,12 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
         use_8bit = quantization == '8bit'
         
         # Adjust memory handling based on quantization
-        max_memory = {
-            0: "40GB" if use_8bit else "42GB",  # More memory available with 4bit
-            1: "40GB" if use_8bit else "42GB",
+        if max_memory is None:
+            max_memory = {
+            0: "40GB",
+            1: "40GB",
             "cpu": "30GB"
-        }
+            }
         
         # Optimized quantization config based on bit size
         bnb_config = BitsAndBytesConfig(
