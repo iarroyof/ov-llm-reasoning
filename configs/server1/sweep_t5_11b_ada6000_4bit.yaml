@@ -21,6 +21,6 @@ parameters:
   optimizer:
     values: ["adamw"]
   hf_model_name:
-    values: ["iarroyof/t5-11b-ssm-nq-sharded"]
+    values: ["iarroyof/t5-11b-ssm-nq-sharded", "google/t5_xxl_true_nli_mixture"]
   quantization:
     values: ["4bit"]
