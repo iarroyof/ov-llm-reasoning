@@ -3,7 +3,7 @@
 import torch
 from transformers import (
     T5ForConditionalGeneration,
-    T5TokenizerFast, 
+    T5TokenizerFast,
     T5Tokenizer
 )
 from src.trainers.trainer_base import BaseNeuralReasoningTrainer
@@ -33,9 +33,10 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
             tokenizer = T5Tokenizer.from_pretrained(model_name)
         else:
             tokenizer = T5TokenizerFast.from_pretrained(model_name)
+
         model = T5ForConditionalGeneration.from_pretrained(
             model_name,
-            torch_dtype=torch.int8 if '11b' in model_name else torch.bfloat16,
-            gradient_checkpointing=True
+            torch_dtype=torch.bfloat16,
         ).to(device)
+
         return cls(model, tokenizer, device)

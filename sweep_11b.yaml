@@ -1,17 +1,25 @@
 program: main.py
+name: sweep_t5_11b_ada6000_8bit
 method: grid
+metric:
+  goal: minimize
+  name: validation_loss
 parameters:
-  batch_size:
-    value: 8
-  epochs:
-    value: 2
-  hf_model_name:
-    value: google/t5-11b-ssm-nq
   learning_rate:
-    value: 0.0001
-  optimizer:
-    value: adamw
-  source_seq_len:
-    value: 8
+    values: [1e-4]
+  batch_size:
+    values: [2]
+  gradient_accumulation_steps:
+    values: [4]
+  epochs:
+    values: [1]
   target_seq_len:
-    value: 8
+    values: [8]
+  source_seq_len:
+    values: [8]
+  optimizer:
+    values: ["adamw"]
+  hf_model_name:
+    values: ["google/t5_xxl_true_nli_mixture"]
+  quantization:
+    values: ["8bit"]

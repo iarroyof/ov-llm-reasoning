@@ -14,6 +14,7 @@ from src.data import ElasticSearchDataset
 from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
 from src.utils import es_settings
+from pdb import set_trace as st
 
 logging.basicConfig(
     level=logging.INFO,
@@ -49,11 +50,11 @@ def main():
         index = es_settings.get("index") # 'triplets'
         es_page_size = es_settings.get("es_page_size") #100
         max_docs2load = es_settings.get("max_docs2load") #1500
-
+        print([url, index, es_page_size, max_docs2load])
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Device found: {device}")
         # Log initial system state
-        wandb.log({"initial_system_state": log_gpu_memory_usage()})
+        logger.info({"initial_system_state": log_gpu_memory_usage()})
 
         with ClearCache():
             # Initialize appropriate trainer
@@ -62,7 +63,7 @@ def main():
             if type(trainer_class).__name__ ==  "T5LargeReasoningTrainer":
                 quantization = wandb.config["quantization"]
                 max_memory = wandb.config["max_memory"]
-                
+
                 reasoning_trainer = trainer_class.from_pretrained(
                     model_name=model_name,
                     device=device,
@@ -83,7 +84,7 @@ def main():
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample, max_documents=max_docs2load,
                 source_len=source_len, target_len=target_len, batch_size=1)
-            
+
             val_dataset = ElasticSearchDataset(
                 url=url, index=index, es_page_size=es_page_size,
                 tokenizer=reasoning_trainer.tokenizer,
@@ -103,15 +104,16 @@ def main():
             )
 
             wandb.watch(reasoning_trainer.model, log='all')
-            
+
             # Training loop
             logger.info("Training started.")
             wandb.watch(reasoning_trainer.model, log='all')
             for epoch in range(epochs):
-                reasoning_trainer.train(optimizer, train_loader, epoch)
-                reasoning_trainer.test(val_loader, epoch)
+                #  optimizer, train_loader, epoch, val_loader=None, test=True
+                reasoning_trainer.train(optimizer, train_loader, epoch, val_loader, True)
+                #reasoning_trainer.test(val_loader, epoch)
                 logger.info(f"Training epoch with hyperparameters {wandb.config}")
-            
+
             logger.info("Training completed.")
 
 if __name__ == "__main__":

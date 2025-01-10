@@ -21,12 +21,22 @@ class BaseNeuralReasoningTrainer:
         self.device = device
         self.score_type = gen_test_score
 
-    def train(self, optimizer, loader, epoch):
+    def train(self, optimizer, train_loader, epoch, val_loader=None, test=True):
         self.model.train()
-        total_steps = len(loader)  # calculate total steps
-        for step, data in enumerate(loader):
-            source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
-            
+        total_steps = len(train_loader)  # calculate total steps
+        if val_loader is not None:
+            iterator = zip(train_loader, val_loader)
+        else:
+            iterator = train_loader
+
+        for step, data in enumerate(iterator):
+            if val_loader is not None:
+                train_batch, val_batch = data
+                # Use both train_batch and val_batch
+            else:
+                train_batch = data
+
+            source_ids, source_mask, y_ids, lm_labels = self.get_data(train_batch)
             outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
             loss = outputs[0]
 
@@ -48,15 +58,16 @@ class BaseNeuralReasoningTrainer:
             loss.backward()
             optimizer.step()
 
-    def test(self, loader, epoch):
-        self.model.eval()
-        total_steps = len(loader)  # calculate total steps
-        for step, data in enumerate(loader):
+            if test:
+                self.test_step(step, val_batch, epoch)
+
+
+    def test_step(self, step, data, epoch):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
-            
+
             outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
             loss = outputs[0]
-            
+
             logits = outputs.logits
             preds = F.softmax(logits, dim=-1).argmax(dim=-1)
             try:
@@ -70,7 +81,45 @@ class BaseNeuralReasoningTrainer:
                 "test_loss": loss,
                 "epoch": epoch
             }
-            
+
+            if self.score_type == 'all':
+                log_dict.update({
+                    "test_score (bleu)": test_score[0],
+                    "test_score (rouge)": test_score[1],
+                    "test_score (combined)": test_score[2]
+                })
+            else:
+                log_dict[f"test_score ({self.score_type})"] = test_score
+
+            wandb.log(log_dict)
+
+            if step % 10 == 0:
+                print(f"Epoch: {epoch} | Test Loss: {loss} | Test score: {test_score}")
+
+
+    def test(self, loader, epoch):
+        self.model.eval()
+        total_steps = len(loader)  # calculate total steps
+        for step, data in enumerate(loader):
+            source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
+
+            outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
+            loss = outputs[0]
+
+            logits = outputs.logits
+            preds = F.softmax(logits, dim=-1).argmax(dim=-1)
+            try:
+                test_score = self.calculate_validation_score(data, preds)
+            except:
+                if self.score_type == 'all':
+                    test_score = [-1] * 3
+                else:
+                    test_score = -1
+            log_dict = {
+                "test_loss": loss,
+                "epoch": epoch
+            }
+
             if self.score_type == 'all':
                 log_dict.update({
                     "test_score (bleu)": test_score[0],
@@ -79,9 +128,9 @@ class BaseNeuralReasoningTrainer:
                 })
             else:    
                 log_dict[f"test_score ({self.score_type})"] = test_score
-            
+
             wandb.log(log_dict)
-        
+
             if step % 10 == 0:
                 print(f"Epoch: {epoch} | Test Loss: {loss} | Test score: {test_score}")
 
