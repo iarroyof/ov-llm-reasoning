@@ -21,6 +21,6 @@ parameters:
   optimizer:
     values: ["adamw"]
   hf_model_name:
-    values: ["iarroyof/t5-11b-ssm-nq-sharded", "google/t5_xxl_true_nli_mixture", "google/t5_11b_trueteacher_and_anli", "utahnlp/squad_t5-11b_seed-1"]
+    values: ["iarroyof/t5-11b-ssm-nq-sharded", "google/t5_xxl_true_nli_mixture", "google/t5_11b_trueteacher_and_anli", "utahnlp/squad_t5-11b_seed-1", "utahnlp/snli_t5-11b_seed-1"]
   quantization:
     values: ["4bit"]
