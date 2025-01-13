@@ -109,9 +109,7 @@ def main():
             logger.info("Training started.")
             wandb.watch(reasoning_trainer.model, log='all')
             for epoch in range(epochs):
-                #  optimizer, train_loader, epoch, val_loader=None, test=True
-                reasoning_trainer.train(optimizer, train_loader, epoch, val_loader, True)
-                #reasoning_trainer.test(val_loader, epoch)
+                reasoning_trainer.train(optimizer, train_loader, epoch, val_loader)
                 logger.info(f"Training epoch with hyperparameters {wandb.config}")
 
             logger.info("Training completed.")
