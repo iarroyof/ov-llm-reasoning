@@ -23,7 +23,7 @@ class BaseNeuralReasoningTrainer:
 
     def train(self, optimizer, train_loader, epoch, val_loader=None, test=True):
         self.model.train()
-        total_steps = len(train_loader)  # calculate total steps
+        #total_steps = len(train_loader)  # calculate total steps
         if val_loader is not None:
             iterator = zip(train_loader, val_loader)
         else:
@@ -42,7 +42,7 @@ class BaseNeuralReasoningTrainer:
 
             wandb.log({
             "train_batch_loss": loss,
-            "global_step": epoch * total_steps + step
+            #"global_step": epoch * total_steps + step
             })
 
             # Aggregate training loss per epoch (this creates the segmented plot)
@@ -99,7 +99,7 @@ class BaseNeuralReasoningTrainer:
 
     def test(self, loader, epoch):
         self.model.eval()
-        total_steps = len(loader)  # calculate total steps
+        #total_steps = len(loader)  # calculate total steps
         for step, data in enumerate(loader):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
 
