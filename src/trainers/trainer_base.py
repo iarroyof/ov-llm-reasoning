@@ -43,7 +43,7 @@ class BaseNeuralReasoningTrainer:
                     self.test_step(step, val_batch, epoch)
                     self.model.train()
 
-    def train_step(self, train_batch, epoch, optimizer):
+    def train_step(self, step, train_batch, epoch, optimizer):
         source_ids, source_mask, y_ids, lm_labels = self.get_data(train_batch)
         outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
         loss = outputs[0]
