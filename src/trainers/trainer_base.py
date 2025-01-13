@@ -60,13 +60,21 @@ class BaseNeuralReasoningTrainer:
         
         loss.backward()
         optimizer.step()
-        
+    
+    def test(self, loader):
+        self.model.eval()
+        with torch.no_grad():
+            for step, data in enumerate(loader):
+                self.test_step(step, data)
+                
     def test_step(self, step, data):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
 
             outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
             loss = outputs[0]
-
+            log_dict = {
+                "test_loss": loss
+            }
             logits = outputs.logits
             preds = F.softmax(logits, dim=-1).argmax(dim=-1)
             try:
@@ -76,9 +84,6 @@ class BaseNeuralReasoningTrainer:
                     test_score = [-1] * 3
                 else:
                     test_score = -1
-            log_dict = {
-                "test_loss": loss
-            }
 
             if self.score_type == 'all':
                 log_dict.update({
@@ -93,13 +98,6 @@ class BaseNeuralReasoningTrainer:
 
             if step % 10 == 0:
                 print(f"Batch test Loss: {loss} | Batch test score: {test_score}")
-
-
-    def test(self, loader):
-        self.model.eval()
-        with torch.no_grad():
-            for step, data in enumerate(loader):
-                self.test_step(step, data)
 
     def get_data(self, data):
         """To be implemented by specific model trainers"""
