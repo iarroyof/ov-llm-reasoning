@@ -76,24 +76,46 @@ def main():
                 batch_size = min(batch_size, 2 if quantization == "4bit" else 1)
             else:
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
-
             # Prepare dataset
+            # Define the sample transformation function
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
+            # Create training dataset
             train_dataset = ElasticSearchDataset(
-                url=url, index=index, es_page_size=es_page_size,
+                url=url,
+                index=index,
                 tokenizer=reasoning_trainer.tokenizer,
-                true_sample_f=true_sample, max_documents=max_docs2load,
-                source_len=source_len, target_len=target_len, batch_size=1)
-
+                true_sample_f=true_sample,
+                max_documents=max_docs2load,
+                source_len=source_len,
+                target_len=target_len,
+                batch_size=batch_size,
+                is_train=True
+            )
+            # Create validation dataset using training document IDs for exclusion
             val_dataset = ElasticSearchDataset(
-                url=url, index=index, es_page_size=es_page_size,
+                url=url,
+                index=index,
                 tokenizer=reasoning_trainer.tokenizer,
-                true_sample_f=true_sample, max_documents=int(max_docs2load * 0.3),
-                shuffle=False, source_len=source_len, target_len=target_len,
-                batch_size=1, exclude_docs=train_dataset.document_ids)
-
-            train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, num_workers=0)
-            val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=0)
+                true_sample_f=true_sample,
+                max_documents=int(max_docs2load * 0.3),
+                source_len=source_len,
+                target_len=target_len,
+                batch_size=batch_size,
+                exclude_docs=train_dataset.document_ids,
+                is_train=False
+            )
+            
+            # Create data loaders
+            train_loader = DataLoader(
+                dataset=train_dataset,
+                batch_size=None,  # Batching is handled by the dataset
+                num_workers=0
+            )
+            val_loader = DataLoader(
+                dataset=val_dataset,
+                batch_size=None,
+                num_workers=0
+            )
 
             # Initialize optimizer
             optimizer_class = AdamW if optimizer_name == "adamw" else Adam
@@ -112,11 +134,10 @@ def main():
             
             logger.info("Training started.")
             logger.info({"initial_system_state": log_gpu_memory_usage()})
-            
+            logger.info(f"Training epoch with hyperparameters {wandb.config}")
             for epoch in range(epochs):
                 reasoning_trainer.train(optimizer, train_loader, epoch)
-                logger.info(f"Training epoch with hyperparameters {wandb.config}")
-                
+
             logger.info("Training completed.")
             logger.info("Starting final evaluation...")
             
