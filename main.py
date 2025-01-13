@@ -112,7 +112,7 @@ def main():
                 reasoning_trainer.train(optimizer, train_loader, epoch)
                 logger.info(f"Training epoch with hyperparameters {wandb.config}")
                 
-            reasoning_trainer.train(val_loader)
+            reasoning_trainer.test(val_loader)
             logger.info("Training completed.")
 
 if __name__ == "__main__":
