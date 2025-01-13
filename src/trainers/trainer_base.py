@@ -60,45 +60,84 @@ class BaseNeuralReasoningTrainer:
         
         loss.backward()
         optimizer.step()
-    
-    def test(self, loader):
+        def test(self, loader):
+        """Run evaluation"""
         self.model.eval()
+        total_loss = 0
+        all_scores = []
+        num_batches = 0
+        
         with torch.no_grad():
             for step, data in enumerate(loader):
-                self.test_step(step, data)
+                batch_metrics = self.test_step(step, data)
+                total_loss += batch_metrics['loss']
+                all_scores.append(batch_metrics['score'])
+                num_batches += 1
                 
+                if step % 10 == 0:
+                    logger.info(f"Testing batch {step}")
+        
+        # Calculate averages
+        avg_loss = total_loss / num_batches if num_batches > 0 else 0
+        avg_scores = self._aggregate_scores(all_scores)
+        
+        # Log final metrics
+        self._log_final_metrics(avg_loss, avg_scores)
+        
+        return avg_loss, avg_scores
+    
     def test_step(self, step, data):
-            source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
-
-            outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
-            loss = outputs[0]
-            log_dict = {
-                "test_loss": loss
-            }
-            logits = outputs.logits
-            preds = F.softmax(logits, dim=-1).argmax(dim=-1)
-            try:
-                test_score = self.calculate_validation_score(data, preds)
-            except:
-                if self.score_type == 'all':
-                    test_score = [-1] * 3
-                else:
-                    test_score = -1
-
+        """Process single test batch"""
+        source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
+        outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
+        loss = outputs[0]
+        
+        logits = outputs.logits
+        preds = F.softmax(logits, dim=-1).argmax(dim=-1)
+        
+        try:
+            test_score = self.calculate_validation_score(data, preds)
+        except:
             if self.score_type == 'all':
-                log_dict.update({
-                    "test_score (bleu)": test_score[0],
-                    "test_score (rouge)": test_score[1],
-                    "test_score (combined)": test_score[2]
-                })
+                test_score = [-1] * 3
             else:
-                log_dict.update({f"test_score ({self.score_type})": test_score})
-
-            wandb.log(log_dict)
-
-            if step % 10 == 0:
-                print(f"Batch test Loss: {loss} | Batch test score: {test_score}")
-
+                test_score = -1
+    
+        if step % 10 == 0:
+            logger.info(f"Batch test Loss: {loss} | Batch test score: {test_score}")
+            
+        return {'loss': loss.item(), 'score': test_score}
+    
+    def _aggregate_scores(self, scores):
+        """Average scores across batches"""
+        if not scores:
+            return [-1] * 3 if self.score_type == 'all' else -1
+            
+        if self.score_type == 'all':
+            return [
+                sum(score[i] for score in scores) / len(scores)
+                for i in range(3)
+            ]
+        return sum(scores) / len(scores)
+    
+    def _log_final_metrics(self, avg_loss, avg_scores):
+        """Log final metrics to wandb"""
+        log_dict = {
+            "final_test_loss": avg_loss,
+        }
+        
+        if self.score_type == 'all':
+            log_dict.update({
+                "final_test_score (bleu)": avg_scores[0],
+                "final_test_score (rouge)": avg_scores[1],
+                "final_test_score (combined)": avg_scores[2]
+            })
+        else:
+            log_dict[f"final_test_score ({self.score_type})"] = avg_scores
+            
+        wandb.log(log_dict)
+        logger.info(f"Final Test Loss: {avg_loss} | Final Test Scores: {avg_scores}")
+        
     def get_data(self, data):
         """To be implemented by specific model trainers"""
         raise NotImplementedError
