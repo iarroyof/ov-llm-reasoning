@@ -45,9 +45,9 @@ class BaseNeuralReasoningTrainer:
 
     def train_step(self, step, train_batch, epoch, optimizer):
         source_ids, source_mask, y_ids, lm_labels = self.get_data(train_batch)
+        optimizer.zero_grad()
         outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
         loss = outputs[0]
-
         wandb.log({"train_batch_loss": loss})
         # Aggregate training loss per epoch (this creates the segmented plot)
         wandb.log({
@@ -57,12 +57,11 @@ class BaseNeuralReasoningTrainer:
 
         if step % 10 == 0:
             print(f"Epoch: {epoch} | Train Loss: {loss}")
-
-        optimizer.zero_grad()
+        
         loss.backward()
         optimizer.step()
         
-    def test_step(self, step, data, epoch):
+    def test_step(self, step, data):
             source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
 
             outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
@@ -78,8 +77,7 @@ class BaseNeuralReasoningTrainer:
                 else:
                     test_score = -1
             log_dict = {
-                "test_loss": loss,
-                "epoch": epoch
+                "test_loss": loss
             }
 
             if self.score_type == 'all':
@@ -97,11 +95,11 @@ class BaseNeuralReasoningTrainer:
                 print(f"Epoch: {epoch} | Test Loss: {loss} | Test score: {test_score}")
 
 
-    def test(self, loader, epoch):
+    def test(self, loader):
         self.model.eval()
-        #total_steps = len(loader)  # calculate total steps
-        for step, data in enumerate(loader):
-            self.test_step(step, data, epoch)
+        with torch.no_grad():
+            for step, data in enumerate(loader):
+                self.test_step(step, data)
 
     def get_data(self, data):
         """To be implemented by specific model trainers"""
