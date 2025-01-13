@@ -102,21 +102,33 @@ def main():
                 lr=lr,
                 weight_decay=0.01 if optimizer_name == "adamw" else 0
             )
-
-            wandb.watch(reasoning_trainer.model, log='all')
-
-            # Training loop
+            # Configure model watching with gradients and parameters
+            wandb.watch(
+                reasoning_trainer.model,
+                log="all",  # Log gradients and parameters
+                log_freq=100,  # Log every 100 batches
+                log_graph=True  # Log model graph
+            )
+            
             logger.info("Training started.")
-            wandb.watch(reasoning_trainer.model, log='all')
             logger.info({"initial_system_state": log_gpu_memory_usage()})
+            
             for epoch in range(epochs):
                 reasoning_trainer.train(optimizer, train_loader, epoch)
                 logger.info(f"Training epoch with hyperparameters {wandb.config}")
                 
             logger.info("Training completed.")
-            logger.info("Test NOW.")
-            reasoning_trainer.test(val_loader)
-            logger.info("Test completed.")
+            logger.info("Starting final evaluation...")
+            
+            # Run evaluation and get metrics
+            final_loss, final_scores = reasoning_trainer.test(val_loader)
+            logger.info("Evaluation completed.")
+            
+            # Log final summary metrics
+            wandb.run.summary.update({
+                "final_test_loss": final_loss,
+                "final_test_scores": final_scores
+            })
 
 if __name__ == "__main__":
     main()
