@@ -39,8 +39,9 @@ class BaseNeuralReasoningTrainer:
 
             if val_loader is not None:
                 self.model.eval()
-                self.test_step(step, val_batch, epoch)
-                self.model.train()
+                with torch.no_grad():
+                    self.test_step(step, val_batch, epoch)
+                    self.model.train()
 
     def train_step(self, train_batch, epoch, optimizer):
         source_ids, source_mask, y_ids, lm_labels = self.get_data(train_batch)
