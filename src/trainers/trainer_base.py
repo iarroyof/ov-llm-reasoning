@@ -76,7 +76,7 @@ class BaseNeuralReasoningTrainer:
                 num_batches += 1
                 
                 if step % 10 == 0:
-                    logger.info(f"Testing batch {step}")
+                    logger.info(f"Testing batch {step} | Batch test Loss: {batch_metrics['loss']} | Batch test score: {batch_metrics['score']}")
         
         # Calculate averages
         avg_loss = total_loss / num_batches if num_batches > 0 else 0
@@ -103,10 +103,7 @@ class BaseNeuralReasoningTrainer:
                 test_score = [-1] * 3
             else:
                 test_score = -1
-    
-        if step % 10 == 0:
-            logger.info(f"Batch test Loss: {loss} | Batch test score: {test_score}")
-            
+
         return {'loss': loss.item(), 'score': test_score}
     
     def _aggregate_scores(self, scores):
