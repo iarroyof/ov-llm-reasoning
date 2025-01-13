@@ -87,7 +87,7 @@ class BaseNeuralReasoningTrainer:
                     "test_score (combined)": test_score[2]
                 })
             else:
-                log_dict[f"test_score ({self.score_type})"] = test_score
+                log_dict.update({f"test_score ({self.score_type})": test_score})
 
             wandb.log(log_dict)
 
