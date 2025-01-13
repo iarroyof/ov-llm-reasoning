@@ -60,7 +60,8 @@ class BaseNeuralReasoningTrainer:
         
         loss.backward()
         optimizer.step()
-        def test(self, loader):
+        
+    def test(self, loader):
         """Run evaluation"""
         self.model.eval()
         total_loss = 0
