@@ -7,7 +7,7 @@ from transformers import PreTrainedTokenizer
 from collections import deque
 
 
-class OptimizedElasticSearchDataset(IterableDataset):
+class ElasticSearchDataset(IterableDataset):
     """
     Optimized ElasticSearch dataset for PyTorch training with efficient train/test splitting.
     """
