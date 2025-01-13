@@ -1,303 +1,221 @@
-from queue import Queue
-from threading import Thread
-from torch.utils.data import IterableDataset, DataLoader
-from typing import List, Any, Dict, Tuple, Callable
+from torch.utils.data import IterableDataset
+from typing import List, Any, Dict, Tuple, Callable, Optional
 from elasticsearch import Elasticsearch
 import random
-import time
-from transformers import PreTrainedTokenizer
 import torch
+from transformers import PreTrainedTokenizer
+from collections import deque
 
 
-class ElasticSearchDataset(IterableDataset):
+class OptimizedElasticSearchDataset(IterableDataset):
     """
-    ElasticSearchDataset class with enhanced filtering capabilities.
-    Provides an IterableDataset implementation for fetching and processing documents 
-    from Elasticsearch to train a Huggingface model.
+    Optimized ElasticSearch dataset for PyTorch training with efficient train/test splitting.
     """
-    def __init__(self, url: str, index: str, tokenizer: PreTrainedTokenizer,
-                 es_page_size: int = 500, batch_size: int = 8, yield_raw_triplets: bool = False,
-                 async_loading: bool = False, shuffle: bool = True, seed: int = None,
-                 true_sample_f: Callable[[tuple[str, ...]], tuple[str, ...]] = None,
-                 max_documents: int = 10000, cache_size_limit: int = 5000,
-                 source_len: int = 20, target_len: int = 30, exclude_docs: List[str] = None,
-                 filter_article_ids: List[str] = None):
+    
+    @staticmethod
+    def create_train_test_split(url: str, index: str, max_docs2load: int, 
+                               test_ratio: float = 0.3, seed: Optional[int] = None) -> Tuple[List[str], List[str]]:
         """
-        Initialize the dataset with enhanced filtering capabilities.
+        Create train/test split of document IDs.
         
         Args:
-            filter_article_ids: Optional list of article IDs to filter documents by
-            (all other parameters remain as in original implementation)
+            url: Elasticsearch URL
+            index: Index name
+            max_docs2load: Maximum number of documents to load in total
+            test_ratio: Ratio of documents to use for testing
+            seed: Random seed for reproducibility
+            
+        Returns:
+            Tuple of (train_ids, test_ids)
         """
+        es_client = Elasticsearch(url)
+        
+        query = {
+            "size": 1000,
+            "query": {"match_all": {}},
+            "_source": False,
+            "sort": [{"_id": "asc"}]
+        }
+        
+        all_ids = []
+        last_sort = None
+        
+        while True:
+            if last_sort:
+                query["search_after"] = last_sort
+                
+            try:
+                response = es_client.search(index=index, body=query)
+                hits = response['hits']['hits']
+                
+                if not hits:
+                    break
+                    
+                all_ids.extend(hit['_id'] for hit in hits)
+                last_sort = hits[-1]['sort']
+                
+                if len(all_ids) >= max_docs2load:
+                    all_ids = all_ids[:max_docs2load]
+                    break
+                    
+            except Exception as e:
+                print(f"Error fetching IDs: {e}")
+                break
+        
+        if seed is not None:
+            random.seed(seed)
+        random.shuffle(all_ids)
+        
+        test_size = int(len(all_ids) * test_ratio)
+        train_ids = all_ids[test_size:]
+        test_ids = all_ids[:test_size]
+        
+        return train_ids, test_ids
+
+    def __init__(
+            self,
+            url: str,
+            index: str,
+            tokenizer: PreTrainedTokenizer,
+            batch_size: int = 8,
+            prefetch_batches: int = 10,
+            filter_article_ids: Optional[List[str]] = None,
+            source_len: int = 20,
+            target_len: int = 30,
+            true_sample_f: Optional[Callable] = None,
+            seed: Optional[int] = None,
+            selected_doc_ids: Optional[List[str]] = None):
+        
+        self.es_client = Elasticsearch(url)
         self.index = index
-        self.es_page_size = es_page_size
-        self.batch_size = batch_size
-        self.async_loading = async_loading
-        self.shuffle = shuffle
-        self.yield_raw_triplets = yield_raw_triplets
-        self.seed = seed
-        self.es_client: Elasticsearch = Elasticsearch(url)
         self.tokenizer = tokenizer
-        self.exclude_docs = exclude_docs
+        self.batch_size = batch_size
+        self.prefetch_size = batch_size * prefetch_batches
         self.filter_article_ids = filter_article_ids
-        self.true_sample_f = true_sample_f
-        self.cache_size_limit = cache_size_limit
         self.source_len = source_len
         self.target_len = target_len
-        self.loading_thread: Thread = None
-        self.stop_loading: bool = False
-        self.data_cache: Queue = Queue()
-        self.current_page_index: int = 0
-        self.document_ids: List[str] = self._get_all_document_ids(max_documents)
-
-        if self.async_loading:
-            self.start_async_loading()
-
-    def __len__(self) -> int:
-        """
-        Returns the number of batches in the dataset.
-        """
-        return (len(self.document_ids) + self.batch_size - 1) // self.batch_size
-
-    def _build_search_query(self, size: int) -> Dict[str, Any]:
-        """
-        Builds the Elasticsearch query based on configuration.
+        self.true_sample_f = true_sample_f or (lambda x: x)
+        self.seed = seed
         
-        Args:
-            size: Number of documents to retrieve per page
-            
-        Returns:
-            Dict containing the Elasticsearch query
-        """
-        query: Dict[str, Any] = {
-            "bool": {
-                "must": [{"match_all": {}}]
-            }
-        }
-
-        if self.filter_article_ids:
-            query["bool"]["must"].append({
-                "terms": {
-                    "article_id.keyword": self.filter_article_ids
-                }
-            })
-
-        search_body = {
-            "size": size,
-            "query": query,
-            "_source": ["article_id"] if self.filter_article_ids else False
-        }
-
-        return search_body
-
-    def _get_all_document_ids(self, max_documents: int) -> List[str]:
-        """
-        Retrieve document IDs using scroll API with support for article ID filtering.
+        # Track documents
+        self.seen_docs = set()
+        self.data_buffer = deque(maxlen=self.prefetch_size * 2)
+        self.selected_doc_ids = selected_doc_ids
         
-        Args:
-            max_documents: Maximum number of documents to retrieve
+        # Initialize document IDs
+        self._initialize_document_ids()
+        
+        if seed is not None:
+            random.seed(seed)
+
+    def _initialize_document_ids(self):
+        """Initialize document IDs using pre-selected IDs if available"""
+        if self.selected_doc_ids:
+            self.document_ids = list(self.selected_doc_ids)
+            self.total_docs = len(self.document_ids)
+            return
             
-        Returns:
-            List of document IDs
-        """
-        search_body = self._build_search_query(1000)
+        query = {
+            "size": 10000,  # Default max size
+            "query": self._build_base_query(),
+            "_source": False,
+            "sort": [{"_id": "asc"}]
+        }
         
         try:
             response = self.es_client.search(
                 index=self.index,
-                body=search_body,
-                scroll='5m'
+                body=query
             )
             
-            scroll_id = response['_scroll_id']
-            document_ids = [hit['_id'] for hit in response['hits']['hits']]
-            
-            try:
-                while len(document_ids) < max_documents:
-                    response = self.es_client.scroll(
-                        scroll_id=scroll_id,
-                        scroll='5m'
-                    )
-                    
-                    if not response['hits']['hits']:
-                        break
-                    
-                    document_ids.extend(hit['_id'] for hit in response['hits']['hits'])
-                    
-            finally:
-                try:
-                    self.es_client.clear_scroll(scroll_id=scroll_id)
-                except Exception as e:
-                    print(f"Error clearing scroll: {e}")
-            
-            if len(document_ids) > max_documents:
-                if self.seed is not None:
-                    random.seed(self.seed)
-                document_ids = random.sample(document_ids, max_documents)
-            
-            if self.exclude_docs:
-                document_ids = list(set(document_ids) - set(self.exclude_docs))
-            
-            return document_ids
+            self.document_ids = [hit['_id'] for hit in response['hits']['hits']]
+            self.total_docs = len(self.document_ids)
             
         except Exception as e:
-            print(f"Error in document ID retrieval: {e}")
-            return []
+            print(f"Error initializing document IDs: {e}")
+            self.document_ids = []
+            self.total_docs = 0
 
-    def start_async_loading(self) -> None:
-        """
-        Starts asynchronous loading of documents in a separate thread.
-        """
-        def load_data():
-            while not self.stop_loading:
-                if self.data_cache.qsize() * self.batch_size < self.cache_size_limit:
-                    self.load_next_page()
-
-        self.loading_thread = Thread(target=load_data)
-        self.loading_thread.start()
-
-    def __iter__(self) -> 'ElasticSearchDataset':
-        """
-        Returns the iterator object.
-        """
-        self.current_page_index = 0
-        self.data_cache.queue.clear()
-        self.stop_loading = False
-        if self.async_loading:
-            self.start_async_loading()
-        return self
-
-    def __next__(self) -> Dict[str, torch.Tensor]:
-        """
-        Returns the next batch of processed data.
-        """
-        if (not self.async_loading and not self.stop_loading
-                and self.data_cache.qsize() < self.cache_size_limit):
-            self.load_next_page()
-
-        if self.data_cache.empty():
-            raise StopIteration
-
-        if self.data_cache.qsize() < self.batch_size:
-            batchz = self.data_cache.qsize()
-        else:
-            batchz = self.batch_size
-        
-        batch_data: List[Any] = [
-            self.true_sample_f(self.data_cache.get()) for _ in range(batchz)]
+    def _build_base_query(self) -> Dict:
+        """Build base query with article ID filtering if needed"""
+        if not self.filter_article_ids:
+            return {"match_all": {}}
             
-        if self.shuffle:
-            random.shuffle(batch_data)
-
-        if self.yield_raw_triplets:
-            return batch_data
-            
-        assert self.tokenizer is not None
-        
-        source_text, target_text = zip(*batch_data)
-        source = self.tokenizer.batch_encode_plus(
-                    source_text, max_length=self.source_len,
-                    return_tensors='pt', pad_to_max_length=True, truncation=True)
-        target = self.tokenizer.batch_encode_plus(
-                    target_text, max_length=self.target_len,
-                    return_tensors='pt', pad_to_max_length=True, truncation=True)
-            
-        source_ids = source['input_ids'].squeeze()
-        source_masks = source['attention_mask'].squeeze()
-        target_ids = target['input_ids'].squeeze()
-        target_masks = target['attention_mask'].squeeze()
-
         return {
-            'source_ids': source_ids.to(torch.long),
-            'source_masks': source_masks.to(torch.long),
-            'target_ids': target_ids.to(torch.long),
-            'target_masks': target_masks.to(torch.long)
+            "bool": {
+                "must": [{
+                    "terms": {
+                        "article_id.keyword": self.filter_article_ids
+                    }
+                }]
+            }
         }
 
-    def load_next_page(self) -> None:
-        """
-        Loads the next batch of documents with improved error handling and retries.
-        """
-        MAX_RETRIES = 3
-        RETRY_DELAY = 1
-        BATCH_SIZE = 100
+    def __len__(self) -> int:
+        """Return number of batches"""
+        return self.total_docs // self.batch_size
+
+    def __iter__(self):
+        """Iterator implementation with buffer management"""
+        self.seen_docs.clear()
+        self.data_buffer.clear()
+        return self
+
+    def __next__(self):
+        """Returns next batch of processed data"""
+        if len(self.data_buffer) < self.batch_size:
+            raw_docs = self._fetch_batch()
+            if not raw_docs and not self.data_buffer:
+                raise StopIteration
+                
+            if raw_docs:
+                processed_examples = self._process_documents(raw_docs)
+                self.data_buffer.extend(processed_examples)
         
-        start_index: int = self.current_page_index * self.es_page_size 
-        end_index: int = start_index + self.es_page_size
-        if end_index > len(self.document_ids):
-            end_index = len(self.document_ids)
+        batch = []
+        for _ in range(min(self.batch_size, len(self.data_buffer))):
+            if self.data_buffer:
+                batch.append(self.data_buffer.popleft())
             
-        ids_to_fetch: List[str] = self.document_ids[start_index:end_index]
-        
-        for attempt in range(MAX_RETRIES):
-            try:
-                all_hits = []
-                
-                for i in range(0, len(ids_to_fetch), BATCH_SIZE):
-                    batch_ids = ids_to_fetch[i:i + BATCH_SIZE]
-                    response: Dict[str, Any] = self.es_client.mget(
-                        index=self.index,
-                        body={"ids": batch_ids}
-                    )
-                    all_hits.extend(response['docs'])
-                
-                for hit in all_hits:
-                    if hit['found']:
-                        triplets = self.get_triplets_from_sentence(hit['_source'])
-                        for s in triplets:
-                            self.data_cache.put(s)
-                            
+        if not batch:
+            raise StopIteration
+            
+        return {
+            'source_ids': torch.stack([x['source_ids'] for x in batch]),
+            'source_mask': torch.stack([x['source_mask'] for x in batch]),
+            'target_ids': torch.stack([x['target_ids'] for x in batch]),
+            'target_mask': torch.stack([x['target_mask'] for x in batch])
+        }
+
+    def _fetch_batch(self) -> List[Dict]:
+        """Fetch a batch of documents using stored document IDs"""
+        if not self.document_ids:
+            return []
+            
+        batch_ids = []
+        for doc_id in self.document_ids:
+            if doc_id not in self.seen_docs:
+                batch_ids.append(doc_id)
+                self.seen_docs.add(doc_id)
+            if len(batch_ids) >= self.prefetch_size:
                 break
                 
-            except Exception as e:
-                if attempt == MAX_RETRIES - 1:
-                    print(f"Failed to fetch documents after {MAX_RETRIES} attempts: {e}")
-                    self.stop_loading = True
-                    return
-                time.sleep(RETRY_DELAY * (attempt + 1))
-        
-        self.current_page_index += 1
-        
-        if start_index >= len(self.document_ids) or not self.test_next_sliding():
-            self.stop_loading = True
-        if self.async_loading and self.loading_thread and self.loading_thread.is_alive():
-            self.loading_thread.join()
-
-    def __del__(self) -> None:
-        """
-        Cleanup method to ensure the loading thread is properly terminated.
-        """
-        self.stop_loading = True
-        if self.async_loading and hasattr(self, 'loading_thread') and self.loading_thread and self.loading_thread.is_alive():
-            self.loading_thread.join()
-
-    def test_next_sliding(self) -> bool:
-        """
-        Tests if there are more documents to fetch in the current window.
-        
-        Returns:
-            bool indicating if there are more documents to fetch
-        """
-        start_index: int = self.current_page_index * self.es_page_size 
-        end_index: int = start_index + self.es_page_size
-        if end_index > len(self.document_ids):
-            end_index = len(self.document_ids)
-        
-        ids_to_fetch: List[str] = self.document_ids[start_index:end_index]
-        
-        return bool(len(ids_to_fetch))
+        if not batch_ids:
+            return []
+            
+        try:
+            response = self.es_client.mget(
+                index=self.index,
+                body={"ids": batch_ids}
+            )
+            return [doc['_source'] for doc in response['docs'] if doc.get('found')]
+        except Exception as e:
+            print(f"Error fetching batch: {e}")
+            return []
 
     def get_triplets_from_sentence(
             self, es_sentence: Dict) -> List[Tuple[str, str, str, str]]:
-        """
-        Extracts triplets from an Elasticsearch document.
-        
-        Args:
-            es_sentence: Document from Elasticsearch containing triplets
-            
-        Returns:
-            List of tuples containing subject, relation, object, and sentence text
-        """
+        """Extract triplets from an Elasticsearch document"""
         triplets_and_sentence: List[Tuple[str, str, str, str]] = []
         for triplet in es_sentence['triplets']:
             sample = list(self.flatten_triplet_keys(triplet))
@@ -308,35 +226,60 @@ class ElasticSearchDataset(IterableDataset):
 
     @staticmethod
     def flatten_triplet_keys(doc: Dict[str, Any]) -> Tuple[str, str, str]:
-        """
-        Flattens the nested structure of a document triplet.
-        
-        Args:
-            doc: Document containing subject, relation, and object
-            
-        Returns:
-            Tuple of (subject_text, relation_text, object_text)
-        """
+        """Flatten the nested structure of a document triplet"""
         subject_text: str = doc['subject']['text']
         relation_text: str = doc['relation']['text']
         object_text: str = doc['object']['text']
-
         return subject_text, relation_text, object_text
 
-    def get_stats(self) -> Dict[str, Any]:
-        """
-        Returns statistics about the dataset state.
+    def _process_documents(self, documents: List[Dict]) -> List[Dict[str, torch.Tensor]]:
+        """Process documents into model-ready format"""
+        batch_samples = []
         
-        Returns:
-            Dictionary containing dataset statistics
-        """
-        stats = {
-            "total_documents": len(self.document_ids),
-            "cache_size": self.data_cache.qsize(),
-            "current_page": self.current_page_index,
-            "is_loading": not self.stop_loading,
+        for doc in documents:
+            triplets = self.get_triplets_from_sentence(doc)
+            for triplet in triplets:
+                processed_sample = self.true_sample_f(triplet)
+                if isinstance(processed_sample, tuple) and len(processed_sample) >= 2:
+                    source_text, target_text = processed_sample
+                    batch_samples.append((source_text, target_text))
+        
+        if not batch_samples:
+            return []
+            
+        source_texts, target_texts = zip(*batch_samples)
+        
+        source_encodings = self.tokenizer.batch_encode_plus(
+            source_texts,
+            max_length=self.source_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        target_encodings = self.tokenizer.batch_encode_plus(
+            target_texts,
+            max_length=self.target_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        return [{
+            'source_ids': source_encodings['input_ids'][i],
+            'source_mask': source_encodings['attention_mask'][i],
+            'target_ids': target_encodings['input_ids'][i],
+            'target_mask': target_encodings['attention_mask'][i]
+        } for i in range(len(batch_samples))]
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get current dataset statistics"""
+        return {
+            "total_documents": self.total_docs,
+            "seen_documents": len(self.seen_docs),
+            "remaining_documents": self.total_docs - len(self.seen_docs),
+            "buffer_size": len(self.data_buffer),
             "has_article_filter": bool(self.filter_article_ids),
             "batch_size": self.batch_size,
-            "page_size": self.es_page_size
+            "prefetch_size": self.prefetch_size
         }
-        return stats
