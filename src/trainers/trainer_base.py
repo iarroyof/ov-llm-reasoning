@@ -92,7 +92,7 @@ class BaseNeuralReasoningTrainer:
             wandb.log(log_dict)
 
             if step % 10 == 0:
-                print(f"Epoch: {epoch} | Test Loss: {loss} | Test score: {test_score}")
+                print(f"Batch test Loss: {loss} | Batch test score: {test_score}")
 
 
     def test(self, loader):
