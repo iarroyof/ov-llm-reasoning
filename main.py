@@ -108,6 +108,7 @@ def main():
             # Training loop
             logger.info("Training started.")
             wandb.watch(reasoning_trainer.model, log='all')
+            logger.info({"initial_system_state": log_gpu_memory_usage()})
             for epoch in range(epochs):
                 reasoning_trainer.train(optimizer, train_loader, epoch)
                 logger.info(f"Training epoch with hyperparameters {wandb.config}")
@@ -117,3 +118,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    logger.info({"initial_system_state": log_gpu_memory_usage()})
