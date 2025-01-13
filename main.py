@@ -77,34 +77,43 @@ def main():
             else:
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
-            # Define the sample transformation function
+            # Create train/test split
+            train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
+                url=url,
+                index=index,
+                max_docs2load=max_docs2load,
+                test_ratio=0.3,
+                seed=42
+            )
+            
+            # Define transformation function
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
+            
             # Create training dataset
             train_dataset = ElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
-                max_documents=max_docs2load,
                 source_len=source_len,
                 target_len=target_len,
                 batch_size=batch_size,
-                is_train=True
+                selected_doc_ids=train_ids,
+                seed=42
             )
-            # Create validation dataset using training document IDs for exclusion
+            
+            # Create validation dataset
             val_dataset = ElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
-                max_documents=int(max_docs2load * 0.3),
                 source_len=source_len,
                 target_len=target_len,
                 batch_size=batch_size,
-                exclude_docs=train_dataset.document_ids,
-                is_train=False
-            )
-            
+                selected_doc_ids=test_ids,
+                seed=42
+            )           
             # Create data loaders
             train_loader = DataLoader(
                 dataset=train_dataset,
