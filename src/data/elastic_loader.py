@@ -4,60 +4,31 @@ from torch.utils.data import IterableDataset, DataLoader
 from typing import List, Any, Dict, Tuple, Callable
 from elasticsearch import Elasticsearch
 import random
+import time
 from transformers import PreTrainedTokenizer
 import torch
 
 
 class ElasticSearchDataset(IterableDataset):
     """
-    **ElasticSearchDataset class**
-
-    This class provides an `IterableDataset` implementation for fetching and 
-    processing documents from Elasticsearch to train a Huggingface model. It 
-    retrieves documents in batches and supports asynchronous loading for efficiency.
-
-    **Attributes:**
-
-    * `url` (str): URL of the Elasticsearch instance.
-    * `index` (str): Name of the Elasticsearch index containing the documents.
-    * `tokenizer` (PreTrainedTokenizer): Huggingface tokenizer for processing text.
-    * `es_page_size` (int, optional): Number of documents to retrieve per Elasticsearch request (default: 500).
-    * `batch_size` (int, optional): Batch size for training the model (default: 8).
-    * `async_loading` (bool, optional): Enable asynchronous loading of documents using a separate thread (default: False).
-    * `shuffle` (bool, optional): Shuffle documents within each batch (default: True).
-    * `seed` (int, optional): Seed for random number generation (for reproducibility, default: None).
-    * `true_sample_f` (Callable[[tuple[str, ...]], tuple[str, ...]], optional): Custom function to transform document triplets (default: None).
-    * `max_documents` (int, optional): Maximum number of documents to retrieve from Elasticsearch (default: 10000).
-    * `cache_size_limit` (int, optional): Maximum size of the data cache to prevent memory overload (default: 5000).
-    * `source_len` (int, optional): Maximum source sequence length for the model (default: 20).
-    * `target_len` (int, optional): Maximum target sequence length for the model (default: 30).
-    * `exclude_docs` (List[str], optional): List of document IDs to exclude from the dataset (default: None).
-
-    **Methods:**
-
-    * `__init__` (constructor): Initializes the class with the provided parameters.
-    * `_get_all_document_ids` (private): Retrieves a random subset of document IDs from the Elasticsearch index.
-    * `start_async_loading` (private): Starts a separate thread to asynchronously load documents.
-    * `__iter__` (iterator): Returns the iterator object for the dataset.
-    * `__next__` (iterator): Returns the next batch of processed data for training.
-    * `load_next_page` (private): Fetches the next batch of documents from Elasticsearch based on document IDs.
-    * `__del__` (destructor): Stops the asynchronous loading thread if running. (Optional cleanup)
-    * `test_next_sliding` (private): Checks if there are more documents to fetch in the current page window. (Used for stopping loading)
-    * `get_triplets_from_sentence` (private): Extracts triplets (subject, relation, object) from a document returned by Elasticsearch. (Assuming your documents have a 'triplets' key)
-    * `flatten_triplet_keys` (static): Flattens the nested structure of a document triplet for easier processing. (Assuming your documents have a specific structure)
-
-    **Notes:**
-
-    * This class utilizes Elasticsearch's scroll API for efficient retrieval of large datasets.
-    * The data cache helps to store preprocessed data for faster access during training.
-    * The `true_sample_f` function allows for custom data transformations before feeding data to the model.
+    ElasticSearchDataset class with enhanced filtering capabilities.
+    Provides an IterableDataset implementation for fetching and processing documents 
+    from Elasticsearch to train a Huggingface model.
     """
     def __init__(self, url: str, index: str, tokenizer: PreTrainedTokenizer,
-            es_page_size: int = 500, batch_size: int = 8, yield_raw_triplets: bool=False, 
-            async_loading: bool = False, shuffle: bool = True, seed: int = None,
-            true_sample_f: Callable[[tuple[str, ...]], tuple[str, ...]] = None,
-            max_documents: int = 10000, cache_size_limit: int = 5000, 
-            source_len:int=20, target_len:int=30, exclude_docs: List[str]=None):
+                 es_page_size: int = 500, batch_size: int = 8, yield_raw_triplets: bool = False,
+                 async_loading: bool = False, shuffle: bool = True, seed: int = None,
+                 true_sample_f: Callable[[tuple[str, ...]], tuple[str, ...]] = None,
+                 max_documents: int = 10000, cache_size_limit: int = 5000,
+                 source_len: int = 20, target_len: int = 30, exclude_docs: List[str] = None,
+                 filter_article_ids: List[str] = None):
+        """
+        Initialize the dataset with enhanced filtering capabilities.
+        
+        Args:
+            filter_article_ids: Optional list of article IDs to filter documents by
+            (all other parameters remain as in original implementation)
+        """
         self.index = index
         self.es_page_size = es_page_size
         self.batch_size = batch_size
@@ -68,6 +39,7 @@ class ElasticSearchDataset(IterableDataset):
         self.es_client: Elasticsearch = Elasticsearch(url)
         self.tokenizer = tokenizer
         self.exclude_docs = exclude_docs
+        self.filter_article_ids = filter_article_ids
         self.true_sample_f = true_sample_f
         self.cache_size_limit = cache_size_limit
         self.source_len = source_len
@@ -81,45 +53,101 @@ class ElasticSearchDataset(IterableDataset):
         if self.async_loading:
             self.start_async_loading()
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Returns the number of batches in the dataset.
-        For elastic search, this is max_documents divided by batch_size, rounded up.
         """
         return (len(self.document_ids) + self.batch_size - 1) // self.batch_size
 
-    def _get_all_document_ids(self, max_documents: int) -> List[str]:
-        search_query = {
-            "size": max_documents,
-            "query": {"match_all": {}},  # You can adjust the query as needed
-            "sort": [
-            {
-                "_script": {
-                    "type": "number",
-                    "script": {
-                        "source": "Math.random()", # Get random documents from
-                        "lang": "painless"         # from the whole database.
-                    },
-                    "order": "asc"
-                }
+    def _build_search_query(self, size: int) -> Dict[str, Any]:
+        """
+        Builds the Elasticsearch query based on configuration.
+        
+        Args:
+            size: Number of documents to retrieve per page
+            
+        Returns:
+            Dict containing the Elasticsearch query
+        """
+        query: Dict[str, Any] = {
+            "bool": {
+                "must": [{"match_all": {}}]
             }
-            ],
-            "_source": False  # Exclude document content, only return document IDs
         }
-        # Retrieve random document IDs from the index
-        response: Dict[str, Any] = self.es_client.search(
-            index=self.index,
-            body=search_query
-        )
-        document_ids: List[str] = [hit['_id'] for hit in response['hits']['hits']]
-        # Check if document to be excluded from this dataset are given in the constructor.
-        # This is for ensuring that test/validation data is not in the training data
-        if self.exclude_docs: 
-            document_ids = list(set(document_ids) - set(self.exclude_docs))
 
-        return document_ids
+        if self.filter_article_ids:
+            query["bool"]["must"].append({
+                "terms": {
+                    "article_id.keyword": self.filter_article_ids
+                }
+            })
+
+        search_body = {
+            "size": size,
+            "query": query,
+            "_source": ["article_id"] if self.filter_article_ids else False
+        }
+
+        return search_body
+
+    def _get_all_document_ids(self, max_documents: int) -> List[str]:
+        """
+        Retrieve document IDs using scroll API with support for article ID filtering.
+        
+        Args:
+            max_documents: Maximum number of documents to retrieve
+            
+        Returns:
+            List of document IDs
+        """
+        search_body = self._build_search_query(1000)
+        
+        try:
+            response = self.es_client.search(
+                index=self.index,
+                body=search_body,
+                scroll='5m'
+            )
+            
+            scroll_id = response['_scroll_id']
+            document_ids = [hit['_id'] for hit in response['hits']['hits']]
+            
+            try:
+                while len(document_ids) < max_documents:
+                    response = self.es_client.scroll(
+                        scroll_id=scroll_id,
+                        scroll='5m'
+                    )
+                    
+                    if not response['hits']['hits']:
+                        break
+                    
+                    document_ids.extend(hit['_id'] for hit in response['hits']['hits'])
+                    
+            finally:
+                try:
+                    self.es_client.clear_scroll(scroll_id=scroll_id)
+                except Exception as e:
+                    print(f"Error clearing scroll: {e}")
+            
+            if len(document_ids) > max_documents:
+                if self.seed is not None:
+                    random.seed(self.seed)
+                document_ids = random.sample(document_ids, max_documents)
+            
+            if self.exclude_docs:
+                document_ids = list(set(document_ids) - set(self.exclude_docs))
+            
+            return document_ids
+            
+        except Exception as e:
+            print(f"Error in document ID retrieval: {e}")
+            return []
 
     def start_async_loading(self) -> None:
+        """
+        Starts asynchronous loading of documents in a separate thread.
+        """
         def load_data():
             while not self.stop_loading:
                 if self.data_cache.qsize() * self.batch_size < self.cache_size_limit:
@@ -129,14 +157,20 @@ class ElasticSearchDataset(IterableDataset):
         self.loading_thread.start()
 
     def __iter__(self) -> 'ElasticSearchDataset':
+        """
+        Returns the iterator object.
+        """
         self.current_page_index = 0
         self.data_cache.queue.clear()
         self.stop_loading = False
         if self.async_loading:
-           self.start_async_loading()
+            self.start_async_loading()
         return self
 
-    def __next__(self) -> List[Any]:
+    def __next__(self) -> Dict[str, torch.Tensor]:
+        """
+        Returns the next batch of processed data.
+        """
         if (not self.async_loading and not self.stop_loading
                 and self.data_cache.qsize() < self.cache_size_limit):
             self.load_next_page()
@@ -155,12 +189,11 @@ class ElasticSearchDataset(IterableDataset):
         if self.shuffle:
             random.shuffle(batch_data)
 
-		# Check if we should yield raw triplets or continue to tokenize sequences
         if self.yield_raw_triplets:
             return batch_data
             
-        assert self.tokenizer is not None # Valid tokenizer is required to continue
-        # Otherwise, return tokenized sequences
+        assert self.tokenizer is not None
+        
         source_text, target_text = zip(*batch_data)
         source = self.tokenizer.batch_encode_plus(
                     source_text, max_length=self.source_len,
@@ -175,46 +208,76 @@ class ElasticSearchDataset(IterableDataset):
         target_masks = target['attention_mask'].squeeze()
 
         return {
-            'source_ids':source_ids.to(torch.long),
-            'source_masks':source_masks.to(torch.long),
-            'target_ids':target_ids.to(torch.long),
-            'target_masks':target_masks.to(torch.long)
+            'source_ids': source_ids.to(torch.long),
+            'source_masks': source_masks.to(torch.long),
+            'target_ids': target_ids.to(torch.long),
+            'target_masks': target_masks.to(torch.long)
         }
 
     def load_next_page(self) -> None:
+        """
+        Loads the next batch of documents with improved error handling and retries.
+        """
+        MAX_RETRIES = 3
+        RETRY_DELAY = 1
+        BATCH_SIZE = 100
+        
         start_index: int = self.current_page_index * self.es_page_size 
         end_index: int = start_index + self.es_page_size
         if end_index > len(self.document_ids):
             end_index = len(self.document_ids)
             
         ids_to_fetch: List[str] = self.document_ids[start_index:end_index]
-        try:
-            response: Dict[str, Any] = self.es_client.mget(
-                index=self.index,
-                body={"ids": ids_to_fetch}
-            )
-        except:
-            print(f"No documents to fetch from index {self.index}.")
-        hits: List[Dict[str, Any]] = response['docs']
-        for hit in hits:
-            if hit['found']:
-                triplets = self.get_triplets_from_sentence(hit['_source'])
-                for s in triplets:
-                    self.data_cache.put(s)
-
+        
+        for attempt in range(MAX_RETRIES):
+            try:
+                all_hits = []
+                
+                for i in range(0, len(ids_to_fetch), BATCH_SIZE):
+                    batch_ids = ids_to_fetch[i:i + BATCH_SIZE]
+                    response: Dict[str, Any] = self.es_client.mget(
+                        index=self.index,
+                        body={"ids": batch_ids}
+                    )
+                    all_hits.extend(response['docs'])
+                
+                for hit in all_hits:
+                    if hit['found']:
+                        triplets = self.get_triplets_from_sentence(hit['_source'])
+                        for s in triplets:
+                            self.data_cache.put(s)
+                            
+                break
+                
+            except Exception as e:
+                if attempt == MAX_RETRIES - 1:
+                    print(f"Failed to fetch documents after {MAX_RETRIES} attempts: {e}")
+                    self.stop_loading = True
+                    return
+                time.sleep(RETRY_DELAY * (attempt + 1))
+        
         self.current_page_index += 1
         
         if start_index >= len(self.document_ids) or not self.test_next_sliding():
             self.stop_loading = True
-        if self.async_loading:
+        if self.async_loading and self.loading_thread and self.loading_thread.is_alive():
             self.loading_thread.join()
 
     def __del__(self) -> None:
+        """
+        Cleanup method to ensure the loading thread is properly terminated.
+        """
         self.stop_loading = True
-        if self.async_loading and self.loading_thread.is_alive():
+        if self.async_loading and hasattr(self, 'loading_thread') and self.loading_thread and self.loading_thread.is_alive():
             self.loading_thread.join()
 
-    def test_next_sliding(self):
+    def test_next_sliding(self) -> bool:
+        """
+        Tests if there are more documents to fetch in the current window.
+        
+        Returns:
+            bool indicating if there are more documents to fetch
+        """
         start_index: int = self.current_page_index * self.es_page_size 
         end_index: int = start_index + self.es_page_size
         if end_index > len(self.document_ids):
@@ -226,6 +289,15 @@ class ElasticSearchDataset(IterableDataset):
 
     def get_triplets_from_sentence(
             self, es_sentence: Dict) -> List[Tuple[str, str, str, str]]:
+        """
+        Extracts triplets from an Elasticsearch document.
+        
+        Args:
+            es_sentence: Document from Elasticsearch containing triplets
+            
+        Returns:
+            List of tuples containing subject, relation, object, and sentence text
+        """
         triplets_and_sentence: List[Tuple[str, str, str, str]] = []
         for triplet in es_sentence['triplets']:
             sample = list(self.flatten_triplet_keys(triplet))
@@ -235,10 +307,36 @@ class ElasticSearchDataset(IterableDataset):
         return triplets_and_sentence
 
     @staticmethod
-    def flatten_triplet_keys(
-            doc: Tuple[Dict[str, Any], str]) -> Tuple[str, str, str, str]:
+    def flatten_triplet_keys(doc: Dict[str, Any]) -> Tuple[str, str, str]:
+        """
+        Flattens the nested structure of a document triplet.
+        
+        Args:
+            doc: Document containing subject, relation, and object
+            
+        Returns:
+            Tuple of (subject_text, relation_text, object_text)
+        """
         subject_text: str = doc['subject']['text']
         relation_text: str = doc['relation']['text']
         object_text: str = doc['object']['text']
 
         return subject_text, relation_text, object_text
+
+    def get_stats(self) -> Dict[str, Any]:
+        """
+        Returns statistics about the dataset state.
+        
+        Returns:
+            Dictionary containing dataset statistics
+        """
+        stats = {
+            "total_documents": len(self.document_ids),
+            "cache_size": self.data_cache.qsize(),
+            "current_page": self.current_page_index,
+            "is_loading": not self.stop_loading,
+            "has_article_filter": bool(self.filter_article_ids),
+            "batch_size": self.batch_size,
+            "page_size": self.es_page_size
+        }
+        return stats
