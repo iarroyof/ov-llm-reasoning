@@ -78,7 +78,7 @@ def main():
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
             # Create train/test split
-            train_ids, test_ids = OptimizedElasticSearchDataset.create_train_test_split(
+            train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
                 url=url,
                 index=index,
                 max_docs2load=max_docs2load,
@@ -90,7 +90,7 @@ def main():
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
             
             # Create training dataset
-            train_dataset = OptimizedElasticSearchDataset(
+            train_dataset = ElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
@@ -105,7 +105,7 @@ def main():
             )
             
             # Create validation dataset similarly
-            val_dataset = OptimizedElasticSearchDataset(
+            val_dataset = ElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
