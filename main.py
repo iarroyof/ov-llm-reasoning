@@ -78,7 +78,7 @@ def main():
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
             # Create train/test split
-            train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
+            train_ids, test_ids = OptimizedElasticSearchDataset.create_train_test_split(
                 url=url,
                 index=index,
                 max_docs2load=max_docs2load,
@@ -90,28 +90,32 @@ def main():
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
             
             # Create training dataset
-            train_dataset = ElasticSearchDataset(
+            train_dataset = OptimizedElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
+                es_page_size=500,  # Control memory usage with page size
+                batch_size=batch_size,
                 source_len=source_len,
                 target_len=target_len,
-                batch_size=batch_size,
                 selected_doc_ids=train_ids,
+                cache_size_limit=5000,  # Control memory usage with cache limit
                 seed=42
             )
             
-            # Create validation dataset
-            val_dataset = ElasticSearchDataset(
+            # Create validation dataset similarly
+            val_dataset = OptimizedElasticSearchDataset(
                 url=url,
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
+                es_page_size=500,
+                batch_size=batch_size,
                 source_len=source_len,
                 target_len=target_len,
-                batch_size=batch_size,
                 selected_doc_ids=test_ids,
+                cache_size_limit=5000,
                 seed=42
             )           
             # Create data loaders
