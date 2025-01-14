@@ -7,7 +7,7 @@ from transformers import PreTrainedTokenizer
 from collections import deque
 
 
-class ElasticSearchDataset(IterableDataset):
+class OptimizedElasticSearchDataset(IterableDataset):
     """
     Optimized ElasticSearch dataset with progressive loading and memory efficiency.
     """
@@ -163,9 +163,9 @@ class ElasticSearchDataset(IterableDataset):
             
         return {
             'source_ids': torch.stack([x['source_ids'] for x in batch]),
-            'source_mask': torch.stack([x['source_mask'] for x in batch]),
+            'source_masks': torch.stack([x['source_mask'] for x in batch]),  # Changed to plural
             'target_ids': torch.stack([x['target_ids'] for x in batch]),
-            'target_mask': torch.stack([x['target_mask'] for x in batch])
+            'target_masks': torch.stack([x['target_mask'] for x in batch])  # Changed to plural
         }
 
     def load_next_page(self) -> None:
@@ -261,9 +261,9 @@ class ElasticSearchDataset(IterableDataset):
         
         return [{
             'source_ids': source_encodings['input_ids'][i],
-            'source_mask': source_encodings['attention_mask'][i],
+            'source_mask': source_encodings['attention_mask'][i],  # Keep singular here as it's internal
             'target_ids': target_encodings['input_ids'][i],
-            'target_mask': target_encodings['attention_mask'][i]
+            'target_mask': target_encodings['attention_mask'][i]   # Keep singular here as it's internal
         } for i in range(len(batch_samples))]
 
     def get_stats(self) -> Dict[str, Any]:
