@@ -15,40 +15,55 @@ class ElasticSearchDataset(IterableDataset):
     @staticmethod
     def create_train_test_split(url: str, index: str, max_docs2load: int, 
                                test_ratio: float = 0.3, seed: Optional[int] = None) -> Tuple[List[str], List[str]]:
-        """Create train/test split of document IDs."""
+        """Create train/test split of document IDs using scroll API."""
         es_client = Elasticsearch(url)
         
+        # Initialize scroll
         query = {
-            "size": 1000,
+            "size": 1000,  # Number of documents per scroll
             "query": {"match_all": {}},
-            "_source": False,
-            "sort": [{"_id": "asc"}]
+            "_source": False
         }
         
-        all_ids = []
-        last_sort = None
-        
-        while True:
-            if last_sort:
-                query["search_after"] = last_sort
-                
+        try:
+            # Get initial scroll ID
+            response = es_client.search(
+                index=index,
+                body=query,
+                scroll='5m'  # Keep scroll context alive for 5 minutes
+            )
+            
+            scroll_id = response['_scroll_id']
+            all_ids = [hit['_id'] for hit in response['hits']['hits']]
+            
             try:
-                response = es_client.search(index=index, body=query)
-                hits = response['hits']['hits']
-                
-                if not hits:
-                    break
+                # Continue scrolling until we have enough documents
+                while len(all_ids) < max_docs2load:
+                    response = es_client.scroll(
+                        scroll_id=scroll_id,
+                        scroll='5m'
+                    )
                     
-                all_ids.extend(hit['_id'] for hit in hits)
-                last_sort = hits[-1]['sort']
-                
-                if len(all_ids) >= max_docs2load:
-                    all_ids = all_ids[:max_docs2load]
-                    break
+                    hits = response['hits']['hits']
+                    if not hits:
+                        break
+                        
+                    all_ids.extend(hit['_id'] for hit in hits)
                     
-            except Exception as e:
-                print(f"Error fetching IDs: {e}")
-                break
+                    if len(all_ids) >= max_docs2load:
+                        all_ids = all_ids[:max_docs2load]
+                        break
+                
+            finally:
+                # Clear scroll context
+                try:
+                    es_client.clear_scroll(scroll_id=scroll_id)
+                except Exception as e:
+                    print(f"Error clearing scroll: {e}")
+                    
+        except Exception as e:
+            print(f"Error fetching IDs: {e}")
+            return [], []
         
         if seed is not None:
             random.seed(seed)
