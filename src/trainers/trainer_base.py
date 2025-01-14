@@ -56,7 +56,7 @@ class BaseNeuralReasoningTrainer:
             })
 
         if step % 10 == 0:
-            print(f"Epoch: {epoch} | Train Loss: {loss}")
+            logger.info(f"Epoch: {epoch} | Step {step} | Train Loss: {loss}")
         
         loss.backward()
         optimizer.step()
