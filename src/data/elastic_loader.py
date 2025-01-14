@@ -7,27 +7,15 @@ from transformers import PreTrainedTokenizer
 from collections import deque
 
 
-class ElasticSearchDataset(IterableDataset):
+class OptimizedElasticSearchDataset(IterableDataset):
     """
-    Optimized ElasticSearch dataset for PyTorch training with efficient train/test splitting.
+    Optimized ElasticSearch dataset with progressive loading and memory efficiency.
     """
     
     @staticmethod
     def create_train_test_split(url: str, index: str, max_docs2load: int, 
                                test_ratio: float = 0.3, seed: Optional[int] = None) -> Tuple[List[str], List[str]]:
-        """
-        Create train/test split of document IDs.
-        
-        Args:
-            url: Elasticsearch URL
-            index: Index name
-            max_docs2load: Maximum number of documents to load in total
-            test_ratio: Ratio of documents to use for testing
-            seed: Random seed for reproducibility
-            
-        Returns:
-            Tuple of (train_ids, test_ids)
-        """
+        """Create train/test split of document IDs."""
         es_client = Elasticsearch(url)
         
         query = {
@@ -77,29 +65,31 @@ class ElasticSearchDataset(IterableDataset):
             url: str,
             index: str,
             tokenizer: PreTrainedTokenizer,
+            es_page_size: int = 500,
             batch_size: int = 8,
-            prefetch_batches: int = 10,
             filter_article_ids: Optional[List[str]] = None,
             source_len: int = 20,
             target_len: int = 30,
             true_sample_f: Optional[Callable] = None,
             seed: Optional[int] = None,
-            selected_doc_ids: Optional[List[str]] = None):
+            selected_doc_ids: Optional[List[str]] = None,
+            cache_size_limit: int = 5000):
         
         self.es_client = Elasticsearch(url)
         self.index = index
         self.tokenizer = tokenizer
+        self.es_page_size = es_page_size
         self.batch_size = batch_size
-        self.prefetch_size = batch_size * prefetch_batches
         self.filter_article_ids = filter_article_ids
         self.source_len = source_len
         self.target_len = target_len
         self.true_sample_f = true_sample_f or (lambda x: x)
         self.seed = seed
+        self.cache_size_limit = cache_size_limit
         
-        # Track documents
-        self.seen_docs = set()
-        self.data_buffer = deque(maxlen=self.prefetch_size * 2)
+        # Progressive loading state
+        self.current_page_index = 0
+        self.data_buffer = deque(maxlen=self.cache_size_limit)
         self.selected_doc_ids = selected_doc_ids
         
         # Initialize document IDs
@@ -110,31 +100,8 @@ class ElasticSearchDataset(IterableDataset):
 
     def _initialize_document_ids(self):
         """Initialize document IDs using pre-selected IDs if available"""
-        if self.selected_doc_ids:
-            self.document_ids = list(self.selected_doc_ids)
-            self.total_docs = len(self.document_ids)
-            return
-            
-        query = {
-            "size": 10000,  # Default max size
-            "query": self._build_base_query(),
-            "_source": False,
-            "sort": [{"_id": "asc"}]
-        }
-        
-        try:
-            response = self.es_client.search(
-                index=self.index,
-                body=query
-            )
-            
-            self.document_ids = [hit['_id'] for hit in response['hits']['hits']]
-            self.total_docs = len(self.document_ids)
-            
-        except Exception as e:
-            print(f"Error initializing document IDs: {e}")
-            self.document_ids = []
-            self.total_docs = 0
+        self.document_ids = list(self.selected_doc_ids) if self.selected_doc_ids else []
+        self.total_docs = len(self.document_ids)
 
     def _build_base_query(self) -> Dict:
         """Build base query with article ID filtering if needed"""
@@ -156,22 +123,21 @@ class ElasticSearchDataset(IterableDataset):
         return self.total_docs // self.batch_size
 
     def __iter__(self):
-        """Iterator implementation with buffer management"""
-        self.seen_docs.clear()
+        """Reset iterator state"""
+        self.current_page_index = 0
         self.data_buffer.clear()
         return self
 
     def __next__(self):
         """Returns next batch of processed data"""
+        # Load next page if buffer is getting low
         if len(self.data_buffer) < self.batch_size:
-            raw_docs = self._fetch_batch()
-            if not raw_docs and not self.data_buffer:
-                raise StopIteration
-                
-            if raw_docs:
-                processed_examples = self._process_documents(raw_docs)
-                self.data_buffer.extend(processed_examples)
+            self.load_next_page()
+            
+        if not self.data_buffer:
+            raise StopIteration
         
+        # Create batch
         batch = []
         for _ in range(min(self.batch_size, len(self.data_buffer))):
             if self.data_buffer:
@@ -187,31 +153,44 @@ class ElasticSearchDataset(IterableDataset):
             'target_mask': torch.stack([x['target_mask'] for x in batch])
         }
 
-    def _fetch_batch(self) -> List[Dict]:
-        """Fetch a batch of documents using stored document IDs"""
-        if not self.document_ids:
-            return []
+    def load_next_page(self) -> None:
+        """Load next page of documents and process them"""
+        start_index = self.current_page_index * self.es_page_size
+        end_index = start_index + self.es_page_size
+        
+        if end_index > len(self.document_ids):
+            end_index = len(self.document_ids)
             
-        batch_ids = []
-        for doc_id in self.document_ids:
-            if doc_id not in self.seen_docs:
-                batch_ids.append(doc_id)
-                self.seen_docs.add(doc_id)
-            if len(batch_ids) >= self.prefetch_size:
-                break
-                
-        if not batch_ids:
-            return []
+        if start_index >= len(self.document_ids):
+            return
             
+        # Get document IDs for this page
+        page_ids = self.document_ids[start_index:end_index]
+        
         try:
-            response = self.es_client.mget(
-                index=self.index,
-                body={"ids": batch_ids}
-            )
-            return [doc['_source'] for doc in response['docs'] if doc.get('found')]
+            # Fetch documents in smaller batches
+            BATCH_SIZE = 100
+            all_docs = []
+            
+            for i in range(0, len(page_ids), BATCH_SIZE):
+                batch_ids = page_ids[i:i + BATCH_SIZE]
+                response = self.es_client.mget(
+                    index=self.index,
+                    body={"ids": batch_ids}
+                )
+                all_docs.extend(doc['_source'] for doc in response['docs'] 
+                              if doc.get('found'))
+            
+            # Process documents and add to buffer
+            processed_examples = self._process_documents(all_docs)
+            for example in processed_examples:
+                if len(self.data_buffer) < self.cache_size_limit:
+                    self.data_buffer.append(example)
+                    
         except Exception as e:
-            print(f"Error fetching batch: {e}")
-            return []
+            print(f"Error loading page: {e}")
+            
+        self.current_page_index += 1
 
     def get_triplets_from_sentence(
             self, es_sentence: Dict) -> List[Tuple[str, str, str, str]]:
@@ -276,10 +255,10 @@ class ElasticSearchDataset(IterableDataset):
         """Get current dataset statistics"""
         return {
             "total_documents": self.total_docs,
-            "seen_documents": len(self.seen_docs),
-            "remaining_documents": self.total_docs - len(self.seen_docs),
+            "current_page": self.current_page_index,
+            "documents_per_page": self.es_page_size,
             "buffer_size": len(self.data_buffer),
+            "cache_limit": self.cache_size_limit,
             "has_article_filter": bool(self.filter_article_ids),
-            "batch_size": self.batch_size,
-            "prefetch_size": self.prefetch_size
+            "batch_size": self.batch_size
         }
