@@ -43,7 +43,7 @@ class T5LargeReasoningTrainer(BaseNeuralReasoningTrainer):
             quantization: '8bit' or '4bit' for different quantization schemes
         """
         use_8bit = quantization == '8bit'
-        tokenizer = T5Tokenizer.from_pretrained("google/t5-11b-ssm-nq")
+        tokenizer = T5Tokenizer.from_pretrained("google/t5-11b-ssm-nq", legacy=False)
         # Adjust memory handling based on quantization
         if max_memory is None:
             max_memory = {
