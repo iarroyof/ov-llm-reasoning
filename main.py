@@ -85,7 +85,8 @@ def main():
                 test_ratio=0.3,
                 seed=42
             )
-            
+            logger.info(f"Number of training sentences: {len(train_ids)}")
+            logger.info(f"Number of test sentences: {len(test_ids)}")
             # Define transformation function
             true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
             
@@ -95,12 +96,12 @@ def main():
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
-                es_page_size=500,  # Control memory usage with page size
+                es_page_size=es_page_size,  # Control memory usage with page size
                 batch_size=batch_size,
                 source_len=source_len,
                 target_len=target_len,
                 selected_doc_ids=train_ids,
-                cache_size_limit=5000,  # Control memory usage with cache limit
+                cache_size_limit=es_page_size,  # Control memory usage with cache limit
                 seed=42
             )
             
@@ -110,12 +111,12 @@ def main():
                 index=index,
                 tokenizer=reasoning_trainer.tokenizer,
                 true_sample_f=true_sample,
-                es_page_size=500,
+                es_page_size=es_page_size,
                 batch_size=batch_size,
                 source_len=source_len,
                 target_len=target_len,
                 selected_doc_ids=test_ids,
-                cache_size_limit=5000,
+                cache_size_limit=es_page_size,
                 seed=42
             )           
             # Create data loaders
