@@ -89,24 +89,34 @@ class BaseNeuralReasoningTrainer:
         return avg_loss, avg_scores
     
     def test_step(self, step, data):
-        """Process single test batch"""
         source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
         outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
         loss = outputs[0]
         
-        logits = outputs.logits
-        preds = F.softmax(logits, dim=-1).argmax(dim=-1)
-        logger.info(f"Predictions shape: {preds.shape}")
-        logger.info(f"Sample prediction (first 10 tokens): {preds[0,:10]}")
+        # Generate with better parameters
+        generated_ids = self.model.generate(
+            input_ids=source_ids,
+            attention_mask=source_mask,
+            max_length=y_ids.shape[1],  # Match target length
+            min_length=5,  # Prevent too short sequences
+            num_beams=4,  # Use beam search
+            no_repeat_ngram_size=2,  # Prevent repetitions
+            early_stopping=True,
+            temperature=0.7,  # Add some randomness
+            top_p=0.9,  # Nucleus sampling
+            pad_token_id=self.tokenizer.pad_token_id,
+            eos_token_id=self.tokenizer.eos_token_id,
+        )
         
         try:
-            test_score = self.calculate_validation_score(data, preds)
-        except:
+            test_score = self.calculate_validation_score(data, generated_ids)
+        except Exception as e:
+            logger.error(f"Error in test scoring: {str(e)}")
             if self.score_type == 'all':
                 test_score = [-1] * 3
             else:
                 test_score = -1
-
+    
         return {'loss': loss.item(), 'score': test_score}
     
     def _aggregate_scores(self, scores):
@@ -125,39 +135,23 @@ class BaseNeuralReasoningTrainer:
                 logger.warning("No valid scores found after filtering")
                 return [-1] * 3
             
-            # Log statistics about valid/invalid scores
-            logger.info(f"Valid scores before averaging ({len(valid_scores)}/{len(scores)} batches):")
-            logger.info(f"Valid scores: {valid_scores}")
+            # Apply weights to give more importance to non-zero scores
+            weights = (valid_scores != 0).astype(float)
+            weights = weights / weights.sum(axis=0, keepdims=True)
+            avg_scores = np.sum(valid_scores * weights, axis=0)
             
-            avg_scores = np.mean(valid_scores, axis=0)
-            logger.info(f"Averaged scores (excluding errors): {avg_scores}")
-            
-            # Add success rate to wandb
-            wandb.log({
-                "validation_success_rate": len(valid_scores) / len(scores),
-                "valid_batch_count": len(valid_scores),
-                "total_batch_count": len(scores)
-            })
+            # Log statistics
+            logger.info(f"Valid scores ({len(valid_scores)}/{len(scores)} batches):")
+            logger.info(f"BLEU mean: {avg_scores[0]:.4f}")
+            logger.info(f"ROUGE mean: {avg_scores[1]:.4f}")
+            logger.info(f"Combined mean: {avg_scores[2]:.4f}")
             
             return avg_scores
         else:
-            valid_scores = [s for s in scores if s != -1]
+            valid_scores = [s for s in scores if s != -1 and s != 0]
             if not valid_scores:
-                logger.warning("No valid scores found after filtering")
                 return -1
-                
-            logger.info(f"Valid scores before averaging ({len(valid_scores)}/{len(scores)} batches): {valid_scores}")
-            avg_score = sum(valid_scores) / len(valid_scores)
-            logger.info(f"Averaged score (excluding errors): {avg_score}")
-            
-            # Add success rate to wandb
-            wandb.log({
-                "validation_success_rate": len(valid_scores) / len(scores),
-                "valid_batch_count": len(valid_scores),
-                "total_batch_count": len(scores)
-            })
-            
-            return avg_score
+            return sum(valid_scores) / len(valid_scores)
             
     def _log_final_metrics(self, avg_loss, avg_scores):
         """Log final metrics to wandb"""
@@ -179,84 +173,58 @@ class BaseNeuralReasoningTrainer:
         wandb.log(log_dict)
 
     def calculate_validation_score(self, data, generated_ids):
-        """Calculate validation scores (BLEU, ROUGE) for generated text"""
         try:
-            # Log input shapes and content
             target_ids = data["target_ids"].to(self.device)
-            logger.info(f"Target ids shape: {target_ids.shape}")
-            logger.info(f"Generated ids shape: {generated_ids.shape}")
             
-            # Decode and log sample outputs
-            target_text = [
-                self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
-            generated_text = [
-                self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
+            # Decode and clean sequences
+            target_text = [self.tokenizer.decode(t, skip_special_tokens=True).strip() for t in target_ids]
+            generated_text = [self.tokenizer.decode(p, skip_special_tokens=True).strip() for p in generated_ids]
             
-            logger.info(f"Sample target text (first item): {target_text[0]}")
-            logger.info(f"Sample generated text (first item): {generated_text[0]}")
+            # Filter out empty sequences from both lists simultaneously
+            paired_texts = [(g, t) for g, t in zip(generated_text, target_text) 
+                           if g.strip() and t.strip()]
             
-            # Validate inputs
-            if not any(target_text) or not any(generated_text):
-                logger.warning("Empty sequences detected in validation")
+            if not paired_texts:
+                logger.warning("No valid text pairs found")
                 return [-1] * 3 if self.score_type == 'all' else -1
                 
-            # Strip whitespace and validate again
-            target_text = [t.strip() for t in target_text if t.strip()]
-            generated_text = [g.strip() for g in generated_text if g.strip()]
+            generated_text, target_text = zip(*paired_texts)
             
-            logger.info(f"Number of non-empty target sequences: {len(target_text)}")
-            logger.info(f"Number of non-empty generated sequences: {len(generated_text)}")
-            
-            if not target_text or not generated_text:
-                logger.warning("All sequences empty after cleaning")
-                return [-1] * 3 if self.score_type == 'all' else -1
-    
-            # Calculate BLEU if needed
             if self.score_type in ['all', 'bleu', 'combined']:
-                bleu = BLEU(smooth_method='floor')
-                try:
-                    bleu_score = bleu.corpus_score(
-                        generated_text, 
-                        [[ref] for ref in target_text]
-                    ).score
-                    logger.info(f"BLEU calculation successful: {bleu_score}")
-                except Exception as e:
-                    logger.error(f"BLEU calculation failed: {str(e)}")
-                    bleu_score = 0.0
-    
-            # Calculate ROUGE if needed
+                bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing
+                references = [[t] for t in target_text]  # Proper reference format
+                bleu_score = bleu.corpus_score(list(generated_text), references).score
+                
             if self.score_type in ['all', 'rouge', 'combined']:
                 rouge = Rouge()
+                # Convert tuples to lists and ensure non-empty
                 try:
                     rouge_scores = rouge.get_scores(
-                        generated_text,
-                        target_text, 
+                        list(generated_text), 
+                        list(target_text), 
                         avg=True
                     )
                     rouge_score = rouge_scores["rouge-l"]["f"]
-                    logger.info(f"ROUGE calculation successful: {rouge_score}")
                 except Exception as e:
-                    logger.error(f"ROUGE calculation failed: {str(e)}")
+                    logger.error(f"ROUGE calculation error: {str(e)}")
                     rouge_score = 0.0
     
-            # Return appropriate score format
+            # Return scores
             if self.score_type == 'combined':
                 score = (bleu_score + rouge_score) / 2.0
             elif self.score_type == 'all':
                 score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
-                logger.info(f"Batch scores - BLEU: {bleu_score:.4f}, ROUGE: {rouge_score:.4f}, Combined: {score[2]:.4f}")
             elif self.score_type == 'bleu':
                 score = bleu_score
             elif self.score_type == 'rouge':
                 score = rouge_score
-            
+                
             return score
     
         except Exception as e:
-            import traceback
-            logger.error(f"Error in validation scoring: {str(e)}")
-            logger.error(f"Traceback: {traceback.format_exc()}")
+            logger.error(f"Error in validation scoring: {str(e)}", exc_info=True)
             return [-1] * 3 if self.score_type == 'all' else -1
+        
     def get_data(self, data):
         """To be implemented by specific model trainers"""
         raise NotImplementedError
