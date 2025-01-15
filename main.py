@@ -49,8 +49,8 @@ def main():
         url = es_settings.get("url") #"http://192.168.241.210:9200"
         index = es_settings.get("index") # 'triplets'
         es_page_size = es_settings.get("es_page_size") #100
-        max_docs2load = es_settings.get("max_docs2load") #1500
-        print([url, index, es_page_size, max_docs2load])
+        n_sentences = es_settings.get("max_docs2load") #1500
+        logger.info(f"ES URL: {url}; ES index: {index}; ES page size: {es_page_size}; Total sentences: {n_sentences}")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Device found: {device}")
         # Log initial system state
@@ -62,18 +62,12 @@ def main():
             # Special handling for large models
             if type(trainer_class).__name__ ==  "T5LargeReasoningTrainer":
                 quantization = wandb.config["quantization"]
-                max_memory = wandb.config["max_memory"]
-
                 reasoning_trainer = trainer_class.from_pretrained(
                     model_name=model_name,
                     device=device,
                     quantization=quantization,
-                    #use_gradient_checkpointing=gradient_checkpointing,
                     max_memory=max_memory,
-                    #model_max_length=model_max_length
                 )
-                # Force smaller batch size for large models
-                batch_size = min(batch_size, 2 if quantization == "4bit" else 1)
             else:
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
@@ -81,7 +75,7 @@ def main():
             train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
                 url=url,
                 index=index,
-                max_docs2load=max_docs2load,
+                max_docs2load=n_sentences,
                 test_ratio=0.3,
                 seed=42
             )
@@ -130,7 +124,6 @@ def main():
                 batch_size=None,
                 num_workers=0
             )
-
             # Initialize optimizer
             optimizer_class = AdamW if optimizer_name == "adamw" else Adam
             optimizer = optimizer_class(
@@ -167,4 +160,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    logger.info({"initial_system_state": log_gpu_memory_usage()})
+    logger.info({"Final system state": log_gpu_memory_usage()})
