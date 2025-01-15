@@ -113,7 +113,7 @@ class BaseNeuralReasoningTrainer:
             
         if self.score_type == 'all':
             return np.mean(scores, axis=0)
-        else
+        else:
             return sum(scores) / len(scores)
     
     def _log_final_metrics(self, avg_loss, avg_scores):
