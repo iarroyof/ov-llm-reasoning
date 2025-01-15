@@ -230,6 +230,9 @@ class BaseNeuralReasoningTrainer:
                 score = rouge_score
             
             return score
+        except Exception as e:
+            logger.error(f"Error in validation scoring: {str(e)}")
+            return [-1] * 3 if self.score_type == 'all' else -1
 
     def get_data(self, data):
         """To be implemented by specific model trainers"""
