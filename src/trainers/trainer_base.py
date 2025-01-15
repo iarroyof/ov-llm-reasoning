@@ -96,6 +96,8 @@ class BaseNeuralReasoningTrainer:
         
         logits = outputs.logits
         preds = F.softmax(logits, dim=-1).argmax(dim=-1)
+        logger.info(f"Predictions shape: {preds.shape}")
+        logger.info(f"Sample prediction (first 10 tokens): {preds[0,:10]}")
         
         try:
             test_score = self.calculate_validation_score(data, preds)
