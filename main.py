@@ -142,6 +142,7 @@ def main():
             logger.info("Training started.")
             logger.info({"initial_system_state": log_gpu_memory_usage()})
             logger.info(f"Training epoch with hyperparameters {wandb.config}")
+            reasoning_trainer.score_type = 'all' # BLEU, ROUGE, COMBINED
             for epoch in range(epochs):
                 reasoning_trainer.train(optimizer, train_loader, epoch)
 
