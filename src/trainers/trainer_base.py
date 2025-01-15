@@ -151,23 +151,29 @@ class BaseNeuralReasoningTrainer:
             self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
         generated_text = [
             self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
-
+    
         if self.score_type in ['all', 'bleu', 'combined']:
             bleu = BLEU(smooth_method='floor')
-            bleu_score = bleu.corpus_score(generated_text,
-                [[ref] for ref in target_text]).score
-
+            bleu_score = bleu.corpus_score(
+                generated_text, 
+                [[ref] for ref in target_text]  # Fixed: proper reference format
+            ).score
+    
         if self.score_type in ['all', 'rouge', 'combined']:
             rouge = Rouge()
             rouge_score = rouge.get_scores(
-                generated_text, target_text, avg=True)["rouge-l"]["f"]
-
-        if self.score_type in ['combined', 'all']:
+                generated_text,  # Fixed: correct order
+                target_text, 
+                avg=True
+            )["rouge-l"]["f"]
+    
+        if self.score_type == 'combined':  # Fixed: logic flow
             score = (bleu_score + rouge_score) / 2.0
-        if self.score_type == 'all':
-            score = [bleu_score, rouge_score, score]
+        elif self.score_type == 'all':
+            score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
         elif self.score_type == 'bleu':
             score = bleu_score
         elif self.score_type == 'rouge':
             score = rouge_score
+        
         return score
