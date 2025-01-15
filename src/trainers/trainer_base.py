@@ -108,19 +108,55 @@ class BaseNeuralReasoningTrainer:
         return {'loss': loss.item(), 'score': test_score}
     
     def _aggregate_scores(self, scores):
-        """Average scores across batches"""
+        """Average scores across batches, ignoring error cases"""
         if not scores:
+            logger.warning("No scores to aggregate")
             return [-1] * 3 if self.score_type == 'all' else -1
-            
+        
         if self.score_type == 'all':
             scores_array = np.array(scores)
-            logger.info(f"All batch scores before averaging: {scores_array}")
-            avg_scores = np.mean(scores_array, axis=0)
-            logger.info(f"Averaged scores: {avg_scores}")
+            # Filter out error cases (all -1)
+            valid_mask = ~np.all(scores_array == -1, axis=1)
+            valid_scores = scores_array[valid_mask]
+            
+            if len(valid_scores) == 0:
+                logger.warning("No valid scores found after filtering")
+                return [-1] * 3
+            
+            # Log statistics about valid/invalid scores
+            logger.info(f"Valid scores before averaging ({len(valid_scores)}/{len(scores)} batches):")
+            logger.info(f"Valid scores: {valid_scores}")
+            
+            avg_scores = np.mean(valid_scores, axis=0)
+            logger.info(f"Averaged scores (excluding errors): {avg_scores}")
+            
+            # Add success rate to wandb
+            wandb.log({
+                "validation_success_rate": len(valid_scores) / len(scores),
+                "valid_batch_count": len(valid_scores),
+                "total_batch_count": len(scores)
+            })
+            
             return avg_scores
         else:
-            return sum(scores) / len(scores)
-    
+            valid_scores = [s for s in scores if s != -1]
+            if not valid_scores:
+                logger.warning("No valid scores found after filtering")
+                return -1
+                
+            logger.info(f"Valid scores before averaging ({len(valid_scores)}/{len(scores)} batches): {valid_scores}")
+            avg_score = sum(valid_scores) / len(valid_scores)
+            logger.info(f"Averaged score (excluding errors): {avg_score}")
+            
+            # Add success rate to wandb
+            wandb.log({
+                "validation_success_rate": len(valid_scores) / len(scores),
+                "valid_batch_count": len(valid_scores),
+                "total_batch_count": len(scores)
+            })
+            
+            return avg_score
+            
     def _log_final_metrics(self, avg_loss, avg_scores):
         """Log final metrics to wandb"""
         log_dict = {
@@ -139,8 +175,62 @@ class BaseNeuralReasoningTrainer:
             logger.info(f"Final Test Loss: {avg_loss} | Final Test Score: {avg_scores}")
             
         wandb.log(log_dict)
-        
-        
+
+    def calculate_validation_score(self, data, generated_ids):
+        """Calculate validation scores (BLEU, ROUGE) for generated text"""
+        try:
+            target_ids = data["target_ids"].to(self.device)
+            target_text = [
+                self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
+            generated_text = [
+                self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
+            
+            # Validate inputs
+            if not any(target_text) or not any(generated_text):
+                logger.warning("Empty sequences detected in validation")
+                return [-1] * 3 if self.score_type == 'all' else -1
+                
+            # Strip whitespace and validate again
+            target_text = [t.strip() for t in target_text if t.strip()]
+            generated_text = [g.strip() for g in generated_text if g.strip()]
+            
+            if not target_text or not generated_text:
+                logger.warning("All sequences empty after cleaning")
+                return [-1] * 3 if self.score_type == 'all' else -1
+    
+            # Calculate BLEU if needed
+            if self.score_type in ['all', 'bleu', 'combined']:
+                bleu = BLEU(smooth_method='floor')
+                bleu_score = bleu.corpus_score(
+                    generated_text, 
+                    [[ref] for ref in target_text]
+                ).score
+                logger.debug(f"BLEU score: {bleu_score}")
+    
+            # Calculate ROUGE if needed
+            if self.score_type in ['all', 'rouge', 'combined']:
+                rouge = Rouge()
+                rouge_scores = rouge.get_scores(
+                    generated_text,
+                    target_text, 
+                    avg=True
+                )
+                rouge_score = rouge_scores["rouge-l"]["f"]
+                logger.debug(f"ROUGE score: {rouge_score}")
+    
+            # Return appropriate score format
+            if self.score_type == 'combined':
+                score = (bleu_score + rouge_score) / 2.0
+            elif self.score_type == 'all':
+                score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
+                logger.info(f"Batch scores - BLEU: {bleu_score:.4f}, ROUGE: {rouge_score:.4f}, Combined: {score[2]:.4f}")
+            elif self.score_type == 'bleu':
+                score = bleu_score
+            elif self.score_type == 'rouge':
+                score = rouge_score
+            
+            return score
+
     def get_data(self, data):
         """To be implemented by specific model trainers"""
         raise NotImplementedError
@@ -148,40 +238,3 @@ class BaseNeuralReasoningTrainer:
     def forward_pass(self, source_ids, source_mask, y_ids, lm_labels):
         """To be implemented by specific model trainers"""
         raise NotImplementedError
-
-    def calculate_validation_score(self, data, generated_ids):
-        target_ids = data["target_ids"].to(self.device)
-        target_text = [
-            self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
-        generated_text = [
-            self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
-    
-        if self.score_type in ['all', 'bleu', 'combined']:
-            bleu = BLEU(smooth_method='floor')
-            bleu_score = bleu.corpus_score(
-                generated_text, 
-                [[ref] for ref in target_text]  # Fixed: proper reference format
-            ).score
-    
-        if self.score_type in ['all', 'rouge', 'combined']:
-            rouge = Rouge()
-            rouge_score = rouge.get_scores(
-                generated_text,  # Fixed: correct order
-                target_text, 
-                avg=True
-            )["rouge-l"]["f"]
-    
-        if self.score_type == 'combined':  # Fixed: logic flow
-            score = (bleu_score + rouge_score) / 2.0
-        elif self.score_type == 'all':
-            score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
-        elif self.score_type == 'bleu':
-            score = bleu_score
-        elif self.score_type == 'rouge':
-            score = rouge_score
-            
-        if self.score_type == 'all':
-            score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
-            logger.info(f"Batch scores - BLEU: {bleu_score:.4f}, ROUGE: {rouge_score:.4f}, Combined: {score[2]:.4f}")
-        
-        return score
