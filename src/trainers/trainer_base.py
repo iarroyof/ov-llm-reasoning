@@ -113,7 +113,11 @@ class BaseNeuralReasoningTrainer:
             return [-1] * 3 if self.score_type == 'all' else -1
             
         if self.score_type == 'all':
-            return np.mean(scores, axis=0)
+            scores_array = np.array(scores)
+            logger.info(f"All batch scores before averaging: {scores_array}")
+            avg_scores = np.mean(scores_array, axis=0)
+            logger.info(f"Averaged scores: {avg_scores}")
+            return avg_scores
         else:
             return sum(scores) / len(scores)
     
@@ -175,5 +179,9 @@ class BaseNeuralReasoningTrainer:
             score = bleu_score
         elif self.score_type == 'rouge':
             score = rouge_score
+            
+        if self.score_type == 'all':
+            score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
+            logger.info(f"Batch scores - BLEU: {bleu_score:.4f}, ROUGE: {rouge_score:.4f}, Combined: {score[2]:.4f}")
         
         return score
