@@ -155,12 +155,12 @@ class BaseNeuralReasoningTrainer:
         if self.score_type in ['all', 'bleu', 'combined']:
             bleu = BLEU(smooth_method='floor')
             bleu_score = bleu.corpus_score(generated_text,
-                [ref for ref in target_text]).score
+                [[ref] for ref in target_text]).score
 
         if self.score_type in ['all', 'rouge', 'combined']:
             rouge = Rouge()
             rouge_score = rouge.get_scores(
-                target_text, generated_text, avg=True)["rouge-l"]["f"]
+                generated_text, target_text, avg=True)["rouge-l"]["f"]
 
         if self.score_type in ['combined', 'all']:
             score = (bleu_score + rouge_score) / 2.0
