@@ -6,7 +6,7 @@ parameters:
   epochs:
     value: 2
   hf_model_name:
-    values: ["google-t5/t5-small"]
+    values: ["nvidia/nemo-megatron-t5-3B"]
   learning_rate:
     value: 0.0001
   optimizer:
