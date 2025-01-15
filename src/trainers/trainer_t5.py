@@ -31,8 +31,6 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
         # Use regular T5Tokenizer for v1_1 models, FastTokenizer for others
         if 'v1_1' in model_name or 'b-ssm-nq' in model_name:
             tokenizer = T5Tokenizer.from_pretrained(model_name, legacy=False)
-        elif 'megatron' in model_name:
-            tokenizer = T5Tokenizer.from_pretrained("google/t5-3b-ssm", legacy=False)
         else:
             tokenizer = T5TokenizerFast.from_pretrained(model_name)
 
