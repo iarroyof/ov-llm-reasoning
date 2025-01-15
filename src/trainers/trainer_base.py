@@ -130,11 +130,13 @@ class BaseNeuralReasoningTrainer:
                 "final_test_score (rouge)": avg_scores[1],
                 "final_test_score (combined)": avg_scores[2]
             })
+            logger.info(f"Final Test Loss: {avg_loss} | Final Test Scores (Bleu, Rouge, Combined): {avg_scores}")
         else:
             log_dict[f"final_test_score ({self.score_type})"] = avg_scores
+            logger.info(f"Final Test Loss: {avg_loss} | Final Test Score: {avg_scores}")
             
         wandb.log(log_dict)
-        logger.info(f"Final Test Loss: {avg_loss} | Final Test Scores: {avg_scores}")
+        
         
     def get_data(self, data):
         """To be implemented by specific model trainers"""
@@ -153,13 +155,13 @@ class BaseNeuralReasoningTrainer:
 
         if self.score_type in ['all', 'bleu', 'combined']:
             bleu = BLEU(smooth_method='floor')
-            bleu_score = bleu.corpus_score(
+            bleu_score = -bleu.corpus_score(
                 [ref for ref in target_text], generated_text).score
 
         if self.score_type in ['all', 'rouge', 'combined']:
             rouge = Rouge()
             rouge_score = rouge.get_scores(
-                target_text, generated_text, avg=True)["rouge-l"]["f"]
+                target_text, generated_text, avg=True)["rouge-1"]["f"]
 
         if self.score_type in ['combined', 'all']:
             score = (bleu_score + rouge_score) / 2.0
