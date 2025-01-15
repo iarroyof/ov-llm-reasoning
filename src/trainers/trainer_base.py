@@ -112,11 +112,9 @@ class BaseNeuralReasoningTrainer:
             return [-1] * 3 if self.score_type == 'all' else -1
             
         if self.score_type == 'all':
-            return [
-                sum(score[i] for score in scores) / len(scores)
-                for i in range(3)
-            ]
-        return sum(scores) / len(scores)
+            return np.mean(scores, axis=0)
+        else
+            return sum(scores) / len(scores)
     
     def _log_final_metrics(self, avg_loss, avg_scores):
         """Log final metrics to wandb"""
@@ -161,7 +159,7 @@ class BaseNeuralReasoningTrainer:
         if self.score_type in ['all', 'rouge', 'combined']:
             rouge = Rouge()
             rouge_score = rouge.get_scores(
-                target_text, generated_text, avg=True)["rouge-1"]["f"]
+                target_text, generated_text, avg=True)["rouge-l"]["f"]
 
         if self.score_type in ['combined', 'all']:
             score = (bleu_score + rouge_score) / 2.0
