@@ -73,7 +73,7 @@ class BaseNeuralReasoningTrainer:
         
         with torch.no_grad():
             for step, data in enumerate(loader):
-                batch_metrics = self.test_step(step, data, gen_method)
+                batch_metrics = self.test_step(step, data)
                 total_loss += batch_metrics['loss']
                 all_scores.append(batch_metrics['score'])
                 num_batches += 1
