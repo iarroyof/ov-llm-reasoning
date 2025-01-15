@@ -2,7 +2,7 @@ program: main.py
 method: grid
 parameters:
   batch_size:
-    value: 256
+    value: 32
   epochs:
     value: 2
   hf_model_name:
@@ -14,4 +14,4 @@ parameters:
   source_seq_len:
     value: 8
   target_seq_len:
-    value: 32
+    value: 16
