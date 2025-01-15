@@ -179,11 +179,19 @@ class BaseNeuralReasoningTrainer:
     def calculate_validation_score(self, data, generated_ids):
         """Calculate validation scores (BLEU, ROUGE) for generated text"""
         try:
+            # Log input shapes and content
             target_ids = data["target_ids"].to(self.device)
+            logger.info(f"Target ids shape: {target_ids.shape}")
+            logger.info(f"Generated ids shape: {generated_ids.shape}")
+            
+            # Decode and log sample outputs
             target_text = [
                 self.tokenizer.decode(t, skip_special_tokens=True) for t in target_ids]
             generated_text = [
                 self.tokenizer.decode(p, skip_special_tokens=True) for p in generated_ids]
+            
+            logger.info(f"Sample target text (first item): {target_text[0]}")
+            logger.info(f"Sample generated text (first item): {generated_text[0]}")
             
             # Validate inputs
             if not any(target_text) or not any(generated_text):
@@ -194,6 +202,9 @@ class BaseNeuralReasoningTrainer:
             target_text = [t.strip() for t in target_text if t.strip()]
             generated_text = [g.strip() for g in generated_text if g.strip()]
             
+            logger.info(f"Number of non-empty target sequences: {len(target_text)}")
+            logger.info(f"Number of non-empty generated sequences: {len(generated_text)}")
+            
             if not target_text or not generated_text:
                 logger.warning("All sequences empty after cleaning")
                 return [-1] * 3 if self.score_type == 'all' else -1
@@ -201,22 +212,30 @@ class BaseNeuralReasoningTrainer:
             # Calculate BLEU if needed
             if self.score_type in ['all', 'bleu', 'combined']:
                 bleu = BLEU(smooth_method='floor')
-                bleu_score = bleu.corpus_score(
-                    generated_text, 
-                    [[ref] for ref in target_text]
-                ).score
-                logger.debug(f"BLEU score: {bleu_score}")
+                try:
+                    bleu_score = bleu.corpus_score(
+                        generated_text, 
+                        [[ref] for ref in target_text]
+                    ).score
+                    logger.info(f"BLEU calculation successful: {bleu_score}")
+                except Exception as e:
+                    logger.error(f"BLEU calculation failed: {str(e)}")
+                    bleu_score = 0.0
     
             # Calculate ROUGE if needed
             if self.score_type in ['all', 'rouge', 'combined']:
                 rouge = Rouge()
-                rouge_scores = rouge.get_scores(
-                    generated_text,
-                    target_text, 
-                    avg=True
-                )
-                rouge_score = rouge_scores["rouge-l"]["f"]
-                logger.debug(f"ROUGE score: {rouge_score}")
+                try:
+                    rouge_scores = rouge.get_scores(
+                        generated_text,
+                        target_text, 
+                        avg=True
+                    )
+                    rouge_score = rouge_scores["rouge-l"]["f"]
+                    logger.info(f"ROUGE calculation successful: {rouge_score}")
+                except Exception as e:
+                    logger.error(f"ROUGE calculation failed: {str(e)}")
+                    rouge_score = 0.0
     
             # Return appropriate score format
             if self.score_type == 'combined':
@@ -230,10 +249,12 @@ class BaseNeuralReasoningTrainer:
                 score = rouge_score
             
             return score
+    
         except Exception as e:
+            import traceback
             logger.error(f"Error in validation scoring: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return [-1] * 3 if self.score_type == 'all' else -1
-
     def get_data(self, data):
         """To be implemented by specific model trainers"""
         raise NotImplementedError
