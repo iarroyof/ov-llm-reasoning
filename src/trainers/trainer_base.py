@@ -16,11 +16,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class BaseNeuralReasoningTrainer:
-    def __init__(self, model, tokenizer, device, gen_test_score='bleu'):
+    def __init__(self, model, tokenizer, device, gen_test_score='bleu', gen_method='beam', temp=0.7):
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
         self.score_type = gen_test_score
+        self.gen_method = gen_method
+        self.temp = temp
 
     def train(self, optimizer, train_loader, epoch, val_loader=None):
         self.model.train()
@@ -71,7 +73,7 @@ class BaseNeuralReasoningTrainer:
         
         with torch.no_grad():
             for step, data in enumerate(loader):
-                batch_metrics = self.test_step(step, data)
+                batch_metrics = self.test_step(step, data, gen_method)
                 total_loss += batch_metrics['loss']
                 all_scores.append(batch_metrics['score'])
                 num_batches += 1
@@ -89,25 +91,42 @@ class BaseNeuralReasoningTrainer:
         return avg_loss, avg_scores
     
     def test_step(self, step, data):
+        """Process single test batch with configurable generation method.
+        
+        Args:
+            step: Current step number
+            data: Batch data
+            generation_method: Either 'beam' for beam search or 'sample' for sampling-based generation
+        """
         source_ids, source_mask, y_ids, lm_labels = self.get_data(data)
         outputs = self.forward_pass(source_ids, source_mask, y_ids, lm_labels)
         loss = outputs[0]
-        
-        # Generate with better parameters
-        generated_ids = self.model.generate(
-            input_ids=source_ids,
-            attention_mask=source_mask,
-            max_length=y_ids.shape[1],  # Match target length
-            min_length=5,  # Prevent too short sequences
-            num_beams=4,  # Use beam search
-            no_repeat_ngram_size=2,  # Prevent repetitions
-            early_stopping=True,
-            temperature=0.7,  # Add some randomness
-            top_p=0.9,  # Nucleus sampling
-            pad_token_id=self.tokenizer.pad_token_id,
-            eos_token_id=self.tokenizer.eos_token_id,
-        )
-        
+        # Common generation parameters
+        generation_config = {
+            'input_ids': source_ids,
+            'attention_mask': source_mask,
+            'max_length': y_ids.shape[1],
+            'min_length': 5,
+            'no_repeat_ngram_size': 2,
+            'pad_token_id': self.tokenizer.pad_token_id,
+            'eos_token_id': self.tokenizer.eos_token_id,
+        }
+        # Method-specific parameters
+        if self.gen_method == 'beam':
+            generation_config.update({
+                'num_beams': 4,
+                'early_stopping': True,
+            })
+        elif self.gen_method == 'sample':
+            generation_config.update({
+                'do_sample': True,
+                'temperature': self.temp,
+                'top_p': 0.9,
+            })
+        else:
+            raise ValueError(f"Unknown generation method: {gen_method}. Available options: ['beam', 'sample']")
+        # Generate text
+        generated_ids = self.model.generate(**generation_config)        
         try:
             test_score = self.calculate_validation_score(data, generated_ids)
         except Exception as e:
@@ -118,7 +137,7 @@ class BaseNeuralReasoningTrainer:
                 test_score = -1
     
         return {'loss': loss.item(), 'score': test_score}
-    
+
     def _aggregate_scores(self, scores):
         """Average scores across batches, ignoring error cases"""
         if not scores:
