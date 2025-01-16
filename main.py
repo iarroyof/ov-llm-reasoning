@@ -16,11 +16,10 @@ from torch.nn.modules import Module
 
 # Local imports
 from src.trainers import (
-    T5ReasoningTrainer, 
+    BaseNeuralReasoningTrainer, 
     T5LargeReasoningTrainer,
     BartReasoningTrainer,
-    PegasusReasoningTrainer,
-    BaseReasoningTrainer
+    PegasusReasoningTrainer
 )
 from src.data import ElasticSearchDataset
 from src.utils.memory import log_gpu_memory_usage
@@ -57,7 +56,7 @@ class ElasticSearchConfig:
     n_articles: int
     article_ids_file: str
 
-def get_trainer_class(model_name: str) -> Type[BaseReasoningTrainer]:
+def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:
     """
     Determine appropriate trainer class based on model architecture.
     
@@ -84,7 +83,7 @@ def get_trainer_class(model_name: str) -> Type[BaseReasoningTrainer]:
 
 def setup_datasets(
     config: ElasticSearchConfig,
-    trainer: BaseReasoningTrainer,
+    trainer: BaseNeuralReasoningTrainer,
     batch_size: int,
     source_len: int,
     target_len: int
@@ -171,7 +170,7 @@ def setup_datasets(
     return train_loader, val_loader
 
 def train_model(
-    trainer: BaseReasoningTrainer,
+    trainer: BaseNeuralReasoningTrainer,
     train_loader: DataLoader,
     val_loader: DataLoader,
     config: TrainingConfig
