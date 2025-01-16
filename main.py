@@ -46,11 +46,11 @@ def main():
         optimizer_name = wandb.config["optimizer"]
 
         # ElasticSearch settings loaded from config/es_config.yaml
-        url = es_settings.get("url") #"http://192.168.241.210:9200"
-        index = es_settings.get("index") # 'triplets'
-        es_page_size = es_settings.get("es_page_size") #100
-        n_sentences = es_settings.get("max_docs2load") #1500
-        article_ids = es_settings.get("article_ids_file")
+        url = es_settings.get("url", "http://192.168.241.210:9200") #"http://192.168.241.210:9200"
+        index = es_settings.get("index", "triplets") # 'triplets'
+        es_page_size = es_settings.get("es_page_size", 500) #100
+        n_sentences = es_settings.get("max_docs2load", 10000) #1500
+        article_ids = es_settings.get("article_ids_file", "Not Found")
         
         logger.info(f"ES URL: {url}; ES index: {index}; ES page size: {es_page_size}; Total sentences: {n_sentences}")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -74,31 +74,31 @@ def main():
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
             # Create train/test split
-            if from_ES:
+            if article_ids_file in [None, '', 'Not Found']:
+                with open(article_ids_file, 'r') as f:
+                    article_ids = f.read_lines()
+                    assert len(article_ids) > 10 # The list of articles to consider is less than 10. No sense to work. 
+                        
+                article_ids = [line.strip() for line in article_ids]
                 train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
                     url=url,
                     index=index,
                     max_docs2load=n_sentences,
                     test_ratio=0.3,
-                    seed=42
+                    seed=42,
+                    filter_article_ids=article_ids,  # Optional
+                    es_page_size=500  # Control how many documents to fetch per request
                 )
-            else:
-                with open(article_ids_file, 'r') as f:
-                    sentence_ids = f.read_lines()
-                    
-                sentence_ids = [line.strip() for line in sentence_ids]
-                random.seed(42) 
-                # For reproducibility 
-                random.shuffle(sentence_ids) # Shuffle the list 
-                # Calculate split index
-                try:
-                    if n_sentences > 10:
-                        sentence_ids = sentence_ids[:n_sentences]
-                    split_index = int(0.8 * len(sentence_ids)) # Split the list into train and test subsets 
-                    train_ids = article_ids[:split_index]
-                    test_ids = article_ids[split_index:]
-                except:
-                    logger.error("Invalid number of sentences to load in configuration. It is larger than the available sentences")
+            else:                
+                train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
+                    url=url,
+                    index=index,
+                    max_docs2load=n_sentences,
+                    test_ratio=0.3,
+                    seed=42,
+                    es_page_size=500  # Control how many documents to fetch per request
+                )
+
                     
             logger.info(f"Number of training sentences: {len(train_ids)}")
             logger.info(f"Number of test sentences: {len(test_ids)}")
