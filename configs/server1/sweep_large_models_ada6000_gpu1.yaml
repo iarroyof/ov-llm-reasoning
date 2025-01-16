@@ -23,6 +23,7 @@ parameters:
       "google/pegasus-x-large",
       "allenai/unifiedqa-v2-t5-3b-1363200",
       "Salesforce/qaconv-unifiedqa-t5-3b",
+      "stanfordnlp/SteamSHP-flan-t5-xl",
     ]
 #T5 Version 1.1 includes the following improvements compared to the original T5 model
 #- GEGLU activation in feed-forward hidden layer, rather than ReLU - see here.
