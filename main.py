@@ -238,7 +238,7 @@ def main():
         
         # Get caching options from settings or wandb config
         force_recollect = wandb.config.get("force_recollect", False)
-        cache_dir = es_settings.get("cache_dir", "cache")
+        cache_dir = es_settings.get("cache_dir", "data/cache_art_ids")
         
         logger.info(f"ElasticSearch configuration: {es_config}")
         logger.info(f"Cache settings - Dir: {cache_dir}, Force recollect: {force_recollect}")
