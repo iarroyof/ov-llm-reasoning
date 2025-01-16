@@ -13,32 +13,63 @@ class ElasticSearchDataset(IterableDataset):
     """
     
     @staticmethod
-    def create_train_test_split(url: str, index: str, max_docs2load: int, 
-                               test_ratio: float = 0.3, seed: Optional[int] = None) -> Tuple[List[str], List[str]]:
-        """Create train/test split of document IDs using scroll API."""
+    def create_train_test_split(
+            url: str, 
+            index: str, 
+            max_docs2load: int,
+            test_ratio: float = 0.3, 
+            seed: Optional[int] = None,
+            filter_article_ids: Optional[List[str]] = None,
+            es_page_size: int = 500) -> Tuple[List[str], List[str]]:
+        """
+        Create train/test split of document IDs with optional article ID filtering.
+        
+        Args:
+            url: Elasticsearch URL
+            index: Index name
+            max_docs2load: Maximum number of documents to load in total
+            test_ratio: Ratio of documents to use for testing
+            seed: Random seed for reproducibility
+            filter_article_ids: Optional list of article IDs to filter by
+            es_page_size: Number of documents to fetch in each Elasticsearch request
+            
+        Returns:
+            Tuple of (train_ids, test_ids)
+        """
         es_client = Elasticsearch(url)
         
-        # Initialize scroll
-        query = {
-            "size": 1000,  # Number of documents per scroll
-            "query": {"match_all": {}},
-            "_source": False
-        }
+        # Build query based on whether we have article IDs to filter
+        if filter_article_ids:
+            query = {
+                "size": es_page_size,  # Using es_page_size instead of hardcoded value
+                "query": {
+                    "terms": {
+                        "article_id.keyword": filter_article_ids
+                    }
+                },
+                "_source": False
+            }
+        else:
+            query = {
+                "size": es_page_size,  # Using es_page_size instead of hardcoded value
+                "query": {"match_all": {}},
+                "_source": False
+            }
         
         try:
             # Get initial scroll ID
             response = es_client.search(
                 index=index,
                 body=query,
-                scroll='5m'  # Keep scroll context alive for 5 minutes
+                scroll='5m'
             )
             
             scroll_id = response['_scroll_id']
             all_ids = [hit['_id'] for hit in response['hits']['hits']]
             
             try:
-                # Continue scrolling until we have enough documents
-                while len(all_ids) < max_docs2load:
+                # Continue scrolling until we have all matching documents
+                while True:
                     response = es_client.scroll(
                         scroll_id=scroll_id,
                         scroll='5m'
@@ -50,17 +81,31 @@ class ElasticSearchDataset(IterableDataset):
                         
                     all_ids.extend(hit['_id'] for hit in hits)
                     
-                    if len(all_ids) >= max_docs2load:
-                        all_ids = all_ids[:max_docs2load]
-                        break
-                
             finally:
                 # Clear scroll context
                 try:
                     es_client.clear_scroll(scroll_id=scroll_id)
                 except Exception as e:
                     print(f"Error clearing scroll: {e}")
-                    
+            
+            # If we have more documents than max_docs2load, randomly sample
+            if len(all_ids) > max_docs2load:
+                if seed is not None:
+                    random.seed(seed)
+                all_ids = random.sample(all_ids, max_docs2load)
+            
+            # Shuffle the IDs
+            if seed is not None:
+                random.seed(seed)
+            random.shuffle(all_ids)
+            
+            # Split into train and test
+            test_size = int(len(all_ids) * test_ratio)
+            train_ids = all_ids[test_size:]
+            test_ids = all_ids[:test_size]
+            
+            return train_ids, test_ids
+            
         except Exception as e:
             print(f"Error fetching IDs: {e}")
             return [], []
@@ -74,7 +119,7 @@ class ElasticSearchDataset(IterableDataset):
         test_ids = all_ids[:test_size]
         
         return train_ids, test_ids
-
+                
     def __init__(
             self,
             url: str,
