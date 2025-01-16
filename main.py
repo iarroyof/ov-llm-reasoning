@@ -89,6 +89,7 @@ def main():
                     filter_article_ids=article_ids,  # Optional
                     es_page_size=500  # Control how many documents to fetch per request
                 )
+                logger.info(f"Using sentences from articles listed in {article_ids_file}.")
             else:                
                 train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
                     url=url,
@@ -98,7 +99,7 @@ def main():
                     seed=42,
                     es_page_size=500  # Control how many documents to fetch per request
                 )
-
+                logger.info(f"Using sentences randomly sampled from the index.")
                     
             logger.info(f"Number of training sentences: {len(train_ids)}")
             logger.info(f"Number of test sentences: {len(test_ids)}")
