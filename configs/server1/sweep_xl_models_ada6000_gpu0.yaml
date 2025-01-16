@@ -23,5 +23,5 @@ parameters:
       "google/t5-3b-ssm-nq",
       "google/flan-t5-xl",  # 2.85B parameters 
       "google/t5-efficient-xl-nl28",
-      "google/t5-efficient-xl-nl2"
+      "google/t5-efficient-xl"
     ]
