@@ -6,3 +6,4 @@ ElasticSearch:
   n_sentences: 5000
   article_ids_file: "data/lung_cancer_es_ids.txt"
   n_articles: 10000
+  cache_dir: "data/cache_art_ids"
