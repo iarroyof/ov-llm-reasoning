@@ -214,7 +214,7 @@ def train_model(
 def main():
     """Main training pipeline."""
     with wandb.init() as run:
-        # Initialize configurations
+        # Get configurations from wandb
         training_config = TrainingConfig(
             source_len=wandb.config["source_seq_len"],
             target_len=wandb.config["target_seq_len"],
@@ -236,15 +236,18 @@ def main():
             article_ids_file=es_settings.get("article_ids_file", "Not Found")
         )
         
-        logger.info(f"ElasticSearch configuration: {es_config}")
+        # Get caching options from settings or wandb config
+        force_recollect = wandb.config.get("force_recollect", False)
+        cache_dir = es_settings.get("cache_dir", "cache")
         
-        # Setup device and log initial state
+        logger.info(f"ElasticSearch configuration: {es_config}")
+        logger.info(f"Cache settings - Dir: {cache_dir}, Force recollect: {force_recollect}")
+        
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Using device: {device}")
         logger.info(f"Initial system state: {log_gpu_memory_usage()}")
         
         with ClearCache():
-            # Initialize trainer
             trainer_class = get_trainer_class(training_config.model_name)
             trainer = (
                 trainer_class.from_pretrained(
@@ -257,16 +260,17 @@ def main():
                 else trainer_class.from_pretrained(training_config.model_name, device)
             )
             
-            # Setup datasets
+            # Setup datasets with caching options
             train_loader, val_loader = setup_datasets(
                 es_config,
                 trainer,
                 training_config.batch_size,
                 training_config.source_len,
-                training_config.target_len
+                training_config.target_len,
+                force_recollect=force_recollect,
+                cache_dir=cache_dir
             )
             
-            # Train and evaluate
             final_loss, final_scores = train_model(
                 trainer,
                 train_loader,
@@ -274,12 +278,11 @@ def main():
                 training_config
             )
             
-            # Log final metrics
             wandb.run.summary.update({
                 "final_test_loss": final_loss,
                 "final_test_scores": final_scores
             })
-
+            
 if __name__ == "__main__":
     try:
         main()
