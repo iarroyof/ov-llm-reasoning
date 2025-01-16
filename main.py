@@ -49,8 +49,9 @@ def main():
         url = es_settings.get("url", "http://192.168.241.210:9200") #"http://192.168.241.210:9200"
         index = es_settings.get("index", "triplets") # 'triplets'
         es_page_size = es_settings.get("es_page_size", 500) #100
-        n_sentences = es_settings.get("max_docs2load", 10000) #1500
+        n_sentences = es_settings.get("n_sentences", 10000) #1500
         article_ids_file = es_settings.get("article_ids_file", "Not Found")
+        n_articles = es_settings.get("n_articles", 10000) #1500
         
         logger.info(f"ES URL: {url}; ES index: {index}; ES page size: {es_page_size}; Total sentences: {n_sentences}")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -73,34 +74,34 @@ def main():
             else:
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
-            # Create train/test split
-            if article_ids_file in [None, '', 'Not Found']:
-                with open(article_ids_file, 'r') as f:
-                    article_ids = f.read_lines()
-                    assert len(article_ids) > 10 # The list of articles to consider is less than 10. No sense to work. 
+            # Prepare parameters for train/test split
+            split_params = {
+                'url': url,
+                'index': index,
+                'max_docs2load': n_sentences,
+                'test_ratio': 0.3,
+                'seed': 42
+            }
+            # Add article_ids filter if file exists and is valid
+            if article_ids_file not in [None, '', 'Not Found']:
+                try:
+                    with open(article_ids_file, 'r') as f:
+                        article_ids = [line.strip() for line in f]
+                        if len(article_ids) <= 10 or len(article_ids) < n_articles:
+                            raise ValueError("The list of articles to consider is less than or equal to 10. No sense to work.")
+                        random.seed(42)
+                        random.shuffle(article_ids)
+                        article_ids = article_ids[:n_articles]        
+                    split_params['filter_article_ids'] = article_ids
                         
-                article_ids = [line.strip() for line in article_ids]
-                train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
-                    url=url,
-                    index=index,
-                    max_docs2load=n_sentences,
-                    test_ratio=0.3,
-                    seed=42,
-                    filter_article_ids=article_ids,  # Optional
-                    es_page_size=500  # Control how many documents to fetch per request
-                )
-                logger.info(f"Using {n_sentences} random sentences from articles listed in {article_ids_file}.")
-            else:                
-                train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
-                    url=url,
-                    index=index,
-                    max_docs2load=n_sentences,
-                    test_ratio=0.3,
-                    seed=42,
-                    es_page_size=500  # Control how many documents to fetch per request
-                )
-                logger.info(f"Using {n_sentences} sentences randomly sampled from the index.")
-                    
+                except FileNotFoundError:
+                    print(f"Warning: Article IDs file {article_ids_file} not found.")
+                except Exception as e:
+                    print(f"Error processing article IDs file: {e}")
+            
+            # Create the train/test split
+            train_ids, test_ids = ElasticSearchDataset.create_train_test_split(**split_params)
+
             logger.info(f"Number of training sentences: {len(train_ids)}")
             logger.info(f"Number of test sentences: {len(test_ids)}")
             # Define transformation function
