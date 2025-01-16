@@ -50,6 +50,8 @@ def main():
         index = es_settings.get("index") # 'triplets'
         es_page_size = es_settings.get("es_page_size") #100
         n_sentences = es_settings.get("max_docs2load") #1500
+        article_ids = es_settings.get("article_ids_file")
+        
         logger.info(f"ES URL: {url}; ES index: {index}; ES page size: {es_page_size}; Total sentences: {n_sentences}")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logger.info(f"Device found: {device}")
@@ -72,13 +74,32 @@ def main():
                 reasoning_trainer = trainer_class.from_pretrained(model_name, device)
             # Prepare dataset
             # Create train/test split
-            train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
-                url=url,
-                index=index,
-                max_docs2load=n_sentences,
-                test_ratio=0.3,
-                seed=42
-            )
+            if from_ES:
+                train_ids, test_ids = ElasticSearchDataset.create_train_test_split(
+                    url=url,
+                    index=index,
+                    max_docs2load=n_sentences,
+                    test_ratio=0.3,
+                    seed=42
+                )
+            else:
+                with open(article_ids_file, 'r') as f:
+                    sentence_ids = f.read_lines()
+                    
+                sentence_ids = [line.strip() for line in sentence_ids]
+                random.seed(42) 
+                # For reproducibility 
+                random.shuffle(sentence_ids) # Shuffle the list 
+                # Calculate split index
+                try:
+                    if n_sentences > 10:
+                        sentence_ids = sentence_ids[:n_sentences]
+                    split_index = int(0.8 * len(sentence_ids)) # Split the list into train and test subsets 
+                    train_ids = article_ids[:split_index]
+                    test_ids = article_ids[split_index:]
+                except:
+                    logger.error("Invalid number of sentences to load in configuration. It is larger than the available sentences")
+                    
             logger.info(f"Number of training sentences: {len(train_ids)}")
             logger.info(f"Number of test sentences: {len(test_ids)}")
             # Define transformation function
