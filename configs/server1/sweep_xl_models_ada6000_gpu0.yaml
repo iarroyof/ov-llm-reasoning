@@ -19,7 +19,7 @@ parameters:
     values: ["adamw", "adam"]
   hf_model_name:
     values: [
-      "google-t5/t5-11b",
-      "google/t5-11b-ssm-nq",
-      "google/t5_xxl_true_nli_mixture"  # xxl = 11B parameters for T5 models
+      "google-t5/t5-3b",
+      "google/t5-3b-ssm-nq",
+      "google/flan-t5-xl"  # 2.85B parameters 
     ]
