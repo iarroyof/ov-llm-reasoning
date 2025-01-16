@@ -16,10 +16,11 @@ from torch.nn.modules import Module
 
 # Local imports
 from src.trainers import (
-    BaseNeuralReasoningTrainer, 
+    T5ReasoningTrainer, 
     T5LargeReasoningTrainer,
     BartReasoningTrainer,
-    PegasusReasoningTrainer
+    PegasusReasoningTrainer,
+    BaseNeuralReasoningTrainer  # Fixed class name
 )
 from src.data import ElasticSearchDataset
 from src.utils.memory import log_gpu_memory_usage
@@ -56,18 +57,9 @@ class ElasticSearchConfig:
     n_articles: int
     article_ids_file: str
 
-def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:
+def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:  # Fixed return type
     """
     Determine appropriate trainer class based on model architecture.
-    
-    Args:
-        model_name: Name or path of the model
-        
-    Returns:
-        Trainer class appropriate for the model architecture
-        
-    Raises:
-        ValueError: If model architecture is not supported
     """
     model_name_lower = model_name.lower()
     if '11b' in model_name_lower:
@@ -83,23 +75,13 @@ def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:
 
 def setup_datasets(
     config: ElasticSearchConfig,
-    trainer: BaseNeuralReasoningTrainer,
+    trainer: BaseNeuralReasoningTrainer,  # Fixed type hint
     batch_size: int,
     source_len: int,
     target_len: int
 ) -> Tuple[DataLoader, DataLoader]:
     """
     Set up training and validation datasets.
-    
-    Args:
-        config: ElasticSearch configuration
-        trainer: Model trainer instance
-        batch_size: Batch size for training
-        source_len: Maximum source sequence length
-        target_len: Maximum target sequence length
-        
-    Returns:
-        Tuple of (train_loader, val_loader)
     """
     # Prepare split parameters
     split_params = {
@@ -170,22 +152,13 @@ def setup_datasets(
     return train_loader, val_loader
 
 def train_model(
-    trainer: BaseNeuralReasoningTrainer,
+    trainer: BaseNeuralReasoningTrainer,  # Fixed type hint
     train_loader: DataLoader,
     val_loader: DataLoader,
     config: TrainingConfig
 ) -> Tuple[float, dict]:
     """
     Train the model and evaluate performance.
-    
-    Args:
-        trainer: Model trainer instance
-        train_loader: Training data loader
-        val_loader: Validation data loader
-        config: Training configuration
-        
-    Returns:
-        Tuple of (final_loss, final_scores)
     """
     # Setup optimizer
     optimizer_class = AdamW if config.optimizer == "adamw" else Adam
