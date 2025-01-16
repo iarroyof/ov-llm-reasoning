@@ -26,6 +26,7 @@ from src.data import ElasticSearchDataset
 from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
 from src.utils import es_settings
+from src.utils.cache_utils import save_split_cache, load_split_cache
 
 # Configure logging
 logging.basicConfig(
@@ -75,13 +76,24 @@ def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:  # F
 
 def setup_datasets(
     config: ElasticSearchConfig,
-    trainer: BaseNeuralReasoningTrainer,  # Fixed type hint
+    trainer: BaseNeuralReasoningTrainer,
     batch_size: int,
     source_len: int,
-    target_len: int
+    target_len: int,
+    force_recollect: bool = False,  # New parameter
+    cache_dir: str = "cache"  # New parameter
 ) -> Tuple[DataLoader, DataLoader]:
     """
-    Set up training and validation datasets.
+    Set up training and validation datasets with caching support.
+    
+    Args:
+        config: ElasticSearch configuration
+        trainer: Model trainer instance
+        batch_size: Batch size for training
+        source_len: Maximum source sequence length
+        target_len: Maximum target sequence length
+        force_recollect: If True, ignore cache and recollect IDs
+        cache_dir: Directory for caching splits
     """
     # Prepare split parameters
     split_params = {
@@ -114,14 +126,27 @@ def setup_datasets(
             logger.error(f"Error processing article IDs: {str(e)}")
             raise
     
-    # Create train/test split
-    train_ids, test_ids = ElasticSearchDataset.create_train_test_split(**split_params)
+    # Try to load from cache if not force_recollect
+    train_ids = test_ids = None
+    if not force_recollect:
+        cache_result = load_split_cache(split_params, cache_dir)
+        if cache_result is not None:
+            train_ids, test_ids = cache_result
+            logger.info("Successfully loaded split from cache")
+    
+    # Create new split if necessary
+    if train_ids is None or test_ids is None:
+        logger.info("Collecting new train/test split...")
+        train_ids, test_ids = ElasticSearchDataset.create_train_test_split(**split_params)
+        # Cache the new split
+        save_split_cache(train_ids, test_ids, split_params, cache_dir)
+        logger.info("New split saved to cache")
+    
     logger.info(f"Dataset split - Train: {len(train_ids)}, Test: {len(test_ids)}")
     
-    # Define sample transformation
+    # Rest of the function remains the same...
     true_sample = lambda x: (' '.join((x[0], x[1])), x[2]) if len(x) >= 3 else x
     
-    # Common dataset parameters
     dataset_params = {
         'url': config.url,
         'index': config.index,
@@ -135,7 +160,6 @@ def setup_datasets(
         'seed': 42
     }
     
-    # Create datasets
     train_dataset = ElasticSearchDataset(
         **dataset_params,
         selected_doc_ids=train_ids
@@ -145,12 +169,10 @@ def setup_datasets(
         selected_doc_ids=test_ids
     )
     
-    # Create data loaders
     train_loader = DataLoader(train_dataset, batch_size=None, num_workers=0)
     val_loader = DataLoader(val_dataset, batch_size=None, num_workers=0)
     
     return train_loader, val_loader
-
 def train_model(
     trainer: BaseNeuralReasoningTrainer,  # Fixed type hint
     train_loader: DataLoader,
