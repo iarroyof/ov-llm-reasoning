@@ -20,7 +20,9 @@ parameters:
   hf_model_name:
     values: [
       "google/pegasus-large",
-      "google/pegasus-x-large"
+      "google/pegasus-x-large",
+      "allenai/unifiedqa-v2-t5-3b-1363200",
+      "Salesforce/qaconv-unifiedqa-t5-3b",
     ]
 #T5 Version 1.1 includes the following improvements compared to the original T5 model
 #- GEGLU activation in feed-forward hidden layer, rather than ReLU - see here.
