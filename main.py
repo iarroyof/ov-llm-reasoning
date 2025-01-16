@@ -50,7 +50,7 @@ def main():
         index = es_settings.get("index", "triplets") # 'triplets'
         es_page_size = es_settings.get("es_page_size", 500) #100
         n_sentences = es_settings.get("max_docs2load", 10000) #1500
-        article_ids = es_settings.get("article_ids_file", "Not Found")
+        article_ids_file = es_settings.get("article_ids_file", "Not Found")
         
         logger.info(f"ES URL: {url}; ES index: {index}; ES page size: {es_page_size}; Total sentences: {n_sentences}")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
