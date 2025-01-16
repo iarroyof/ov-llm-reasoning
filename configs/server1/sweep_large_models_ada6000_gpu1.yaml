@@ -20,10 +20,7 @@ parameters:
   hf_model_name:
     values: [
       "google/pegasus-large",
-      "google/pegasus-x-large",
-      "google-t5/t5-3b",
-      "google/t5-3b-ssm-nq",
-      "google/flan-t5-xl"  # 2.85B parameters 
+      "google/pegasus-x-large"
     ]
 #T5 Version 1.1 includes the following improvements compared to the original T5 model
 #- GEGLU activation in feed-forward hidden layer, rather than ReLU - see here.
