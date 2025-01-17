@@ -14,19 +14,6 @@ class ElasticSearchDataset(IterableDataset):
     """
     Optimized ElasticSearch dataset with progressive loading and memory efficiency.
     """
-    def inspect_ids(self):
-        """Debug method to inspect document IDs format"""
-        if not self.document_ids:
-            print("No document IDs available")
-            return
-        
-        print("\nInspecting document IDs:")
-        print(f"Total IDs: {len(self.document_ids)}")
-        print(f"First 5 IDs: {self.document_ids[:5]}")
-        print(f"Type of first ID: {type(self.document_ids[0])}")
-        if isinstance(self.document_ids[0], (list, tuple)):
-            print(f"First ID components: {[type(x) for x in self.document_ids[0]]}")
-
     @staticmethod
     def create_train_test_split(
             url: str, 
@@ -143,7 +130,7 @@ class ElasticSearchDataset(IterableDataset):
         try:
             # Get batch of unseen pairs
             batch_pairs = []
-            for sent_id, triplet_idx in self.document_ids:  # Already tuples of (str, int)
+            for sent_id, triplet_idx in self.document_ids:
                 if (sent_id, triplet_idx) not in self.seen_docs:
                     batch_pairs.append((sent_id, triplet_idx))
                     self.seen_docs.add((sent_id, triplet_idx))
@@ -155,46 +142,43 @@ class ElasticSearchDataset(IterableDataset):
             
             # Create mapping of sentence IDs to their triplet indices
             sent_id_to_triplets = {}
+            unique_sent_ids = []  # To maintain order
             for sent_id, triplet_idx in batch_pairs:
                 if sent_id not in sent_id_to_triplets:
                     sent_id_to_triplets[sent_id] = []
+                    unique_sent_ids.append(sent_id)
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Create mget request with just the sentence IDs
-            mget_request = {
-                "docs": [{"_id": sent_id} for sent_id in sent_id_to_triplets.keys()]
-            }
-            
-            # Make request
-            response = self.es_client.mget(
-                index=self.index,
-                body=mget_request
-            )
+            # Make request with bare list of IDs - simplest possible format
+            try:
+                response = self.es_client.mget(
+                    body={"ids": unique_sent_ids},
+                    index=self.index
+                )
+            except Exception as e:
+                print(f"mget request failed with IDs: {unique_sent_ids[:5]}...")
+                raise
             
             # Process results
             processed_docs = []
-            for hit in response['docs']:
+            for hit in response.get('docs', []):
                 if not hit.get('found'):
                     continue
                 
                 sent_id = hit['_id']
-                source = hit['_source']
+                source = hit.get('_source', {})
                 
                 if 'triplets' not in source:
                     continue
                     
-                # Get all triplet indices for this sentence
                 triplet_indices = sent_id_to_triplets[sent_id]
-                
-                # Extract specified triplets
                 for idx in triplet_indices:
                     if idx < len(source['triplets']):
-                        processed_doc = {
+                        processed_docs.append({
                             '_id': sent_id,
                             'sentence_text': source.get('sentence_text', ''),
                             'triplets': [source['triplets'][idx]]
-                        }
-                        processed_docs.append(processed_doc)
+                        })
             
             return processed_docs
             
@@ -203,7 +187,34 @@ class ElasticSearchDataset(IterableDataset):
             import traceback
             traceback.print_exc()
             return []
-
+    
+    def inspect_ids(self):
+        """Debug method to inspect document IDs format"""
+        if not self.document_ids:
+            print("No document IDs available")
+            return
+        
+        print("\nInspecting document IDs:")
+        print(f"Total IDs: {len(self.document_ids)}")
+        print(f"First 5 IDs: {self.document_ids[:5]}")
+        
+        # Test mget with a single ID
+        if len(self.document_ids) > 0:
+            test_id = self.document_ids[0][0]  # Get just the sentence ID from first tuple
+            print(f"\nTesting mget with single ID: {test_id}")
+            try:
+                test_response = self.es_client.mget(
+                    body={"ids": [test_id]},
+                    index=self.index
+                )
+                print("Single ID mget test successful")
+            except Exception as e:
+                print(f"Single ID mget test failed: {e}")
+                
+        print(f"Type of first ID: {type(self.document_ids[0])}")
+        if isinstance(self.document_ids[0], (list, tuple)):
+            print(f"First ID components: {[type(x) for x in self.document_ids[0]]}")
+            
     def __init__(
             self,
             url: str,
