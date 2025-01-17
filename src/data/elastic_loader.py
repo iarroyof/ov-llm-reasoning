@@ -14,6 +14,19 @@ class ElasticSearchDataset(IterableDataset):
     """
     Optimized ElasticSearch dataset with progressive loading and memory efficiency.
     """
+    def inspect_ids(self):
+        """Debug method to inspect document IDs format"""
+        if not self.document_ids:
+            print("No document IDs available")
+            return
+        
+        print("\nInspecting document IDs:")
+        print(f"Total IDs: {len(self.document_ids)}")
+        print(f"First 5 IDs: {self.document_ids[:5]}")
+        print(f"Type of first ID: {type(self.document_ids[0])}")
+        if isinstance(self.document_ids[0], (list, tuple)):
+            print(f"First ID components: {[type(x) for x in self.document_ids[0]]}")
+
     @staticmethod
     def create_train_test_split(
             url: str, 
@@ -126,19 +139,29 @@ class ElasticSearchDataset(IterableDataset):
         """
         if not self.document_ids:
             return []
-            
-        batch_pairs = []
-        for sent_id, triplet_idx in self.document_ids:
-            if (sent_id, triplet_idx) not in self.seen_docs:
-                batch_pairs.append((str(sent_id), triplet_idx))  # Ensure sentence_id is string
-                self.seen_docs.add((sent_id, triplet_idx))
-            if len(batch_pairs) >= self.prefetch_size:
-                break
-            
-        if not batch_pairs:
-            return []
         
         try:
+            batch_pairs = []
+            for pair in self.document_ids:
+                # Handle different possible formats of document_ids
+                if isinstance(pair, (list, tuple)) and len(pair) == 2:
+                    sent_id, triplet_idx = pair
+                else:
+                    continue  # Skip invalid entries
+                    
+                if (sent_id, triplet_idx) not in self.seen_docs:
+                    batch_pairs.append((str(sent_id), int(triplet_idx)))  # Ensure proper types
+                    self.seen_docs.add((sent_id, triplet_idx))
+                
+                if len(batch_pairs) >= self.prefetch_size:
+                    break
+            
+            if not batch_pairs:
+                return []
+            
+            # Debug log
+            print(f"Batch pairs: {batch_pairs[:5]} ...")
+            
             # Group by sentence ID
             sent_id_to_triplets = {}
             for sent_id, triplet_idx in batch_pairs:
@@ -146,10 +169,22 @@ class ElasticSearchDataset(IterableDataset):
                     sent_id_to_triplets[sent_id] = []
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Prepare mget request with only the sentence IDs
+            # Get unique sentence IDs as strings
+            sentence_ids = list(sent_id_to_triplets.keys())
+            
+            # Debug log
+            print(f"Requesting sentences: {sentence_ids[:5]} ...")
+            
+            # Prepare mget request
+            mget_body = {"ids": sentence_ids}
+            
+            # Debug log
+            print(f"mget body: {mget_body}")
+            
+            # Make request
             response = self.es_client.mget(
                 index=self.index,
-                body={"ids": list(sent_id_to_triplets.keys())}  # Use just the sentence IDs
+                body=mget_body
             )
             
             # Process results
@@ -159,27 +194,33 @@ class ElasticSearchDataset(IterableDataset):
                     continue
                 
                 sent_id = hit['_id']
-                triplet_indices = sent_id_to_triplets[sent_id]
                 source = hit['_source']
                 
                 if 'triplets' not in source:
+                    print(f"Warning: No triplets found in sentence {sent_id}")
                     continue
-                    
-                # Extract specified triplets
+                
+                triplet_indices = sent_id_to_triplets[sent_id]
+                
                 for idx in triplet_indices:
                     if idx < len(source['triplets']):
                         processed_doc = {
                             '_id': sent_id,
-                            'sentence_text': source['sentence_text'],
+                            'sentence_text': source.get('sentence_text', ''),
                             'triplets': [source['triplets'][idx]]
                         }
                         processed_docs.append(processed_doc)
+                    else:
+                        print(f"Warning: Triplet index {idx} out of range for sentence {sent_id}")
             
             return processed_docs
             
         except Exception as e:
-            print(f"Error loading page: {e}")
-            return []            
+            print(f"Error in _fetch_batch: {e}")
+            import traceback
+            traceback.print_exc()
+            return []
+        
     def __init__(
             self,
             url: str,
@@ -217,7 +258,9 @@ class ElasticSearchDataset(IterableDataset):
         
         if seed is not None:
             random.seed(seed)
-
+            
+        self.inspect_ids()
+                
     def _initialize_document_ids(self):
         """Initialize document IDs using pre-selected IDs if available"""
         self.document_ids = list(self.selected_doc_ids) if self.selected_doc_ids else []
