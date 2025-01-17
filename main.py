@@ -100,7 +100,7 @@ def setup_datasets(
     split_params = {
         'url': config.url,
         'index': config.index,
-        'max_docs2load': config.n_sentences,
+        'n_sentences': config.n_sentences,
         'test_ratio': 0.3,
         'seed': 42,
         'filter_method': FilterMethod.STOPWORDS
