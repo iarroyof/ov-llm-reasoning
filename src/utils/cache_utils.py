@@ -4,7 +4,7 @@ import os
 import json
 import hashlib
 from typing import Dict, List, Tuple, Optional, Any
-from .triplet_utils import FilterMethod  # Import FilterMethod for type checking
+from .triplet_filter import FilterMethod
 
 def serialize_params(params: Dict[str, Any]) -> Dict[str, Any]:
     """
