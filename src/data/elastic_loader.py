@@ -132,7 +132,7 @@ class ElasticSearchDataset(IterableDataset):
             batch_pairs = []
             for sent_id, triplet_idx in self.document_ids:
                 if (sent_id, triplet_idx) not in self.seen_docs:
-                    batch_pairs.append((sent_id, triplet_idx))
+                    batch_pairs.append((str(sent_id), int(triplet_idx)))  # Ensure types
                     self.seen_docs.add((sent_id, triplet_idx))
                     if len(batch_pairs) >= self.prefetch_size:
                         break
@@ -142,43 +142,54 @@ class ElasticSearchDataset(IterableDataset):
             
             # Create mapping of sentence IDs to their triplet indices
             sent_id_to_triplets = {}
-            unique_sent_ids = []  # To maintain order
+            unique_sent_ids = []
             for sent_id, triplet_idx in batch_pairs:
                 if sent_id not in sent_id_to_triplets:
                     sent_id_to_triplets[sent_id] = []
                     unique_sent_ids.append(sent_id)
                 sent_id_to_triplets[sent_id].append(triplet_idx)
-            
-            # Make request with bare list of IDs - simplest possible format
-            try:
-                response = self.es_client.mget(
-                    body={"ids": unique_sent_ids},
-                    index=self.index
-                )
-            except Exception as e:
-                print(f"mget request failed with IDs: {unique_sent_ids[:5]}...")
-                raise
-            
-            # Process results
+    
+            # Split into smaller batches (like the successful single ID test)
+            BATCH_SIZE = 10  # Process in smaller chunks
             processed_docs = []
-            for hit in response.get('docs', []):
-                if not hit.get('found'):
-                    continue
+            
+            for i in range(0, len(unique_sent_ids), BATCH_SIZE):
+                batch_ids = unique_sent_ids[i:i + BATCH_SIZE]
                 
-                sent_id = hit['_id']
-                source = hit.get('_source', {})
+                # Use the exact same format that worked in the test
+                mget_body = {"ids": batch_ids}
                 
-                if 'triplets' not in source:
-                    continue
+                try:
+                    response = self.es_client.mget(
+                        body=mget_body,
+                        index=self.index
+                    )
                     
-                triplet_indices = sent_id_to_triplets[sent_id]
-                for idx in triplet_indices:
-                    if idx < len(source['triplets']):
-                        processed_docs.append({
-                            '_id': sent_id,
-                            'sentence_text': source.get('sentence_text', ''),
-                            'triplets': [source['triplets'][idx]]
-                        })
+                    # Process this batch
+                    if 'docs' in response:
+                        for hit in response['docs']:
+                            if not hit.get('found'):
+                                continue
+                            
+                            sent_id = hit['_id']
+                            source = hit.get('_source', {})
+                            
+                            if 'triplets' not in source:
+                                continue
+                            
+                            triplet_indices = sent_id_to_triplets[sent_id]
+                            for idx in triplet_indices:
+                                if idx < len(source['triplets']):
+                                    processed_docs.append({
+                                        '_id': sent_id,
+                                        'sentence_text': source.get('sentence_text', ''),
+                                        'triplets': [source['triplets'][idx]]
+                                    })
+                                    
+                except Exception as e:
+                    print(f"Error in batch {i//BATCH_SIZE + 1}: {e}")
+                    print(f"Batch IDs: {batch_ids}")
+                    continue  # Continue with next batch even if this one fails
             
             return processed_docs
             
@@ -187,7 +198,7 @@ class ElasticSearchDataset(IterableDataset):
             import traceback
             traceback.print_exc()
             return []
-    
+            
     def inspect_ids(self):
         """Debug method to inspect document IDs format"""
         if not self.document_ids:
