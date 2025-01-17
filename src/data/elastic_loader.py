@@ -5,6 +5,7 @@ import random
 import torch
 from transformers import PreTrainedTokenizer
 from collections import deque
+from src.utils.triplet_utils import FilterMethod, TripletFilter
 
 
 class ElasticSearchDataset(IterableDataset):
