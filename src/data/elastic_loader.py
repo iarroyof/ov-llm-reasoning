@@ -48,7 +48,6 @@ class ElasticSearchDataset(IterableDataset):
             return cached_split
 
         es_client = Elasticsearch(url)
-        logger.info(f"ElasticSearch Client Information: {es_client.info()}")
         triplet_filter = TripletFilter(method=filter_method, stopwords_file=stopwords_file)
         
         # Build query
@@ -232,6 +231,7 @@ class ElasticSearchDataset(IterableDataset):
             cache_size_limit: int = 5000):
         
         self.es_client = Elasticsearch(url)
+        logger.info(f"ElasticSearch Client Information: {es_client.info()}")
         self.index = index
         self.tokenizer = tokenizer
         self.es_page_size = es_page_size
