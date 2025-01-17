@@ -5,101 +5,99 @@ import random
 import torch
 from transformers import PreTrainedTokenizer
 from collections import deque
-# Import the necessary utilities
-from ..utils.triplet_utils import FilterMethod, TripletFilter
-from ..utils.cache_utils import save_split_cache, load_split_cache
 
 
 class ElasticSearchDataset(IterableDataset):
     """
     Optimized ElasticSearch dataset with progressive loading and memory efficiency.
     """
+    
     @staticmethod
     def create_train_test_split(
             url: str, 
             index: str, 
-            n_sentences: int,
+            max_docs2load: int,
             test_ratio: float = 0.3, 
             seed: Optional[int] = None,
             filter_article_ids: Optional[List[str]] = None,
             es_page_size: int = 500,
-            scroll_time: str = '5m',
-            filter_method: FilterMethod = FilterMethod.STOPWORDS,
-            stopwords_file: Optional[str] = None,
-            cache_dir: str = "cache") -> Tuple[List[Tuple[str, int]], List[Tuple[str, int]]]:
+            filter_method: FilterMethod = FilterMethod.NONE,
+            stopwords_file: Optional[Path] = None,
+            keep_semantic_stopwords: bool = True) -> Tuple[List[Tuple[str, int]], List[Tuple[str, int]]]:
         """
-        Create train/test split with triplet filtering.
+        Create train/test split with optional triplet filtering.
         Returns (sentence_id, triplet_idx) pairs for valid triplets.
         """
-        # Try to load from cache first
-        split_params = {
-            'url': url,
-            'index': index,
-            'n_sentences': n_sentences,
-            'test_ratio': test_ratio,
-            'seed': seed,
-            'filter_article_ids': filter_article_ids,
-            'filter_method': filter_method.value,
-            'stopwords_file': stopwords_file
-        }
-        
-        cached_split = load_split_cache(split_params, cache_dir)
-        if cached_split is not None:
-            return cached_split
-
         es_client = Elasticsearch(url)
-        triplet_filter = TripletFilter(method=filter_method, stopwords_file=stopwords_file)
         
-        # Build query
-        query = {
-            "size": es_page_size,
-            "query": {"bool": {"must": [{"exists": {"field": "triplets"}}]}}
-        }
+        # Initialize triplet filter if needed
+        triplet_filter = TripletFilter(
+            method=filter_method,
+            stopwords_file=stopwords_file,
+            keep_semantic_stopwords=keep_semantic_stopwords
+        )
+        
+        # Build base query
         if filter_article_ids:
-            query["query"]["bool"]["must"].append({
-                "terms": {"article_id.keyword": filter_article_ids}
-            })
+            query = {
+                "size": es_page_size,
+                "query": {
+                    "terms": {
+                        "article_id.keyword": filter_article_ids
+                    }
+                }
+            }
+        else:
+            query = {
+                "size": es_page_size,
+                "query": {"match_all": {}}
+            }
         
         try:
-            valid_pairs = []  # List of (sentence_id, triplet_idx) pairs
+            # Get initial response
+            response = es_client.search(
+                index=index,
+                body=query,
+                scroll='5m'
+            )
             
-            # Initial search
-            response = es_client.search(index=index, body=query, scroll=scroll_time)
+            valid_pairs = []  # List of (sentence_id, triplet_idx) pairs
             scroll_id = response['_scroll_id']
             
             try:
-                while True:
+                while len(valid_pairs) < max_docs2load:
+                    # Process current batch
                     for hit in response['hits']['hits']:
-                        sentence_id = hit['_id']
-                        triplets = hit['_source'].get('triplets', [])
+                        doc_id = hit['_id']
                         
-                        # Skip sentences without triplets
-                        if not triplets:
-                            continue
+                        # Filter and process triplets
+                        batch_pairs = process_and_filter_triplets(
+                            doc_id,
+                            hit['_source'],
+                            triplet_filter
+                        )
+                        valid_pairs.extend(batch_pairs)
                         
-                        # Check each triplet in the sentence
-                        valid_triplets_found = False
-                        for idx, triplet in enumerate(triplets):
-                            if triplet_filter.should_keep_triplet(
-                                triplet['subject']['text'],
-                                triplet['relation']['text'],
-                                triplet['object']['text']
-                            ):
-                                valid_pairs.append((sentence_id, idx))
-                                valid_triplets_found = True
-                        
-                    # Break if we have enough valid pairs
-                    if len(valid_pairs) >= n_sentences:
-                        valid_pairs = valid_pairs[:n_sentences]
-                        break
+                        if len(valid_pairs) >= max_docs2load:
+                            break
                     
                     # Get next batch
-                    response = es_client.scroll(scroll_id=scroll_id, scroll=scroll_time)
+                    response = es_client.scroll(
+                        scroll_id=scroll_id,
+                        scroll='5m'
+                    )
+                    
                     if not response['hits']['hits']:
                         break
                     
             finally:
                 es_client.clear_scroll(scroll_id=scroll_id)
+            
+            # Limit to max_docs2load if needed
+            if len(valid_pairs) > max_docs2load:
+                if seed is not None:
+                    random.seed(seed)
+                valid_pairs = random.sample(valid_pairs, max_docs2load)
             
             # Shuffle and split
             if seed is not None:
@@ -110,121 +108,11 @@ class ElasticSearchDataset(IterableDataset):
             train_pairs = valid_pairs[test_size:]
             test_pairs = valid_pairs[:test_size]
             
-            # Save to cache
-            save_split_cache(train_pairs, test_pairs, split_params, cache_dir)
-            
             return train_pairs, test_pairs
             
         except Exception as e:
-            print(f"Error creating split: {e}")
+            print(f"Error in create_train_test_split: {e}")
             return [], []
-
-    def _fetch_batch(self) -> List[Dict]:
-        """
-        Fetch a batch of documents using stored sentence-triplet pairs.
-        Each pair is (sentence_id, triplet_idx).
-        """
-        if not self.document_ids:
-            return []
-        
-        try:
-            # Get batch of unseen pairs
-            batch_pairs = []
-            for sent_id, triplet_idx in self.document_ids:
-                if (sent_id, triplet_idx) not in self.seen_docs:
-                    batch_pairs.append((str(sent_id), int(triplet_idx)))  # Ensure types
-                    self.seen_docs.add((sent_id, triplet_idx))
-                    if len(batch_pairs) >= self.prefetch_size:
-                        break
-            
-            if not batch_pairs:
-                return []
-            
-            # Create mapping of sentence IDs to their triplet indices
-            sent_id_to_triplets = {}
-            unique_sent_ids = []
-            for sent_id, triplet_idx in batch_pairs:
-                if sent_id not in sent_id_to_triplets:
-                    sent_id_to_triplets[sent_id] = []
-                    unique_sent_ids.append(sent_id)
-                sent_id_to_triplets[sent_id].append(triplet_idx)
-    
-            # Split into smaller batches (like the successful single ID test)
-            BATCH_SIZE = 10  # Process in smaller chunks
-            processed_docs = []
-            
-            for i in range(0, len(unique_sent_ids), BATCH_SIZE):
-                batch_ids = unique_sent_ids[i:i + BATCH_SIZE]
-                
-                # Use the exact same format that worked in the test
-                mget_body = {"ids": batch_ids}
-                
-                try:
-                    response = self.es_client.mget(
-                        body=mget_body,
-                        index=self.index
-                    )
-                    
-                    # Process this batch
-                    if 'docs' in response:
-                        for hit in response['docs']:
-                            if not hit.get('found'):
-                                continue
-                            
-                            sent_id = hit['_id']
-                            source = hit.get('_source', {})
-                            
-                            if 'triplets' not in source:
-                                continue
-                            
-                            triplet_indices = sent_id_to_triplets[sent_id]
-                            for idx in triplet_indices:
-                                if idx < len(source['triplets']):
-                                    processed_docs.append({
-                                        '_id': sent_id,
-                                        'sentence_text': source.get('sentence_text', ''),
-                                        'triplets': [source['triplets'][idx]]
-                                    })
-                                    
-                except Exception as e:
-                    print(f"Error in batch {i//BATCH_SIZE + 1}: {e}")
-                    print(f"Batch IDs: {batch_ids}")
-                    continue  # Continue with next batch even if this one fails
-            
-            return processed_docs
-            
-        except Exception as e:
-            print(f"Error in _fetch_batch: {e}")
-            import traceback
-            traceback.print_exc()
-            return []
-            
-    def inspect_ids(self):
-        """Debug method to inspect document IDs format"""
-        if not self.document_ids:
-            print("No document IDs available")
-            return
-        
-        print("\nInspecting document IDs:")
-        print(f"Total IDs: {len(self.document_ids)}")
-        print(f"First 5 IDs: {self.document_ids[:5]}")
-        
-        # Test mget with a single ID
-        if len(self.document_ids) > 0:
-            test_id = self.document_ids[0][0]  # Get just the sentence ID from first tuple
-            print(f"\nTesting mget with single ID: {test_id}")
-            try:
-                test_response = self.es_client.mget(
-                    body={"ids": [test_id]},
-                    index=self.index
-                )
-                print("Single ID mget test successful")
-            except Exception as e:
-                print(f"Single ID mget test failed: {e}")
-                
-        print(f"Type of first ID: {type(self.document_ids[0])}")
-        if isinstance(self.document_ids[0], (list, tuple)):
-            print(f"First ID components: {[type(x) for x in self.document_ids[0]]}")
             
     def __init__(
             self,
@@ -263,9 +151,7 @@ class ElasticSearchDataset(IterableDataset):
         
         if seed is not None:
             random.seed(seed)
-            
-        self.inspect_ids()
-                
+
     def _initialize_document_ids(self):
         """Initialize document IDs using pre-selected IDs if available"""
         self.document_ids = list(self.selected_doc_ids) if self.selected_doc_ids else []
