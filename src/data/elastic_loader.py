@@ -114,6 +114,74 @@ class ElasticSearchDataset(IterableDataset):
         except Exception as e:
             print(f"Error in create_train_test_split: {e}")
             return [], []
+
+    def _fetch_batch(self) -> List[Dict]:
+        """Fetch batch using sentence-triplet pairs."""
+        if not self.document_ids:
+            return []
+        
+        try:
+            # Get batch of unseen pairs
+            batch_pairs = []
+            for pair in self.document_ids:
+                if isinstance(pair, (list, tuple)) and len(pair) == 2:
+                    sent_id, triplet_idx = pair
+                    if (sent_id, triplet_idx) not in self.seen_docs:
+                        batch_pairs.append((str(sent_id), int(triplet_idx)))
+                        self.seen_docs.add((sent_id, triplet_idx))
+                        if len(batch_pairs) >= self.prefetch_size:
+                            break
+            
+            if not batch_pairs:
+                return []
+            
+            # Group by sentence ID
+            sent_id_to_triplets = {}
+            unique_ids = []  # Maintain order and uniqueness
+            for sent_id, triplet_idx in batch_pairs:
+                if sent_id not in sent_id_to_triplets:
+                    sent_id_to_triplets[sent_id] = []
+                    unique_ids.append(sent_id)
+                sent_id_to_triplets[sent_id].append(triplet_idx)
+            
+            # Fetch sentences with correct mget format
+            try:
+                response = self.es_client.mget(
+                    index=self.index,
+                    body={"ids": unique_ids}  # Just send the list of IDs
+                )
+            except Exception as e:
+                print(f"Error in mget request with IDs sample: {unique_ids[:2]}...")
+                raise
+            
+            # Process results
+            processed_docs = []
+            for hit in response.get('docs', []):
+                if not hit.get('found'):
+                    continue
+                
+                sent_id = hit['_id']
+                source = hit.get('_source', {})
+                
+                if 'triplets' not in source:
+                    continue
+                
+                triplet_indices = sent_id_to_triplets[sent_id]
+                for idx in triplet_indices:
+                    if idx < len(source['triplets']):
+                        processed_docs.append({
+                            '_id': sent_id,
+                            'sentence_text': source.get('sentence_text', ''),
+                            'triplets': [source['triplets'][idx]]
+                        })
+            
+            return processed_docs
+            
+        except Exception as e:
+            print(f"Error loading page: {e}")
+            import traceback
+            traceback.print_exc()
+            return []    
             
     def __init__(
             self,
