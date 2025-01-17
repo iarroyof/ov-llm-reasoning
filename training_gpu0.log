@@ -1,0 +1,39 @@
+nohup: ignoring input
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+Create sweep with ID: px11q1a6
+Sweep URL: https://wandb.ai/red_neuronal_utm/uncategorized/sweeps/px11q1a6
+2024-12-11 13:44:10,826 - wandb.agents.pyagent - INFO - Starting sweep agent: entity=None, project=None, count=None
+wandb: Agent Starting Run: djkfe993 with config:
+wandb: 	batch_size: 4
+wandb: 	epochs: 8
+wandb: 	hf_model_name: t5-small
+wandb: 	learning_rate: 0.001
+wandb: 	optimizer: asgd
+wandb: 	source_seq_len: 50
+wandb: 	target_seq_len: 50
+wandb: Currently logged in as: iarroyof (red_neuronal_utm). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.7
+wandb: Run data is saved locally in /app/ov-llm-reasoning/wandb/run-20241211_134411-djkfe993
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run vibrant-sweep-1
+wandb: ⭐️ View project at https://wandb.ai/red_neuronal_utm/uncategorized
+wandb: 🧹 View sweep at https://wandb.ai/red_neuronal_utm/uncategorized/sweeps/px11q1a6
+wandb: 🚀 View run at https://wandb.ai/red_neuronal_utm/uncategorized/runs/djkfe993
+2024-12-11 13:44:11,877 - __main__ - INFO - Device found: cpu
+2024-12-11 13:44:12,937 - __main__ - INFO - Model loaded.
+2024-12-11 13:44:17,982 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_search [status:200 duration:5.044s]
+2024-12-11 13:44:19,468 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_search [status:200 duration:1.484s]
+2024-12-11 13:44:19,469 - __main__ - INFO - Data loaded from ElasticSearch.
+2024-12-11 13:44:19,735 - __main__ - INFO - Training started.
+2024-12-11 13:44:19,927 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_mget [status:200 duration:0.192s]
+/root/miniconda3/envs/torch-env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py:2834: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+2024-12-11 13:44:20,132 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_mget [status:200 duration:0.188s]
+2024-12-11 13:44:20,340 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_mget [status:200 duration:0.192s]
+2024-12-11 13:44:20,552 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_mget [status:200 duration:0.193s]
+Passing a tuple of `past_key_values` is deprecated and will be removed in Transformers v4.48.0. You should pass an instance of `EncoderDecoderCache` instead, e.g. `past_key_values=EncoderDecoderCache.from_legacy_cache(past_key_values)`.
+Epoch: 0 | Train Loss: 6.59375
+2024-12-11 13:44:49,165 - elastic_transport.transport - INFO - POST http://192.168.241.210:9200/triplets/_mget [status:200 duration:0.672s]
+/root/miniconda3/envs/torch-env/lib/python3.10/site-packages/transformers/tokenization_utils_base.py:2834: FutureWarning: The `pad_to_max_length` argument is deprecated and will be removed in a future version, use `padding=True` or `padding='longest'` to pad to the longest sequence in the batch, or use `padding='max_length'` to pad to a max length. In this case, you can give a specific length with `max_length` (e.g. `max_length=45`) or leave max_length to None to pad to the maximal input size of the model (e.g. 512 for Bert).
+  warnings.warn(
+Epoch: 0 | Train Loss: 5.0625
