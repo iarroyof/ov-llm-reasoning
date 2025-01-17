@@ -66,7 +66,7 @@ class ElasticSearchDataset(IterableDataset):
             scroll_id = response['_scroll_id']
             
             try:
-                while len(valid_pairs) < max_docs2load:
+                while len(valid_pairs) < n_sentences:
                     # Process current batch
                     for hit in response['hits']['hits']:
                         doc_id = hit['_id']
@@ -79,7 +79,7 @@ class ElasticSearchDataset(IterableDataset):
                         )
                         valid_pairs.extend(batch_pairs)
                         
-                        if len(valid_pairs) >= max_docs2load:
+                        if len(valid_pairs) >= n_sentences:
                             break
                     
                     # Get next batch
@@ -95,10 +95,10 @@ class ElasticSearchDataset(IterableDataset):
                 es_client.clear_scroll(scroll_id=scroll_id)
             
             # Limit to max_docs2load if needed
-            if len(valid_pairs) > max_docs2load:
+            if len(valid_pairs) > n_sentences:
                 if seed is not None:
                     random.seed(seed)
-                valid_pairs = random.sample(valid_pairs, max_docs2load)
+                valid_pairs = random.sample(valid_pairs, n_sentences)
             
             # Shuffle and split
             if seed is not None:
