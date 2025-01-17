@@ -27,6 +27,7 @@ from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
 from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
+from src.utils.triplet_utils import FilterMethod, TripletFilter 
 
 # Configure logging
 logging.basicConfig(
@@ -101,7 +102,8 @@ def setup_datasets(
         'index': config.index,
         'max_docs2load': config.n_sentences,
         'test_ratio': 0.3,
-        'seed': 42
+        'seed': 42,
+        'filter_method': FilterMethod.STOPWORDS
     }
     
     # Handle article ID filtering
