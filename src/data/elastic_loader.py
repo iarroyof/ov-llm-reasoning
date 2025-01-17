@@ -141,50 +141,34 @@ class ElasticSearchDataset(IterableDataset):
             return []
         
         try:
+            # Get batch of unseen pairs
             batch_pairs = []
-            for pair in self.document_ids:
-                # Handle different possible formats of document_ids
-                if isinstance(pair, (list, tuple)) and len(pair) == 2:
-                    sent_id, triplet_idx = pair
-                else:
-                    continue  # Skip invalid entries
-                    
+            for sent_id, triplet_idx in self.document_ids:  # Already tuples of (str, int)
                 if (sent_id, triplet_idx) not in self.seen_docs:
-                    batch_pairs.append((str(sent_id), int(triplet_idx)))  # Ensure proper types
+                    batch_pairs.append((sent_id, triplet_idx))
                     self.seen_docs.add((sent_id, triplet_idx))
-                
-                if len(batch_pairs) >= self.prefetch_size:
-                    break
+                    if len(batch_pairs) >= self.prefetch_size:
+                        break
             
             if not batch_pairs:
                 return []
             
-            # Debug log
-            print(f"Batch pairs: {batch_pairs[:5]} ...")
-            
-            # Group by sentence ID
+            # Create mapping of sentence IDs to their triplet indices
             sent_id_to_triplets = {}
             for sent_id, triplet_idx in batch_pairs:
                 if sent_id not in sent_id_to_triplets:
                     sent_id_to_triplets[sent_id] = []
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Get unique sentence IDs as strings
-            sentence_ids = list(sent_id_to_triplets.keys())
-            
-            # Debug log
-            print(f"Requesting sentences: {sentence_ids[:5]} ...")
-            
-            # Prepare mget request
-            mget_body = {"ids": sentence_ids}
-            
-            # Debug log
-            print(f"mget body: {mget_body}")
+            # Create mget request with just the sentence IDs
+            mget_request = {
+                "docs": [{"_id": sent_id} for sent_id in sent_id_to_triplets.keys()]
+            }
             
             # Make request
             response = self.es_client.mget(
                 index=self.index,
-                body=mget_body
+                body=mget_request
             )
             
             # Process results
@@ -197,11 +181,12 @@ class ElasticSearchDataset(IterableDataset):
                 source = hit['_source']
                 
                 if 'triplets' not in source:
-                    print(f"Warning: No triplets found in sentence {sent_id}")
                     continue
-                
+                    
+                # Get all triplet indices for this sentence
                 triplet_indices = sent_id_to_triplets[sent_id]
                 
+                # Extract specified triplets
                 for idx in triplet_indices:
                     if idx < len(source['triplets']):
                         processed_doc = {
@@ -210,8 +195,6 @@ class ElasticSearchDataset(IterableDataset):
                             'triplets': [source['triplets'][idx]]
                         }
                         processed_docs.append(processed_doc)
-                    else:
-                        print(f"Warning: Triplet index {idx} out of range for sentence {sent_id}")
             
             return processed_docs
             
@@ -220,7 +203,7 @@ class ElasticSearchDataset(IterableDataset):
             import traceback
             traceback.print_exc()
             return []
-        
+
     def __init__(
             self,
             url: str,
