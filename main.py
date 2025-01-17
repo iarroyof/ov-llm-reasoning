@@ -27,7 +27,7 @@ from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
 from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
-from src.utils.triplet_utils import FilterMethod, TripletFilter 
+from src.utils.triplet_filter import FilterMethod
 
 # Configure logging
 logging.basicConfig(
