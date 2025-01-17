@@ -48,6 +48,7 @@ class ElasticSearchDataset(IterableDataset):
             return cached_split
 
         es_client = Elasticsearch(url)
+        logger.info(f"ElasticSearch Client Information: {es_client.info()})
         triplet_filter = TripletFilter(method=filter_method, stopwords_file=stopwords_file)
         
         # Build query
