@@ -17,7 +17,7 @@ class ElasticSearchDataset(IterableDataset):
     def create_train_test_split(
             url: str, 
             index: str, 
-            max_docs2load: int,
+            n_sentences: int,
             test_ratio: float = 0.3, 
             seed: Optional[int] = None,
             filter_article_ids: Optional[List[str]] = None,
