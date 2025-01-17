@@ -120,18 +120,21 @@ class ElasticSearchDataset(IterableDataset):
             return [], []
 
     def _fetch_batch(self) -> List[Dict]:
-        """Fetch batch using sentence-triplet pairs."""
+        """
+        Fetch a batch of documents using stored sentence-triplet pairs.
+        Each pair is (sentence_id, triplet_idx).
+        """
         if not self.document_ids:
             return []
-        
+            
         batch_pairs = []
         for sent_id, triplet_idx in self.document_ids:
             if (sent_id, triplet_idx) not in self.seen_docs:
-                batch_pairs.append((sent_id, triplet_idx))
+                batch_pairs.append((str(sent_id), triplet_idx))  # Ensure sentence_id is string
                 self.seen_docs.add((sent_id, triplet_idx))
             if len(batch_pairs) >= self.prefetch_size:
                 break
-        
+            
         if not batch_pairs:
             return []
         
@@ -143,10 +146,10 @@ class ElasticSearchDataset(IterableDataset):
                     sent_id_to_triplets[sent_id] = []
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Fetch sentences
+            # Prepare mget request with only the sentence IDs
             response = self.es_client.mget(
                 index=self.index,
-                body={"ids": list(sent_id_to_triplets.keys())}
+                body={"ids": list(sent_id_to_triplets.keys())}  # Use just the sentence IDs
             )
             
             # Process results
@@ -159,21 +162,24 @@ class ElasticSearchDataset(IterableDataset):
                 triplet_indices = sent_id_to_triplets[sent_id]
                 source = hit['_source']
                 
+                if 'triplets' not in source:
+                    continue
+                    
                 # Extract specified triplets
                 for idx in triplet_indices:
                     if idx < len(source['triplets']):
-                        processed_docs.append({
+                        processed_doc = {
                             '_id': sent_id,
                             'sentence_text': source['sentence_text'],
                             'triplets': [source['triplets'][idx]]
-                        })
+                        }
+                        processed_docs.append(processed_doc)
             
             return processed_docs
             
         except Exception as e:
-            print(f"Error fetching batch: {e}")
-            return []
-            
+            print(f"Error loading page: {e}")
+            return []            
     def __init__(
             self,
             url: str,
