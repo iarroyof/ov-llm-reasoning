@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_t5_base_rtx4090_1_gpu1
-method: random
+method: grid
 metric:
   goal: minimize
   name: final_test_loss
