@@ -303,73 +303,73 @@ class ElasticSearchDataset(IterableDataset):
             'target_masks': torch.stack([x['target_mask'] for x in batch])  # Changed to plural
         }
 
-def load_next_page(self) -> None:
-    """Load next page of documents and process them"""
-    print("=============== ENTERING load_next_page ===============")
-    start_index = self.current_page_index * self.es_page_size
-    end_index = start_index + self.es_page_size
-    
-    if end_index > len(self.document_ids):
-        end_index = len(self.document_ids)
+    def load_next_page(self) -> None:
+        """Load next page of documents and process them"""
+        print("=============== ENTERING load_next_page ===============")
+        start_index = self.current_page_index * self.es_page_size
+        end_index = start_index + self.es_page_size
         
-    if start_index >= len(self.document_ids):
-        print("No more documents to load - reached end")
-        return
+        if end_index > len(self.document_ids):
+            end_index = len(self.document_ids)
             
-    # Get document IDs for this page
-    page_ids = self.document_ids[start_index:end_index]
-    print(f"Debug: page_ids type: {type(page_ids)}")
-    print(f"Debug: First few page_ids: {page_ids[:2]}")
-    
-    try:
-        # Fetch documents in smaller batches
-        BATCH_SIZE = 100
-        all_docs = []
+        if start_index >= len(self.document_ids):
+            print("No more documents to load - reached end")
+            return
+                
+        # Get document IDs for this page
+        page_ids = self.document_ids[start_index:end_index]
+        print(f"Debug: page_ids type: {type(page_ids)}")
+        print(f"Debug: First few page_ids: {page_ids[:2]}")
         
-        for i in range(0, len(page_ids), BATCH_SIZE):
-            batch_ids = page_ids[i:i + BATCH_SIZE]
-            print(f"Debug: Processing batch {i//BATCH_SIZE + 1}")
-            print(f"Debug: batch_ids type: {type(batch_ids)}")
-            print(f"Debug: First few batch_ids: {batch_ids[:2]}")
+        try:
+            # Fetch documents in smaller batches
+            BATCH_SIZE = 100
+            all_docs = []
             
-            # Format check before request
-            if not all(isinstance(id_, str) for id_ in batch_ids):
-                print(f"Debug: Warning - non-string IDs found in batch")
-                # Convert to strings if needed
-                batch_ids = [str(id_) for id_ in batch_ids]
+            for i in range(0, len(page_ids), BATCH_SIZE):
+                batch_ids = page_ids[i:i + BATCH_SIZE]
+                print(f"Debug: Processing batch {i//BATCH_SIZE + 1}")
+                print(f"Debug: batch_ids type: {type(batch_ids)}")
+                print(f"Debug: First few batch_ids: {batch_ids[:2]}")
+                
+                # Format check before request
+                if not all(isinstance(id_, str) for id_ in batch_ids):
+                    print(f"Debug: Warning - non-string IDs found in batch")
+                    # Convert to strings if needed
+                    batch_ids = [str(id_) for id_ in batch_ids]
+                
+                mget_body = {"ids": batch_ids}
+                print(f"Debug: mget request body: {mget_body}")
+                
+                try:
+                    response = self.es_client.mget(
+                        index=self.index,
+                        body=mget_body
+                    )
+                    print(f"Debug: mget request successful, got {len(response.get('docs', []))} documents")
+                    all_docs.extend(doc['_source'] for doc in response['docs'] 
+                                  if doc.get('found'))
+                except Exception as e:
+                    print(f"Debug: mget request failed: {e}")
+                    print(f"Debug: Failed request body was: {mget_body}")
+                    continue  # Try next batch instead of failing completely
             
-            mget_body = {"ids": batch_ids}
-            print(f"Debug: mget request body: {mget_body}")
-            
-            try:
-                response = self.es_client.mget(
-                    index=self.index,
-                    body=mget_body
-                )
-                print(f"Debug: mget request successful, got {len(response.get('docs', []))} documents")
-                all_docs.extend(doc['_source'] for doc in response['docs'] 
-                              if doc.get('found'))
-            except Exception as e:
-                print(f"Debug: mget request failed: {e}")
-                print(f"Debug: Failed request body was: {mget_body}")
-                continue  # Try next batch instead of failing completely
-        
-        # Process documents and add to buffer
-        print(f"Debug: Processing {len(all_docs)} documents")
-        processed_examples = self._process_documents(all_docs)
-        added_to_buffer = 0
-        for example in processed_examples:
-            if len(self.data_buffer) < self.cache_size_limit:
-                self.data_buffer.append(example)
-                added_to_buffer += 1
-        print(f"Debug: Added {added_to_buffer} examples to buffer")
-                    
-    except Exception as e:
-        print(f"Error loading page: {e}")
-        import traceback
-        traceback.print_exc()
-            
-    self.current_page_index += 1
+            # Process documents and add to buffer
+            print(f"Debug: Processing {len(all_docs)} documents")
+            processed_examples = self._process_documents(all_docs)
+            added_to_buffer = 0
+            for example in processed_examples:
+                if len(self.data_buffer) < self.cache_size_limit:
+                    self.data_buffer.append(example)
+                    added_to_buffer += 1
+            print(f"Debug: Added {added_to_buffer} examples to buffer")
+                        
+        except Exception as e:
+            print(f"Error loading page: {e}")
+            import traceback
+            traceback.print_exc()
+                
+        self.current_page_index += 1
     
     def get_triplets_from_sentence(
             self, es_sentence: Dict) -> List[Tuple[str, str, str, str]]:
