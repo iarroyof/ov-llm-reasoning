@@ -6,6 +6,7 @@ import torch
 from transformers import PreTrainedTokenizer
 from collections import deque
 from pathlib import Path
+import logging
 from ..utils.triplet_filter import FilterMethod, TripletFilter, process_and_filter_triplets
 
 class ElasticSearchDataset(IterableDataset):
@@ -30,7 +31,10 @@ class ElasticSearchDataset(IterableDataset):
         Returns (sentence_id, triplet_idx) pairs for valid triplets.
         """
         es_client = Elasticsearch(url)
-        
+        total_docs_analyzed = 0
+        total_triplets_analyzed = 0
+        total_valid_triplets = 0
+        logger = logging.getLogger(__name__)
         # Initialize triplet filter if needed
         triplet_filter = TripletFilter(
             method=filter_method,
@@ -69,19 +73,24 @@ class ElasticSearchDataset(IterableDataset):
                 while len(valid_pairs) < n_sentences:
                     # Process current batch
                     for hit in response['hits']['hits']:
+                        total_docs_analyzed += 1
                         doc_id = hit['_id']
-                        
                         # Filter and process triplets
-                        batch_pairs = process_and_filter_triplets(
+                        batch_pairs, doc_triplets, valid_doc_triplets = process_and_filter_triplets(
                             doc_id,
                             hit['_source'],
                             triplet_filter
                         )
+                        total_triplets_analyzed += doc_triplets
+                        total_valid_triplets += valid_doc_triplets
                         valid_pairs.extend(batch_pairs)
                         
                         if len(valid_pairs) >= n_sentences:
                             break
-                    
+                    # Log current statistics
+                    logger.info(f"Progress - Senteces: {total_docs_analyzed}, "
+                          f"Triplets analyzed: {total_triplets_analyzed}, "
+                          f"Valid triplets: {total_valid_triplets}")
                     # Get next batch
                     response = es_client.scroll(
                         scroll_id=scroll_id,
@@ -94,12 +103,20 @@ class ElasticSearchDataset(IterableDataset):
             finally:
                 es_client.clear_scroll(scroll_id=scroll_id)
             
-            # Limit to max_docs2load if needed
+            # Limit to n_sentences if needed
             if len(valid_pairs) > n_sentences:
                 if seed is not None:
                     random.seed(seed)
                 valid_pairs = random.sample(valid_pairs, n_sentences)
-            
+            # Log final statistics
+            logger.info(f"Final Triplet Statistics:")
+            logger.info(f"Total documents analyzed: {total_docs_analyzed}")
+            logger.info(f"Total triplets analyzed: {total_triplets_analyzed}")
+            logger.info(f"Total valid triplets: {total_valid_triplets}")
+            logger.info(f"Discarded triplets: {total_triplets_analyzed - total_valid_triplets}")
+            if total_triplets_analyzed > 0:
+                discard_rate = (total_triplets_analyzed - total_valid_triplets) / total_triplets_analyzed
+                logger.info(f"Discard rate: {discard_rate:.2%}")
             # Shuffle and split
             if seed is not None:
                 random.seed(seed)
