@@ -116,14 +116,20 @@ class TripletFilter:
             object_: str) -> bool:
         """
         Determine if triplet should be kept based on filtering method.
+        
+        Returns:
+            False if either subject or object contains only stopwords
+            True if both subject and object contain at least one non-stopword
         """
         if self.method == FilterMethod.NONE:
             return True
             
         if self.method == FilterMethod.STOPWORDS:
-            # Keep triplet if either subject or object has non-stopwords
-            return (self._has_non_stopwords(subject) or 
-                   self._has_non_stopwords(object_))
+            # Discard if either subject or object has only stopwords
+            # i.e., if either one does NOT have non-stopwords
+            if not self._has_non_stopwords(subject) or not self._has_non_stopwords(object_):
+                return False
+            return True
         
         return True
 
