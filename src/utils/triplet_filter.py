@@ -14,21 +14,19 @@ class StopwordsConfig:
     # Basic stopwords that are typically not semantically meaningful
     BASIC_STOPWORDS = {
         'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
-        'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
-        'to', 'was', 'were', 'will', 'with', 'this', 'those', 'there',
-        'here', 'they', 'them', 'these', 'their', 'which', 'when', 'what'
+        'has', 'he', 'she', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
+        'to', 'was', 'were', 'will', 'with', 'this', 'those', 'there', 'we', 'you', 'who',
+        'here', 'they', 'them', 'these', 'their', 'which', 'when', 'what',
+        # Semantic Keepers to avoid
+        'all', 'every', 'some', 'any', 'many', 'few', 'most', 'each',
+        'who', 'what', 'when', 'where', 'why', 'how',
+        'all', 'every', 'some', 'any', 'many', 'few', 'most', 'each',
     }
 
     # Words to keep even if they might be considered stopwords
     SEMANTIC_KEEPERS = {
-        # Question words (important for reasoning)
-        'who', 'what', 'when', 'where', 'why', 'how',
-        
         # Negations (critical for logic)
         'no', 'not', 'none', 'never', 'neither', 'nor',
-        
-        # Quantifiers
-        'all', 'every', 'some', 'any', 'many', 'few', 'most', 'each',
         
         # Temporal indicators
         'before', 'after', 'during', 'while', 'until', 'since',
@@ -38,9 +36,6 @@ class StopwordsConfig:
         
         # Comparatives and superlatives
         'more', 'less', 'better', 'worse', 'best', 'worst', 'most', 'least',
-        
-        # Entity references
-        'he', 'she', 'it', 'they', 'we', 'you', 'who',
         
         # Important prepositions
         'through', 'within', 'without', 'between', 'among'
