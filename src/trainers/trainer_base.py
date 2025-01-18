@@ -2,7 +2,6 @@
 
 import torch
 import numpy as np
-from scipy import stats
 from torch.utils.data import DataLoader
 import wandb
 import logging
@@ -195,15 +194,13 @@ class BaseNeuralReasoningTrainer:
         min_val = np.min(data_np, axis=0)
         max_val = np.max(data_np, axis=0)
         percentiles = np.percentile(data_np, [25, 50, 75], axis=0)
-        mode = stats.mode(data_np, axis=0)
     
         # Display the results
         return {#"Mean": mean,
             "Test Score Standard Deviation": std,
             "Test Score Min": min_val,
             "Test Score Max": max_val,
-            " Test Score Percentiles (25th, 50th, 75th)": percentiles,
-            "Test Score Mode": mode}
+            "Test Score Percentiles (25th, 50th, 75th)": percentiles}
     
     def _log_final_metrics(self, avg_loss, avg_scores, all_scores):
         """Log final metrics to wandb"""
