@@ -179,11 +179,45 @@ class ElasticSearchDataset(IterableDataset):
                     index=self.index,
                     body=mget_body
                 )
-        except Exception as e:
+                
+                # Process results
+                processed_docs = []
+                for hit in response.get('docs', []):
+                    if not hit.get('found'):
+                        print(f"Debug: Document not found for ID: {hit.get('_id')}")
+                        continue
+                    
+                    sent_id = hit['_id']
+                    source = hit.get('_source', {})
+                    
+                    if 'triplets' not in source:
+                        print(f"Debug: No triplets found in document: {sent_id}")
+                        continue
+                    
+                    triplet_indices = sent_id_to_triplets[sent_id]
+                    for idx in triplet_indices:
+                        if idx < len(source['triplets']):
+                            processed_docs.append({
+                                '_id': sent_id,
+                                'sentence_text': source.get('sentence_text', ''),
+                                'triplets': [source['triplets'][idx]]
+                            })
+                        else:
+                            print(f"Debug: Triplet index {idx} out of range for document {sent_id}")
+                
+                return processed_docs
+                
+            except Exception as e:
                 print(f"Debug: Full mget request failed with error: {e}")
                 print(f"Debug: Request body was: {mget_body}")
-                raise
-            
+                return []  # Return empty list instead of raising
+                
+        except Exception as e:
+            print(f"Debug: Error in _fetch_batch: {e}")
+            import traceback
+            traceback.print_exc()
+            return []
+        
     def __init__(
             self,
             url: str,
