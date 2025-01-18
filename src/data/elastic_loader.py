@@ -179,11 +179,10 @@ class ElasticSearchDataset(IterableDataset):
                     index=self.index,
                     body=mget_body
                 )
-            except Exception as e:
+        except Exception as e:
                 print(f"Debug: Full mget request failed with error: {e}")
                 print(f"Debug: Request body was: {mget_body}")
                 raise
-            
             
     def __init__(
             self,
