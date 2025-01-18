@@ -86,7 +86,7 @@ class BaseNeuralReasoningTrainer:
         avg_scores = self._aggregate_scores(all_scores)
         
         # Log final metrics
-        self._log_final_metrics(avg_loss, avg_scores)
+        self._log_final_metrics(avg_loss, avg_scores, all_scores)
         
         return avg_loss, avg_scores
     
@@ -135,8 +135,12 @@ class BaseNeuralReasoningTrainer:
                 test_score = [-1] * 3
             else:
                 test_score = -1
-    
-        return {'loss': loss.item(), 'score': test_score}
+        test_loss = loss.item()
+        wandb.log({
+            "test_loss": test_loss,
+            "step": step
+            })
+        return {'loss': test_loss, 'score': test_score}
 
     def _aggregate_scores(self, scores):
         """Average scores across batches, ignoring error cases"""
@@ -172,7 +176,35 @@ class BaseNeuralReasoningTrainer:
                 return -1
             return sum(valid_scores) / len(valid_scores)
             
-    def _log_final_metrics(self, avg_loss, avg_scores):
+    def _get_summary_statistics(self, data):
+        if not isinstance(data, list):
+            raise ValueError("Input data should be a list or a list of lists.")
+        # Check if it's a list of lists
+        if all(isinstance(i, list) for i in data):
+            data_np = np.array(data)
+        else:
+            data_np = np.array([data])
+        
+        if data_np.ndim != 2:
+            raise ValueError("Input data should be a 2-dimensional list of lists.")
+    
+        # Calculate summary statistics
+        #mean = np.mean(data_np, axis=0)
+        std = np.std(data_np, axis=0)
+        min_val = np.min(data_np, axis=0)
+        max_val = np.max(data_np, axis=0)
+        percentiles = np.percentile(data_np, [25, 50, 75], axis=0)
+        mode = stats.mode(data_np, axis=0)
+    
+        # Display the results
+        return {#"Mean": mean,
+            "Test Score Standard Deviation": std,
+            "Test Score Min": min_val,
+            "Test Score Max": max_val,
+            " Test Score Percentiles (25th, 50th, 75th)": percentiles,
+            "Test Score Mode": mode}
+    
+def _log_final_metrics(self, avg_loss, avg_scores, all_scores):
         """Log final metrics to wandb"""
         log_dict = {
             "final_test_loss": avg_loss,
@@ -185,10 +217,13 @@ class BaseNeuralReasoningTrainer:
                 "final_test_score (combined)": avg_scores[2]
             })
             logger.info(f"Final Test Loss: {avg_loss} | Final Test Scores (Bleu, Rouge, Combined): {avg_scores}")
+            logger.info(f"Test Scores Sumary Statistics:")
+            logger.info()
         else:
             log_dict[f"final_test_score ({self.score_type})"] = avg_scores
             logger.info(f"Final Test Loss: {avg_loss} | Final Test Score: {avg_scores}")
             
+        log_dict.update(self._get_summary_statistics(all_scores))
         wandb.log(log_dict)
 
     def calculate_validation_score(self, data, generated_ids):
