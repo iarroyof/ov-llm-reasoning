@@ -118,12 +118,19 @@ class ElasticSearchDataset(IterableDataset):
     def _fetch_batch(self) -> List[Dict]:
         """Fetch batch using sentence-triplet pairs."""
         if not self.document_ids:
+            print("Debug: No document_ids available")
             return []
         
         try:
-            # Get batch of unseen pairs
+            # Debug: Print type and sample of document_ids
+            print(f"Debug: document_ids type: {type(self.document_ids)}")
+            print(f"Debug: First few document_ids: {self.document_ids[:2]}")
+            
             batch_pairs = []
             for pair in self.document_ids:
+                # Debug: Print each pair being processed
+                print(f"Debug: Processing pair: {pair}, type: {type(pair)}")
+                
                 if isinstance(pair, (list, tuple)) and len(pair) == 2:
                     sent_id, triplet_idx = pair
                     if (sent_id, triplet_idx) not in self.seen_docs:
@@ -133,55 +140,50 @@ class ElasticSearchDataset(IterableDataset):
                             break
             
             if not batch_pairs:
+                print("Debug: No batch_pairs collected")
                 return []
+            
+            # Debug: Print collected batch_pairs
+            print(f"Debug: Collected batch_pairs: {batch_pairs[:2]}")
             
             # Group by sentence ID
             sent_id_to_triplets = {}
-            unique_ids = []  # Maintain order and uniqueness
+            unique_ids = []
             for sent_id, triplet_idx in batch_pairs:
                 if sent_id not in sent_id_to_triplets:
                     sent_id_to_triplets[sent_id] = []
                     unique_ids.append(sent_id)
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Fetch sentences with correct mget format
+            # Debug: Print mget request structure
+            mget_body = {"ids": unique_ids}
+            print(f"Debug: mget request body: {mget_body}")
+            print(f"Debug: First few unique_ids: {unique_ids[:2]}")
+            
+            # Try a single ID first to verify it works
+            if unique_ids:
+                test_body = {"ids": [unique_ids[0]]}
+                print(f"Debug: Testing single ID request: {test_body}")
+                try:
+                    test_response = self.es_client.mget(
+                        index=self.index,
+                        body=test_body
+                    )
+                    print("Debug: Single ID request successful")
+                except Exception as e:
+                    print(f"Debug: Single ID request failed: {e}")
+            
+            # Now try the full request
             try:
                 response = self.es_client.mget(
                     index=self.index,
-                    body={"ids": unique_ids}  # Just send the list of IDs
+                    body=mget_body
                 )
             except Exception as e:
-                print(f"Error in mget request with IDs sample: {unique_ids[:2]}...")
+                print(f"Debug: Full mget request failed with error: {e}")
+                print(f"Debug: Request body was: {mget_body}")
                 raise
             
-            # Process results
-            processed_docs = []
-            for hit in response.get('docs', []):
-                if not hit.get('found'):
-                    continue
-                
-                sent_id = hit['_id']
-                source = hit.get('_source', {})
-                
-                if 'triplets' not in source:
-                    continue
-                
-                triplet_indices = sent_id_to_triplets[sent_id]
-                for idx in triplet_indices:
-                    if idx < len(source['triplets']):
-                        processed_docs.append({
-                            '_id': sent_id,
-                            'sentence_text': source.get('sentence_text', ''),
-                            'triplets': [source['triplets'][idx]]
-                        })
-            
-            return processed_docs
-            
-        except Exception as e:
-            print(f"Error loading page: {e}")
-            import traceback
-            traceback.print_exc()
-            return []    
             
     def __init__(
             self,
