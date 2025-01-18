@@ -204,7 +204,7 @@ class BaseNeuralReasoningTrainer:
             " Test Score Percentiles (25th, 50th, 75th)": percentiles,
             "Test Score Mode": mode}
     
-def _log_final_metrics(self, avg_loss, avg_scores, all_scores):
+    def _log_final_metrics(self, avg_loss, avg_scores, all_scores):
         """Log final metrics to wandb"""
         log_dict = {
             "final_test_loss": avg_loss,
