@@ -217,13 +217,15 @@ class BaseNeuralReasoningTrainer:
                 "final_test_score (combined)": avg_scores[2]
             })
             logger.info(f"Final Test Loss: {avg_loss} | Final Test Scores (Bleu, Rouge, Combined): {avg_scores}")
-            logger.info(f"Test Scores Sumary Statistics:")
-            logger.info()
+            
         else:
             log_dict[f"final_test_score ({self.score_type})"] = avg_scores
             logger.info(f"Final Test Loss: {avg_loss} | Final Test Score: {avg_scores}")
-            
-        log_dict.update(self._get_summary_statistics(all_scores))
+
+        summ_stats = self._get_summary_statistics(all_scores)
+        logger.info(f"Test Scores Sumary Statistics:")
+        logger.info(summ_stats)
+        log_dict.update(summ_stats)
         wandb.log(log_dict)
 
     def calculate_validation_score(self, data, generated_ids):
