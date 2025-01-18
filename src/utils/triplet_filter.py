@@ -49,28 +49,24 @@ class StopwordsConfig:
 class TripletFilter:
     """Filter triplets based on configurable criteria with robust text normalization."""
     
+    def __init__(
+            self,
+            method: FilterMethod,
+            stopwords_file: Optional[Path] = None,
+            keep_semantic_stopwords: bool = True):
+        """Initialize TripletFilter."""
+        self.method = method
+        self.stopwords = self._load_stopwords(stopwords_file, keep_semantic_stopwords)
+    
     @staticmethod
     def normalize_text(text: str) -> Set[str]:
         """
-        Normalize text for consistent comparison:
-        1. Convert to lowercase
-        2. Remove punctuation
-        3. Split into words
-        4. Remove extra whitespace
-        5. Handle special characters and diacritics if present
-        
-        Args:
-            text: Input text to normalize
-            
-        Returns:
-            Set of normalized words
+        Normalize text for consistent comparison.
         """
         # Convert to lowercase
         text = text.lower()
         
         # Remove punctuation and split into words
-        # \w+ matches one or more word characters (letters, digits, underscores)
-        # This also handles multiple spaces and other whitespace
         words = set(re.findall(r'\w+', text))
         
         return words
@@ -112,7 +108,25 @@ class TripletFilter:
         
         # Check if any normalized word is not in stopwords
         return any(word not in self.stopwords for word in normalized_words)
+
+    def should_keep_triplet(
+            self,
+            subject: str,
+            relation: str,
+            object_: str) -> bool:
+        """
+        Determine if triplet should be kept based on filtering method.
+        """
+        if self.method == FilterMethod.NONE:
+            return True
+            
+        if self.method == FilterMethod.STOPWORDS:
+            # Keep triplet if either subject or object has non-stopwords
+            return (self._has_non_stopwords(subject) or 
+                   self._has_non_stopwords(object_))
         
+        return True
+
 def process_and_filter_triplets(
         doc_id: str,
         doc_source: Dict[str, Any],
