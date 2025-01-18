@@ -3,7 +3,7 @@ name: sweep_t5_base_rtx4090_1_gpu1
 method: random
 metric:
   goal: minimize
-  name: validation_loss
+  name: final_test_loss
 parameters:
   learning_rate:
     values: [0.001, 0.0001, 0.00001, 0.000005]
