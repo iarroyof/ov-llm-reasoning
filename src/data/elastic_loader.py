@@ -117,19 +117,20 @@ class ElasticSearchDataset(IterableDataset):
 
     def _fetch_batch(self) -> List[Dict]:
         """Fetch batch using sentence-triplet pairs."""
+        logger = logging.getLogger(__name__)
+        
         if not self.document_ids:
-            print("Debug: No document_ids available")
+            logger.info("No document_ids available")
             return []
         
         try:
-            # Debug: Print type and sample of document_ids
-            print(f"Debug: document_ids type: {type(self.document_ids)}")
-            print(f"Debug: First few document_ids: {self.document_ids[:2]}")
+            # Log document_ids information
+            logger.info(f"document_ids type: {type(self.document_ids)}")
+            logger.info(f"First few document_ids: {self.document_ids[:2]}")
             
             batch_pairs = []
             for pair in self.document_ids:
-                # Debug: Print each pair being processed
-                print(f"Debug: Processing pair: {pair}, type: {type(pair)}")
+                logger.info(f"Processing pair: {pair}, type: {type(pair)}")
                 
                 if isinstance(pair, (list, tuple)) and len(pair) == 2:
                     sent_id, triplet_idx = pair
@@ -140,11 +141,10 @@ class ElasticSearchDataset(IterableDataset):
                             break
             
             if not batch_pairs:
-                print("Debug: No batch_pairs collected")
+                logger.warning("No batch_pairs collected")
                 return []
             
-            # Debug: Print collected batch_pairs
-            print(f"Debug: Collected batch_pairs: {batch_pairs[:2]}")
+            logger.info(f"Collected batch_pairs: {batch_pairs[:2]}")
             
             # Group by sentence ID
             sent_id_to_triplets = {}
@@ -155,25 +155,17 @@ class ElasticSearchDataset(IterableDataset):
                     unique_ids.append(sent_id)
                 sent_id_to_triplets[sent_id].append(triplet_idx)
             
-            # Debug: Print mget request structure
+            # Log request structure and add assertion
             mget_body = {"ids": unique_ids}
-            print(f"Debug: mget request body: {mget_body}")
-            print(f"Debug: First few unique_ids: {unique_ids[:2]}")
+            logger.info(f"mget request body: {mget_body}")
+            logger.info(f"First few unique_ids: {unique_ids[:2]}")
             
-            # Try a single ID first to verify it works
-            if unique_ids:
-                test_body = {"ids": [unique_ids[0]]}
-                print(f"Debug: Testing single ID request: {test_body}")
-                try:
-                    test_response = self.es_client.mget(
-                        index=self.index,
-                        body=test_body
-                    )
-                    print("Debug: Single ID request successful")
-                except Exception as e:
-                    print(f"Debug: Single ID request failed: {e}")
+            # Add assertions to check data
+            assert len(unique_ids) > 0, "No unique IDs collected"
+            assert all(isinstance(id_, str) for id_ in unique_ids), "Non-string IDs found"
+            assert isinstance(mget_body["ids"], list), "ids must be a list"
             
-            # Now try the full request
+            # Try the mget request
             try:
                 response = self.es_client.mget(
                     index=self.index,
@@ -184,14 +176,14 @@ class ElasticSearchDataset(IterableDataset):
                 processed_docs = []
                 for hit in response.get('docs', []):
                     if not hit.get('found'):
-                        print(f"Debug: Document not found for ID: {hit.get('_id')}")
+                        logger.warning(f"Document not found for ID: {hit.get('_id')}")
                         continue
                     
                     sent_id = hit['_id']
                     source = hit.get('_source', {})
                     
                     if 'triplets' not in source:
-                        print(f"Debug: No triplets found in document: {sent_id}")
+                        logger.warning(f"No triplets found in document: {sent_id}")
                         continue
                     
                     triplet_indices = sent_id_to_triplets[sent_id]
@@ -203,19 +195,19 @@ class ElasticSearchDataset(IterableDataset):
                                 'triplets': [source['triplets'][idx]]
                             })
                         else:
-                            print(f"Debug: Triplet index {idx} out of range for document {sent_id}")
+                            logger.warning(f"Triplet index {idx} out of range for document {sent_id}")
                 
                 return processed_docs
                 
             except Exception as e:
-                print(f"Debug: Full mget request failed with error: {e}")
-                print(f"Debug: Request body was: {mget_body}")
-                return []  # Return empty list instead of raising
+                logger.error(f"mget request failed: {e}")
+                logger.error(f"Request body was: {mget_body}")
+                return []
                 
         except Exception as e:
-            print(f"Debug: Error in _fetch_batch: {e}")
+            logger.error(f"Error in _fetch_batch: {e}")
             import traceback
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             return []
         
     def __init__(
