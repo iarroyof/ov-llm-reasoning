@@ -111,23 +111,21 @@ class TripletFilter:
 def process_and_filter_triplets(
         doc_id: str,
         doc_source: Dict[str, Any],
-        triplet_filter: TripletFilter) -> List[Tuple[str, int]]:
+        triplet_filter: TripletFilter) -> Tuple[List[Tuple[str, int]], int, int]:
     """
-    Process document and return valid (sentence_id, triplet_idx) pairs.
+    Process document and return valid (sentence_id, triplet_idx) pairs plus counts.
     
-    Args:
-        doc_id: Document ID
-        doc_source: Document source from Elasticsearch
-        triplet_filter: Configured triplet filter
-        
     Returns:
-        List of (sentence_id, triplet_idx) pairs for valid triplets
+        Tuple of (valid_pairs, total_triplets, valid_triplets)
     """
     valid_pairs = []
+    total_triplets = 0
     
     if 'triplets' not in doc_source:
-        return valid_pairs
+        return valid_pairs, 0, 0
         
+    total_triplets = len(doc_source['triplets'])
+    
     for idx, triplet in enumerate(doc_source['triplets']):
         if triplet_filter.should_keep_triplet(
             triplet['subject']['text'],
@@ -136,4 +134,4 @@ def process_and_filter_triplets(
         ):
             valid_pairs.append((doc_id, idx))
             
-    return valid_pairs
+    return valid_pairs, total_triplets, len(valid_pairs)
