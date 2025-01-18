@@ -265,7 +265,7 @@ class BaseNeuralReasoningTrainer:
     
             # Return scores
             if self.score_type == 'combined':
-                score = (bleu_score + rouge_score) / 2.0
+                score = bleu_score * rouge_score # In this implemetnation bleu\in [0, 100] and rouge\in [0, 1]
             elif self.score_type == 'all':
                 score = [bleu_score, rouge_score, (bleu_score + rouge_score) / 2.0]
             elif self.score_type == 'bleu':
