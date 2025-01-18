@@ -305,7 +305,6 @@ class ElasticSearchDataset(IterableDataset):
 
     def load_next_page(self) -> None:
         """Load next page of documents and process them"""
-        print("=============== ENTERING load_next_page ===============")
         start_index = self.current_page_index * self.es_page_size
         end_index = start_index + self.es_page_size
         
@@ -313,61 +312,58 @@ class ElasticSearchDataset(IterableDataset):
             end_index = len(self.document_ids)
             
         if start_index >= len(self.document_ids):
-            print("No more documents to load - reached end")
             return
                 
         # Get document IDs for this page
-        page_ids = self.document_ids[start_index:end_index]
-        print(f"Debug: page_ids type: {type(page_ids)}")
-        print(f"Debug: First few page_ids: {page_ids[:2]}")
+        page_pairs = self.document_ids[start_index:end_index]
         
         try:
-            # Fetch documents in smaller batches
-            BATCH_SIZE = 100
-            all_docs = []
+            # Extract just the sentence IDs (first element of each tuple)
+            batch_ids = list(set(sent_id for sent_id, _ in page_pairs))
             
-            for i in range(0, len(page_ids), BATCH_SIZE):
-                batch_ids = page_ids[i:i + BATCH_SIZE]
-                print(f"Debug: Processing batch {i//BATCH_SIZE + 1}")
-                print(f"Debug: batch_ids type: {type(batch_ids)}")
-                print(f"Debug: First few batch_ids: {batch_ids[:2]}")
+            # Create mapping from sentence ID to its triplet indices
+            sent_to_triplets = {}
+            for sent_id, triplet_idx in page_pairs:
+                if sent_id not in sent_to_triplets:
+                    sent_to_triplets[sent_id] = []
+                sent_to_triplets[sent_id].append(triplet_idx)
+            
+            # Fetch documents
+            response = self.es_client.mget(
+                index=self.index,
+                body={"ids": batch_ids}
+            )
+            
+            # Process documents
+            processed_docs = []
+            for hit in response['docs']:
+                if not hit.get('found'):
+                    continue
+                    
+                sent_id = hit['_id']
+                source = hit['_source']
                 
-                # Format check before request
-                if not all(isinstance(id_, str) for id_ in batch_ids):
-                    print(f"Debug: Warning - non-string IDs found in batch")
-                    # Convert to strings if needed
-                    batch_ids = [str(id_) for id_ in batch_ids]
-                
-                mget_body = {"ids": batch_ids}
-                print(f"Debug: mget request body: {mget_body}")
-                
-                try:
-                    response = self.es_client.mget(
-                        index=self.index,
-                        body=mget_body
-                    )
-                    print(f"Debug: mget request successful, got {len(response.get('docs', []))} documents")
-                    all_docs.extend(doc['_source'] for doc in response['docs'] 
-                                  if doc.get('found'))
-                except Exception as e:
-                    print(f"Debug: mget request failed: {e}")
-                    print(f"Debug: Failed request body was: {mget_body}")
-                    continue  # Try next batch instead of failing completely
+                if 'triplets' not in source:
+                    continue
+                    
+                # Create a document for each triplet index
+                for triplet_idx in sent_to_triplets[sent_id]:
+                    if triplet_idx < len(source['triplets']):
+                        processed_doc = {
+                            '_id': sent_id,
+                            'sentence_text': source.get('sentence_text', ''),
+                            'triplets': [source['triplets'][triplet_idx]]
+                        }
+                        processed_docs.append(processed_doc)
             
             # Process documents and add to buffer
-            print(f"Debug: Processing {len(all_docs)} documents")
-            processed_examples = self._process_documents(all_docs)
-            added_to_buffer = 0
+            processed_examples = self._process_documents(processed_docs)
             for example in processed_examples:
                 if len(self.data_buffer) < self.cache_size_limit:
                     self.data_buffer.append(example)
-                    added_to_buffer += 1
-            print(f"Debug: Added {added_to_buffer} examples to buffer")
                         
         except Exception as e:
             print(f"Error loading page: {e}")
-            import traceback
-            traceback.print_exc()
                 
         self.current_page_index += 1
     
