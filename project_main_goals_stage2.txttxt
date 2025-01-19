@@ -1,0 +1,20 @@
+Etapa 2
+Descripción de la etapa: La segunda etapa en general consiste de la implementación, entrenamiento y evaluación
+de los modelos de razonamiento neuronal. Además, se reportarán las configuraciones óptimas
+para este tipo de tarea, considerando métricas de validez de las inferencias obtenidas, tanto usando conocimiento experto como prescindiendo de éste. La base de datos se ampliará usando
+el conocimiento generado por los mejores modelos y los métodos ya implementados para la etapa 1.
+
+Descripción de la Meta: Obtener modelos de aprendizaje profundo del conocimiento general y científico	sobre enfermedades respiratorias para reconstruir e inferir unidades de conocimiento nuevas y significativamente válidas para asistir a investigadores  del  área
+mediante   el   análisis semántico	de	sus documentos usando una herramienta Web que implemente dichos modelos.
+
+Actividades: Implementar una red neuronal de arquitectura Encoder-Decoder basada en unidades recurrentes de compuerta (Gated Recurrent Units, GRU) y adaptarla al conjunto	de	datos construido durante el primer periodo. || Para el modelo basado en GRU, entrenarlo
+usando   una   búsqueda aleatoria	de
+hiperparámetros y la base de conocimiento de sentido común para hallar las mejores configuraciones por arquitectura (número de capas, número de nodos, longitud de secuencia, etc.) y llevar a cabo inferencias sobre las tripletas de dominios abiertos y de enfermedades respiratorias usando los modelos con mejor desempeño (con mejores  hiperparámetros).
+|| Implementar una red neuronal de arquitectura Encoder-Decoder basada en bloques de auto-atención (Transformer) y adaptarla al conjunto					de					datos construido durante el primer periodo.		||				 Implementar una	red		 neuronal			 de arquitectura							Encoder- Decoder basada en unidades convolucionales (Convolutional							Neural Network, CNN) y adaptarla al conjunto					de					datos construido durante el primer periodo. || Para el modelo de	 red					Transformer, entrenarlo			usando			una búsqueda			aleatoria			 de hiperparámetros y la base de conocimiento				de		sentido común		para				hallar			las mejores configuraciones por arquitectura			 (número		 de
+capas, número de nodos, longitud de secuencia, etc.) y llevar a cabo inferencias sobre las tripletas de dominios abiertos y de enfermedades respiratorias usando los modelos con mejor desempeño. || Para el modelo CNN, entrenarlo usando una búsqueda aleatoria	de
+hiperparámetros y la base de conocimiento de sentido común para hallar las mejores configuraciones por arquitectura (número de capas, número de nodos, longitud de secuencia, etc.) y llevar a cabo inferencias sobre las tripletas de dominios abiertos y de enfermedades respiratorias usando  los  modelos  con
+mejor desempeño.
+
+Productos: Implementaciones en python de los modelos de Deep Learning. Esto incluye el código fuente y los parámetros (pesos y configuraciones) que resultaron	con	mejor rendimiento almacenados
+en repositorio público (Git). || Artículo de en revista indexada: Comparación  de  métricas
+agnósticas y basadas en conocimiento experto para la evaluación de los modelos de razonamiento neuronal.
