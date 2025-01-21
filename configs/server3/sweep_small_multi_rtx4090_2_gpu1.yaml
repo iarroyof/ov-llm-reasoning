@@ -22,5 +22,6 @@ parameters:
       "google/mt5-small",
       "google/umt5-small",
       "gayanin/bart-finetuned-pubmed",
-      "gayanin/t5-small-finetuned-pubmed"
+      "gayanin/t5-small-finetuned-pubmed",
+      "google/pegasus-pubmed"
     ]
