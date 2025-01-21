@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_xl_models_ada6000_gpu0
-method: grid
+method: random
 metric:
   goal: minimize
   name: validation_loss
@@ -8,15 +8,15 @@ parameters:
   learning_rate:
     values: [0.001, 0.0001, 0.00001, 0.000005]
   batch_size:
-    values: [4, 8, 16, 32]  # Conservative for XL model
+    values: [4, 8, 16, 32, 48]
   epochs:
-    values: [4, 8, 16]
+    values: [2, 4]
   target_seq_len:
     values: [8, 16, 32, 64, 128]
   source_seq_len:
     values: [8, 16, 32, 64, 128]
   optimizer:
-    values: ["adamw", "adam"]
+    values: ["adamw"]
   hf_model_name:
     values: [
       "google-t5/t5-3b",
