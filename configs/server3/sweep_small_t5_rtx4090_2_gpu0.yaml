@@ -21,5 +21,6 @@ parameters:
     values: [
       "t5-small",
       "google/t5-v1_1-small",
-      "google/flan-t5-small"
+      "google/flan-t5-small",
+      "facebook/bart-large"
     ]
