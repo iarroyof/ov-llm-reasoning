@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_large_models_ada6000_gpu1
-method: grid
+method: random
 metric:
   goal: minimize
   name: validation_loss
@@ -10,13 +10,13 @@ parameters:
   batch_size:
     values: [4, 8, 16, 32, 48]
   epochs:
-    values: [4, 8, 16]
+    values: [2, 4]
   target_seq_len:
     values: [8, 16, 32, 64, 128]
   source_seq_len:
     values: [8, 16, 32, 64, 128]
   optimizer:
-    values: ["adamw", "adam"]
+    values: ["adamw"]
   hf_model_name:
     values: [
       "google/pegasus-large",
