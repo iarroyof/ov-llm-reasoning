@@ -3,20 +3,20 @@ name: sweep_xl_models_ada6000_gpu0
 method: random
 metric:
   goal: minimize
-  name: validation_loss
+  name: final_test_loss
 parameters:
   learning_rate:
     values: [0.001, 0.0001, 0.00001, 0.000005]
   batch_size:
-    values: [4, 8, 16, 32, 48]
+    values: [4, 8, 16, 32]
   epochs:
     values: [2, 4]
   target_seq_len:
-    values: [8, 16, 32, 64, 128]
+    values: [8, 16, 32, 64]
   source_seq_len:
-    values: [8, 16, 32, 64, 128]
+    values: [8, 16, 32, 64]
   optimizer:
-    values: ["adamw"]
+    values: ["adamw", "adam"]
   hf_model_name:
     values: [
       "google-t5/t5-3b",
