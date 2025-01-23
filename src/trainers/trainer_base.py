@@ -45,6 +45,8 @@ class BaseNeuralReasoningTrainer:
                 with torch.no_grad():
                     self.test_step(step, val_batch, epoch)
                     self.model.train()
+                    
+        torch.cuda.empty_cache()
 
     def train_step(self, step, train_batch, epoch, optimizer):
         source_ids, source_mask, y_ids, lm_labels = self.get_data(train_batch)
