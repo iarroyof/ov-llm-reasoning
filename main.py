@@ -206,50 +206,50 @@ def train_model(
     
     logger.info("Starting training...")
     for epoch in range(config.epochs):
-        trainer.train(optimizer, train_loader, epoch)
+        with ClearCache():# Get configurations from wandb
+            trainer.train(optimizer, train_loader, epoch)
     
     logger.info("Training completed. Running final evaluation...")
-    final_loss, final_scores = trainer.test(val_loader)
+    with ClearCache():# Get configurations from wandb
+        final_loss, final_scores = trainer.test(val_loader)
     
     return final_loss, final_scores
 
 def main():
     """Main training pipeline."""
     with wandb.init() as run:
-        # Get configurations from wandb
-        training_config = TrainingConfig(
-            source_len=wandb.config["source_seq_len"],
-            target_len=wandb.config["target_seq_len"],
-            model_name=wandb.config["hf_model_name"],
-            epochs=wandb.config["epochs"],
-            learning_rate=wandb.config["learning_rate"],
-            batch_size=wandb.config["batch_size"],
-            optimizer=wandb.config["optimizer"],
-            quantization=wandb.config.get("quantization"),
-            max_memory=wandb.config.get("max_memory")
-        )
-        
-        es_config = ElasticSearchConfig(
-            url=es_settings.get("url", "http://192.168.241.210:9200"),
-            index=es_settings.get("index", "triplets"),
-            page_size=es_settings.get("es_page_size", 500),
-            n_sentences=es_settings.get("n_sentences", 10000),
-            n_articles=es_settings.get("n_articles", 10000),
-            article_ids_file=es_settings.get("article_ids_file", "Not Found")
-        )
-        
-        # Get caching options from settings or wandb config
-        force_recollect = wandb.config.get("force_recollect", False)
-        cache_dir = es_settings.get("cache_dir", "data/cache_art_ids")
-        
-        logger.info(f"ElasticSearch configuration: {es_config}")
-        logger.info(f"Cache settings - Dir: {cache_dir}, Force recollect: {force_recollect}")
-        
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        logger.info(f"Using device: {device}")
-        logger.info(f"Initial system state: {log_gpu_memory_usage()}")
-        
         with ClearCache():
+            # Get configurations from wandb
+            training_config = TrainingConfig(
+                source_len=wandb.config["source_seq_len"],
+                target_len=wandb.config["target_seq_len"],
+                model_name=wandb.config["hf_model_name"],
+                epochs=wandb.config["epochs"],
+                learning_rate=wandb.config["learning_rate"],
+                batch_size=wandb.config["batch_size"],
+                optimizer=wandb.config["optimizer"],
+                quantization=wandb.config.get("quantization"),
+                max_memory=wandb.config.get("max_memory")
+            )
+            es_config = ElasticSearchConfig(
+                url=es_settings.get("url", "http://192.168.241.210:9200"),
+                index=es_settings.get("index", "triplets"),
+                page_size=es_settings.get("es_page_size", 500),
+                n_sentences=es_settings.get("n_sentences", 10000),
+                n_articles=es_settings.get("n_articles", 10000),
+                article_ids_file=es_settings.get("article_ids_file", "Not Found")
+            )            
+            # Get caching options from settings or wandb config
+            force_recollect = wandb.config.get("force_recollect", False)
+            cache_dir = es_settings.get("cache_dir", "data/cache_art_ids")
+            
+            logger.info(f"ElasticSearch configuration: {es_config}")
+            logger.info(f"Cache settings - Dir: {cache_dir}, Force recollect: {force_recollect}")
+            
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            logger.info(f"Using device: {device}")
+            logger.info(f"Initial system state: {log_gpu_memory_usage()}")
+        
             trainer_class = get_trainer_class(training_config.model_name)
             trainer = (
                 trainer_class.from_pretrained(
