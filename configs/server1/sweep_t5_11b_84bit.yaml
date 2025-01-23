@@ -4,7 +4,7 @@ name: sweep_t5_11b_ada6000_4bit
 method: grid
 metric:
   goal: minimize
-  name: validation_loss
+  name: final_test_loss
 parameters:
   learning_rate:
     values: [1e-4, 5e-5, 1e-5]
