@@ -89,6 +89,7 @@ class BaseNeuralReasoningTrainer:
         
         # Log final metrics
         self._log_final_metrics(avg_loss, avg_scores, all_scores)
+        torch.cuda.empty_cache()
         
         return avg_loss, avg_scores
     
