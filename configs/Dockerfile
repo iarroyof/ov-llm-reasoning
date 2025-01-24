@@ -63,5 +63,9 @@ RUN echo "conda activate torch-env" >> ~/.bashrc
 # Clone the GitHub repository
 RUN git clone https://github.com/iarroyof/ov-llm-reasoning.git
 
+# Copy the host's timezone files into the container
+COPY /etc/localtime /etc/localtime
+COPY /etc/timezone /etc/timezone
+
 # Default command
 CMD ["/bin/bash", "-l"]
