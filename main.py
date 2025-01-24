@@ -28,16 +28,13 @@ from src.utils import ClearCache
 from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
 from src.utils.triplet_filter import FilterMethod
-
+from src.utils.gpu_monitor import gpu_wait
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# In your training script:
-from gpu_monitor import gpu_wait
 
 @dataclass
 class TrainingConfig:
