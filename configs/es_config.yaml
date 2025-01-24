@@ -2,7 +2,7 @@
 ElasticSearch:
   url: "http://192.168.241.210:9200"
   index: "triplets"
-  es_page_size: 1000
+  es_page_size: 5000
   n_sentences: 1000000
   article_ids_file: "data/lung_cancer_es_ids.txt"
   n_articles: 12150
