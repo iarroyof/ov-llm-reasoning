@@ -36,6 +36,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# In your training script:
+from gpu_monitor import gpu_wait
+
 @dataclass
 class TrainingConfig:
     """Configuration for model training."""
@@ -215,6 +218,7 @@ def train_model(
     
     return final_loss, final_scores
 
+@gpu_wait
 def main():
     """Main training pipeline."""
     with wandb.init() as run:
