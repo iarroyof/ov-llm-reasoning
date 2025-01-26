@@ -6,6 +6,7 @@ from functools import wraps
 from system import os
 PATIENCE = 3
 SLEEP = 5
+from pdb import set_trace as st
 
 def gpu_wait(func):
     @wraps(func)
@@ -15,6 +16,7 @@ def gpu_wait(func):
             try:
                 if torch.cuda.is_available():
                     break
+                st()
                 attempts += 1
                 logging.info(f"GPU unavailable, waiting {SLEEP}s...")
                 time.sleep(SLEEP)
