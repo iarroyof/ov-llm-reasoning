@@ -14,6 +14,7 @@ from src.data import ElasticSearchDataset
 from src.utils.memory import log_gpu_memory_usage
 from src.utils import ClearCache
 from src.utils import es_settings
+from src.utils.gpu_monitor import gpu_wait
 from pdb import set_trace as st
 
 logging.basicConfig(
@@ -34,6 +35,7 @@ def get_trainer_class(model_name):
     else:
         raise ValueError(f"Unknown model type: {model_name}")
 
+@gpu_wait
 def main():
     with wandb.init() as run:
         # Get hyperparameters
