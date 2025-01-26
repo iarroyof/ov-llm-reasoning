@@ -15,8 +15,9 @@ def gpu_wait(func):
         while True:
             try:
                 if torch.cuda.is_available():
+                    st()
                     break
-                st()
+                
                 attempts += 1
                 logging.info(f"GPU unavailable, waiting {SLEEP}s...")
                 time.sleep(SLEEP)
