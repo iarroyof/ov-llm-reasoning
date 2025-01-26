@@ -3,7 +3,7 @@ import torch
 import time
 import logging
 from functools import wraps
-from system import os
+
 PATIENCE = 3
 SLEEP = 5
 from pdb import set_trace as st
