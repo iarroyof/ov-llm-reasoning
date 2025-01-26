@@ -215,7 +215,7 @@ def train_model(
     
     return final_loss, final_scores
 
-@gpu_wait
+#@gpu_wait
 def main():
     """Main training pipeline."""
     with wandb.init() as run:
