@@ -3,18 +3,25 @@ import torch
 import time
 import logging
 from functools import wraps
+from system import os
+PATIENCE = 3
+SLEEP = 5
 
 def gpu_wait(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        attempts = 0
         while True:
             try:
                 if torch.cuda.is_available():
                     break
-                logging.info("GPU unavailable, waiting 60s...")
-                time.sleep(60)
+                attempts += 1
+                logging.info(f"GPU unavailable, waiting {SLEEP}s...")
+                time.sleep(SLEEP)
+                if attempts > PATIENCE:
+                    os.run()
             except Exception as e:
                 logging.warning(f"GPU check error: {e}")
-                time.sleep(60)
+                time.sleep(SLEEP)
         return func(*args, **kwargs)
     return wrapper
