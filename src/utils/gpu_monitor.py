@@ -18,8 +18,8 @@ def gpu_wait(func):
                 attempts += 1
                 logging.info(f"GPU unavailable, waiting {SLEEP}s...")
                 time.sleep(SLEEP)
-                if attempts > PATIENCE:
-                    os.run()
+                #if attempts > PATIENCE:
+                #    os.run()
             except Exception as e:
                 logging.warning(f"GPU check error: {e}")
                 time.sleep(SLEEP)
