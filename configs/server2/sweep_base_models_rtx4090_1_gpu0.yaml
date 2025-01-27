@@ -1,6 +1,6 @@
 program: main.py
 name: sweep_base_models_rtx4090_1_gpu0
-method: grid
+method: random
 metric:
   goal: minimize
   name: final_test_loss
@@ -19,7 +19,7 @@ parameters:
     values: ["adamw", "adam"]
   hf_model_name:
     values: [
-      "facebook/bart-base",
+      "Kevincp560/bart-base-finetuned-pubmed", #"facebook/bart-base",
       "google/pegasus-gigaword",
       "google/mt5-base",
       "facebook/bart-large-xsum"
