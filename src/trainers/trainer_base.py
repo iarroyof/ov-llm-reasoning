@@ -11,7 +11,11 @@ from sacrebleu.metrics import BLEU
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("gpu_memory.log"),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
 
@@ -23,6 +27,14 @@ class BaseNeuralReasoningTrainer:
         self.score_type = gen_test_score
         self.gen_method = gen_method
         self.temp = temp
+
+    def log_gpu_memory(self, prefix=""):
+        # Make sure CUDA is available and a device is set
+        if torch.cuda.is_available():
+            summary = torch.cuda.memory_summary(device=torch.cuda.current_device(), abbreviated=True)
+            logging.info(f"{prefix} GPU Memory Summary:\n{summary}")
+        else:
+            logging.info("CUDA is not available.")
 
     def train(self, optimizer, train_loader, epoch, val_loader=None):
         self.model.train()
@@ -62,6 +74,9 @@ class BaseNeuralReasoningTrainer:
 
         if step % 10 == 0:
             logger.info(f"Epoch: {epoch} | Step {step} | Train Loss: {loss}")
+        # Log memory usage every 100 steps
+        if step % 100 == 0:
+            self.log_gpu_memory(prefix=f"Epoch {epoch}, Step {step}:")
         
         loss.backward()
         optimizer.step()
