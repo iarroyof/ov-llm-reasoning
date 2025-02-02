@@ -35,6 +35,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+DETAILED_LOG_WB = False
 
 @dataclass
 class TrainingConfig:
@@ -193,12 +194,13 @@ def train_model(
     )
     
     # Configure wandb monitoring
-    wandb.watch(
-        trainer.model,
-        log="all",
-        log_freq=100,
-        log_graph=True
-    )
+    if DETAILED_LOG_WB:
+        wandb.watch(
+            trainer.model,
+            log="all",
+            log_freq=100,
+            log_graph=True
+        )
     
     # Set training parameters
     trainer.score_type = 'all'
