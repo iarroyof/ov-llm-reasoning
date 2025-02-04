@@ -6,6 +6,13 @@ import yagmail
 import logging
 from datetime import datetime
 
+# Setup logging
+logging.basicConfig(
+            filename='gpu_monitor.log',
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+
 class GPUMonitor:
     def __init__(self, email_sender, app_password, email_recipient):
         """
@@ -20,13 +27,6 @@ class GPUMonitor:
         self.app_password = app_password
         self.email_recipient = email_recipient
         self.yag = yagmail.SMTP(email_sender, app_password)
-        
-        # Setup logging
-        logging.basicConfig(
-            filename='gpu_monitor.log',
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s'
-        )
 
     def check_nvidia_smi(self):
         """Check if nvidia-smi command works and return error if any"""
@@ -98,7 +98,8 @@ if __name__ == "__main__":
     APP_PASSWORD = os.getenv('GM_APP_PASSWORD')
     RECIPIENT_EMAIL = "iaf@gs.utm.mx"
     CHECK_INTERVAL = 1800  # 30 minutes
-    logging.info("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}".format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
+    logging.info("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}"\
+                 .format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
     if APP_PASSWORD in [None, '']:
         logging.error(f"No Gmail App Password stablished:")
         exit()
