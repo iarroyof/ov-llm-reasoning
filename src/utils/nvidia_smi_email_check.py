@@ -4,6 +4,7 @@ import time
 import os
 import yagmail
 import logging
+import socket
 from datetime import datetime
 
 # Setup logging
@@ -27,6 +28,7 @@ class GPUMonitor:
         self.app_password = app_password
         self.email_recipient = email_recipient
         self.yag = yagmail.SMTP(email_sender, app_password)
+        self.hostname = socket.gethostname()
 
     def check_nvidia_smi(self):
         """Check if nvidia-smi command works and return error if any"""
@@ -45,7 +47,7 @@ class GPUMonitor:
 
     def send_notification(self, error_msg):
         """Send email notification about GPU access error"""
-        subject = "⚠️⚠️⚠️⚠️⚠️ GPU Access Error Detected"
+        subject = f"{self.hostname}: ⚠️⚠️⚠️⚠️⚠️ GPU Access Error Detected"
         content = [
             f"GPU access error detected on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
             f"\nError message:\n{error_msg}",
@@ -98,6 +100,7 @@ if __name__ == "__main__":
     APP_PASSWORD = os.getenv('GM_APP_PASSWORD')
     RECIPIENT_EMAIL = "iaf@gs.utm.mx"
     CHECK_INTERVAL = 1800  # 30 minutes
+    
     logging.info("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}"\
                  .format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
     if APP_PASSWORD in [None, '']:
