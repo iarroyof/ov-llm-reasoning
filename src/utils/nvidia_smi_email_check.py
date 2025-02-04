@@ -99,9 +99,10 @@ if __name__ == "__main__":
     RECIPIENT_EMAIL = "iaf@gs.utm.mx"
     CHECK_INTERVAL = 1800  # 30 minutes
     if APP_PASSWORD in [None, '']:
-        logging.error(f"No Gmail App Passwrod stablished:")
+        logging.error(f"No Gmail App Password stablished:")
         exit()
     
+    logging.error("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}".format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
     monitor = GPUMonitor(SENDER_EMAIL, APP_PASSWORD, RECIPIENT_EMAIL)
     
     try:
