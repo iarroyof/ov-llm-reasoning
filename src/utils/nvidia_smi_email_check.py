@@ -102,7 +102,7 @@ if __name__ == "__main__":
         logging.error(f"No Gmail App Password stablished:")
         exit()
     
-    logging.error("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}".format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
+    logging.info("GPU monitor parameters: \nRecipient: {}\nSender: {}\nCheck interval: {}".format(RECIPIENT_EMAIL, SENDER_EMAIL, CHECK_INTERVAL))
     monitor = GPUMonitor(SENDER_EMAIL, APP_PASSWORD, RECIPIENT_EMAIL)
     
     try:
