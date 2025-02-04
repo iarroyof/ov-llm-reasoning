@@ -75,7 +75,7 @@ class GPUMonitor:
         Args:
             check_interval (int): Time between checks in seconds (default: 5 minutes)
         """
-        logging.info("Starting GPU monitoring service")
+        logging.info(f"Starting GPU monitoring service for {self.hostname} server.")
         last_notification_time = None
         notification_cooldown = 3600  # 1 hour cooldown between notifications
         
