@@ -35,7 +35,7 @@ sudo tee /etc/docker/daemon.json <<EOF
         }
     },
     "default-runtime": "nvidia",
-    "exec-opts": ["native.cgroupdriver=systemd"],
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
     "log-driver": "json-file",
     "log-opts": {
         "max-size": "100m"
