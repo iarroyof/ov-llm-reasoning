@@ -26,6 +26,7 @@ sudo apt install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 
 # Create a new daemon.json with explicit settings
+# 'cgroupfs' in "exec-opts": ["native.cgroupdriver=cgroupfs"], is crucial to avoid Failed to initialize NVML: Unknown Error
 sudo tee /etc/docker/daemon.json <<EOF
 {
     "runtimes": {
