@@ -13,6 +13,10 @@ import wandb
 from torch.optim import Adam, AdamW
 from torch.utils.data import DataLoader
 from torch.nn.modules import Module
+from transformers import PreTrainedTokenizer
+
+import pandas as pd
+from torch.utils.data import Dataset
 
 # Local imports
 from src.trainers import (
@@ -59,6 +63,92 @@ class ElasticSearchConfig:
     n_sentences: int
     n_articles: int
     article_ids_file: str
+
+@dataclass
+class LocalDataConfig:
+    """Configuration for LocalData source"""
+    file_path: str
+    chunk_size: int
+    test_ratio: float = 0.3
+    seed: int = 42
+    # n_samples: int = 10000
+
+class LargeJSONLDataset(Dataset):
+
+    # Funcion para inicializar parametros
+    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len):
+        """
+        Args:
+            file_path (str): Path to the JSONL file.
+            chunk_size (int): Number of lines to read at a time.
+        """
+        self.file_path = file_path
+        self.chunk_size = chunk_size
+        self.current_chunk = None
+        self.current_chunk_index = 0
+        self.total_samples = self._count_total_samples()
+        self.tokenizer = tokenizer
+        self.source_len = source_len,
+        self.target_len = target_len
+
+    def _count_total_samples(self):
+        """Cuenta el numero de lineas en el archivo."""
+        # Mejorar la manera en la que se le por chunks
+        n = 0
+        if ".jsonl" in self.file_path:
+            chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        elif ".csv" in self.file_path:
+            chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
+
+        for chunk in chunk_iterator:
+            n = len(chunk) + n
+            print(n)
+        return n
+        #with open(self.file_path, 'r') as f:
+        #    return sum(1 for _ in f)
+
+    def _load_chunk(self):
+        """carga el siguiente chunk del archivo."""
+        if ".jsonl" in self.file_path:
+            chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        elif ".csv" in self.file_path:
+            chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
+        
+        for chunk in chunk_iterator:
+            yield chunk
+
+    def __len__(self):
+        return self.total_samples
+
+    def __getitem__(self, index):
+        """Obtiene un numero n de elementos del chunk."""
+        if self.current_chunk is None or self.current_chunk_index >= len(self.current_chunk):
+            # Load the next chunk
+            self.current_chunk = next(self._load_chunk())
+            self.current_chunk_index = 0
+
+        # Get the sample from the current chunk
+        sample = self.current_chunk.iloc[index]
+        self.current_chunk_index = self.current_chunk_index + 1
+
+        source_encodings = self.tokenizer.batch_encode_plus(
+            sample['Article'],
+            max_length=self.source_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        target_encodings = self.tokenizer.batch_encode_plus(
+            sample['Abstract'],
+            max_length=self.target_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+
+        return source_encodings, target_encodings
+
 
 def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:  # Fixed return type
     """
@@ -176,6 +266,43 @@ def setup_datasets(
     val_loader = DataLoader(val_dataset, batch_size=None, num_workers=0)
     
     return train_loader, val_loader
+
+def setup_local_datasets(
+    config: LocalDataConfig,
+    trainer: BaseNeuralReasoningTrainer,
+    batch_size: int,
+    name_arch_train: str,
+    source_len: int,
+    target_len:int,
+    name_arch_val: str
+) -> Tuple[DataLoader, DataLoader]:
+    
+    # Parameters for local splits
+    split_params = {
+        'file_path':config.file_path,
+        'test_ratio': config.test_ratio,
+        'seed':config.seed,
+        'n_samples': config.n_samples
+    }
+
+    train_dataset = LargeJSONLDataset(name_arch_train ,batch_size, trainer.tokenizer, source_len, target_len)
+    val_dataset = LargeJSONLDataset(name_arch_val ,batch_size, trainer.tokenizer, source_len, target_len)
+
+    # Configurar DataLoaders
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        num_workers=0
+    )
+    
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        num_workers=0
+    )
+    
+    return train_loader, val_loader
+
 def train_model(
     trainer: BaseNeuralReasoningTrainer,  # Fixed type hint
     train_loader: DataLoader,
