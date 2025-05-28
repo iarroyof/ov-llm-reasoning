@@ -365,9 +365,11 @@ def setup_local_datasets(
     if ".jsonl" in config.file_path:
         chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100)
         print(f'El archivo {config.file_path} se abrio correctamente')
-        test_size = int(len(chunk_iterator) * config.test_ratio)
-        train = chunk_iterator[test_size:]
-        test = chunk_iterator[:test_size]
+        for chunk in chunk_iterator:
+            test_size = int(len(chunk) * config.test_ratio)
+            train = chunk[test_size:]
+            test = chunk[:test_size]
+
         train_dataset = JSONLDataset(
             train, 
             trainer.tokenizer, 
