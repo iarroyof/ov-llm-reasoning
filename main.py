@@ -73,10 +73,49 @@ class LocalDataConfig:
     seed: int = 42
     # n_samples: int = 10000
 
+class JSONLDataset(Dataset):
+
+    # Funcion para inicializar parametros
+    def __init__(self, Df, tokenizer, source_len, target_len):
+        """
+        Args:
+            file_path (str): Path to the JSONL file.
+            chunk_size (int): Number of lines to read at a time.
+        """
+        self.Df = Df
+        self.tokenizer = tokenizer
+        self.source_len = source_len,
+        self.target_len = target_len,
+
+    def __len__(self):
+        return len(self.Df)
+
+    def __getitem__(self, index):
+        """Obtiene un numero n de elementos del chunk."""
+        sample_data = self.Df.loc[index, 'Article']
+        sample_target = self.Df.loc[index, 'Abstract']
+        source_encodings = self.tokenizer.batch_encode_plus(
+            sample_data,
+            max_length=self.source_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        target_encodings = self.tokenizer.batch_encode_plus(
+            sample_target,
+            max_length=self.target_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+
+        return source_encodings, target_encodings
+
 class LargeJSONLDataset(Dataset):
 
     # Funcion para inicializar parametros
-    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len):
+    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len, test_ratio):
         """
         Args:
             file_path (str): Path to the JSONL file.
@@ -89,14 +128,20 @@ class LargeJSONLDataset(Dataset):
         self.total_samples = self._count_total_samples()
         self.tokenizer = tokenizer
         self.source_len = source_len,
-        self.target_len = target_len
+        self.target_len = target_len,
+        self.test_ratio = test_ratio,
+        self.train = None,
+        self.test = None
 
     def _count_total_samples(self):
         """Cuenta el numero de lineas en el archivo."""
         # Mejorar la manera en la que se le por chunks
         n = 0
         if ".jsonl" in self.file_path:
-            chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            chunk_iterator = pd.read_json(self.file_path, lines=True)
+            #chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            self.train, self.test = self.create_train_test_split(self.test_ratio, chunk_iterator)
+            return len(chunk_iterator)
         elif ".csv" in self.file_path:
             chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
 
@@ -107,10 +152,19 @@ class LargeJSONLDataset(Dataset):
         #with open(self.file_path, 'r') as f:
         #    return sum(1 for _ in f)
 
+    def create_train_test_split(test_ratio, chunk_iterator):
+        test_size = int(len(chunk_iterator) * test_ratio)
+        train = chunk_iterator[test_size:]
+        test = chunk_iterator[:test_size]
+
+        return train, test
+    
     def _load_chunk(self):
         """carga el siguiente chunk del archivo."""
         if ".jsonl" in self.file_path:
-            chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            chunk_iterator = pd.read_json(self.file_path, lines=True)
+            # chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            return chunk_iterator
         elif ".csv" in self.file_path:
             chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
         
@@ -122,30 +176,55 @@ class LargeJSONLDataset(Dataset):
 
     def __getitem__(self, index):
         """Obtiene un numero n de elementos del chunk."""
-        if self.current_chunk is None or self.current_chunk_index >= len(self.current_chunk):
-            # Load the next chunk
-            self.current_chunk = next(self._load_chunk())
-            self.current_chunk_index = 0
 
-        # Get the sample from the current chunk
-        sample = self.current_chunk.iloc[index]
-        self.current_chunk_index = self.current_chunk_index + 1
+        if ".jsonl" in self.file_path:
 
-        source_encodings = self.tokenizer.batch_encode_plus(
-            sample['Article'],
-            max_length=self.source_len,
-            padding='max_length',
-            truncation=True,
-            return_tensors='pt'
-        )
-        
-        target_encodings = self.tokenizer.batch_encode_plus(
-            sample['Abstract'],
-            max_length=self.target_len,
-            padding='max_length',
-            truncation=True,
-            return_tensors='pt'
-        )
+            if self.train == None:
+                chunk_iterator = self._load_chunk()
+                self.train,_ = self.create_train_test_split(self.test_ratio, chunk_iterator)
+            
+            sample_data = self.train.loc[index, 'Article']
+            sample_target = self.train.loc[index, 'Abstract']
+            source_encodings = self.tokenizer.batch_encode_plus(
+                sample_data,
+                max_length=self.source_len,
+                padding='max_length',
+                truncation=True,
+                return_tensors='pt'
+            )
+            
+            target_encodings = self.tokenizer.batch_encode_plus(
+                sample_target,
+                max_length=self.target_len,
+                padding='max_length',
+                truncation=True,
+                return_tensors='pt'
+            )
+        else: 
+            if self.current_chunk is None or self.current_chunk_index >= len(self.current_chunk):
+                # Load the next chunk
+                self.current_chunk = next(self._load_chunk())
+                self.current_chunk_index = 0
+
+            # Get the sample from the current chunk
+            sample = self.current_chunk.iloc[index]
+            self.current_chunk_index = self.current_chunk_index + 1
+
+            source_encodings = self.tokenizer.batch_encode_plus(
+                sample['Article'],
+                max_length=self.source_len,
+                padding='max_length',
+                truncation=True,
+                return_tensors='pt'
+            )
+            
+            target_encodings = self.tokenizer.batch_encode_plus(
+                sample['Abstract'],
+                max_length=self.target_len,
+                padding='max_length',
+                truncation=True,
+                return_tensors='pt'
+            )
 
         return source_encodings, target_encodings
 
@@ -271,10 +350,8 @@ def setup_local_datasets(
     config: LocalDataConfig,
     trainer: BaseNeuralReasoningTrainer,
     batch_size: int,
-    name_arch_train: str,
     source_len: int,
-    target_len:int,
-    name_arch_val: str
+    target_len: int
 ) -> Tuple[DataLoader, DataLoader]:
     
     # Parameters for local splits
@@ -282,11 +359,29 @@ def setup_local_datasets(
         'file_path':config.file_path,
         'test_ratio': config.test_ratio,
         'seed':config.seed,
-        'n_samples': config.n_samples
+        'chunk_size': config.chunk_size
     }
 
-    train_dataset = LargeJSONLDataset(name_arch_train ,batch_size, trainer.tokenizer, source_len, target_len)
-    val_dataset = LargeJSONLDataset(name_arch_val ,batch_size, trainer.tokenizer, source_len, target_len)
+    if ".jsonl" in config.file_path:
+        chunk_iterator = pd.read_json(config.file_path, lines=True)
+        test_size = int(len(chunk_iterator) * config.test_ratio)
+        train = chunk_iterator[test_size:]
+        test = chunk_iterator[:test_size]
+        train_dataset = JSONLDataset(
+            train, 
+            trainer.tokenizer, 
+            source_len, 
+            target_len)
+        
+        testn_dataset = JSONLDataset(
+            test,
+            trainer.tokenizer, 
+            source_len, 
+            target_len)
+        
+    # For data in csv format and diferent files to load
+    #train_dataset = LargeJSONLDataset(name_arch_train ,batch_size, trainer.tokenizer, source_len, target_len)
+    #val_dataset = LargeJSONLDataset(name_arch_val ,batch_size, trainer.tokenizer, source_len, target_len)
 
     # Configurar DataLoaders
     train_loader = DataLoader(
@@ -296,7 +391,7 @@ def setup_local_datasets(
     )
     
     val_loader = DataLoader(
-        val_dataset,
+        testn_dataset,
         batch_size=batch_size,
         num_workers=0
     )
@@ -361,19 +456,25 @@ def main():
                 quantization=wandb.config.get("quantization"),
                 max_memory=wandb.config.get("max_memory")
             )
-            es_config = ElasticSearchConfig(
-                url=es_settings.get("url", "http://192.168.241.210:9200"),
-                index=es_settings.get("index", "triplets"),
-                page_size=es_settings.get("es_page_size", 500),
-                n_sentences=es_settings.get("n_sentences", 10000),
-                n_articles=es_settings.get("n_articles", 10000),
-                article_ids_file=es_settings.get("article_ids_file", "Not Found")
+            #es_config = ElasticSearchConfig(
+            #    url=es_settings.get("url", "http://192.168.241.210:9200"),
+            #    index=es_settings.get("index", "triplets"),
+            #    page_size=es_settings.get("es_page_size", 500),
+            #    n_sentences=es_settings.get("n_sentences", 10000),
+            #    n_articles=es_settings.get("n_articles", 10000),
+            #    article_ids_file=es_settings.get("article_ids_file", "Not Found")
+            #)
+            ld_config = LocalDataConfig(
+                file_path = '/mnt/sda2/Datos_cancer_pulmon',
+                chunk_size = 900,
+                test_ratio = 0.3,
+                seed = 42
             )            
             # Get caching options from settings or wandb config
             force_recollect = wandb.config.get("force_recollect", False)
             cache_dir = es_settings.get("cache_dir", "data/cache_art_ids")
             
-            logger.info(f"ElasticSearch configuration: {es_config}")
+            #logger.info(f"ElasticSearch configuration: {es_config}")
             logger.info(f"Cache settings - Dir: {cache_dir}, Force recollect: {force_recollect}")
             
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -392,9 +493,19 @@ def main():
                 else trainer_class.from_pretrained(training_config.model_name, device)
             )
             
-            # Setup datasets with caching options
-            train_loader, val_loader = setup_datasets(
-                es_config,
+            # Setup datasets with caching options for elasticsearch
+            #train_loader, val_loader = setup_datasets(
+            #    es_config,
+            #    trainer,
+            #    training_config.batch_size,
+            #    training_config.source_len,
+            #    training_config.target_len,
+            #    force_recollect=force_recollect,
+            #    cache_dir=cache_dir
+            #)
+            # Setup datasets for local datasets
+            train_loader, val_loader = setup_local_datasets(
+                ld_config,
                 trainer,
                 training_config.batch_size,
                 training_config.source_len,
