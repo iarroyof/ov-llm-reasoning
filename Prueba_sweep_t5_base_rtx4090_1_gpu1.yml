@@ -1,0 +1,23 @@
+program: main.py
+name: sweep_t5_base_rtx4090_1_gpu1
+method: grid
+metric:
+  goal: minimize
+  name: final_test_loss
+parameters:
+  learning_rate:
+    values: [0.001]
+  batch_size:
+    values: [8]
+  epochs:
+    values: [4]
+  target_seq_len:
+    values: [8]
+  source_seq_len:
+    values: [8]
+  optimizer:
+    values: ["adamw"]
+  hf_model_name:
+    values: [
+      "t5-base"
+    ]
