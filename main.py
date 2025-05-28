@@ -362,13 +362,9 @@ def setup_local_datasets(
         'chunk_size': config.chunk_size
     }
 
-    print(config.file_path)
-
     if ".jsonl" in config.file_path:
         chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100)
         print(f'El archivo {config.file_path} se abrio correctamente')
-        type(chunk_iterator)
-        print(chunk_iterator.head())
         test_size = int(len(chunk_iterator) * config.test_ratio)
         train = chunk_iterator[test_size:]
         test = chunk_iterator[:test_size]
