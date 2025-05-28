@@ -84,8 +84,8 @@ class JSONLDataset(Dataset):
         """
         self.Df = Df
         self.tokenizer = tokenizer
-        self.source_len = source_len,
-        self.target_len = target_len,
+        self.source_len = source_len
+        self.target_len = target_len
 
     def __len__(self):
         return len(self.Df)
@@ -127,10 +127,10 @@ class LargeJSONLDataset(Dataset):
         self.current_chunk_index = 0
         self.total_samples = self._count_total_samples()
         self.tokenizer = tokenizer
-        self.source_len = source_len,
-        self.target_len = target_len,
-        self.test_ratio = test_ratio,
-        self.train = None,
+        self.source_len = source_len
+        self.target_len = target_len
+        self.test_ratio = test_ratio
+        self.train = None
         self.test = None
 
     def _count_total_samples(self):
