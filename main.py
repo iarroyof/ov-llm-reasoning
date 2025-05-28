@@ -465,7 +465,7 @@ def main():
             #    article_ids_file=es_settings.get("article_ids_file", "Not Found")
             #)
             ld_config = LocalDataConfig(
-                file_path = '/mnt/sda2/Datos_cancer_pulmon',
+                file_path = '/mnt/sda2/Datos_cancer_pulmon/articles_and_abstracts_CC0_part3.jsonl',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
