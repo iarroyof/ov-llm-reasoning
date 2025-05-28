@@ -509,9 +509,7 @@ def main():
                 trainer,
                 training_config.batch_size,
                 training_config.source_len,
-                training_config.target_len,
-                force_recollect=force_recollect,
-                cache_dir=cache_dir
+                training_config.target_len
             )
             
             final_loss, final_scores = train_model(
