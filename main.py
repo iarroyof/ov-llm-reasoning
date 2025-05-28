@@ -365,7 +365,7 @@ def setup_local_datasets(
     print(config.file_path)
 
     if ".jsonl" in config.file_path:
-        chunk_iterator = pd.read_json(config.file_path, lines=True)
+        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100)
         print(f'El archivo {config.file_path} se abrio correctamente')
         type(chunk_iterator)
         print(chunk_iterator.head())
