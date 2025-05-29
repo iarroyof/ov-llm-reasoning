@@ -372,10 +372,10 @@ def setup_local_datasets(
                 except json.JSONDecodeError as e:
                     print(f"Error en línea {i+1}: {e}")
                     print(f"Contenido problemático: {line[:100]}...")
-                    
+
         print("No se encientraron errores en el archivo jsonl")
         
-        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100, encoding='utf-8')
+        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=500, encoding='utf-8')
         print(f'El archivo {config.file_path} se abrio correctamente')
         for chunk in chunk_iterator:
             test_size = int(len(chunk) * config.test_ratio)
@@ -480,7 +480,7 @@ def main():
             #    article_ids_file=es_settings.get("article_ids_file", "Not Found")
             #)
             ld_config = LocalDataConfig(
-                file_path = '/mnt/sda2/Datos_cancer_pulmon/articles_and_abstracts_CC0_part3.jsonl',
+                file_path = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
