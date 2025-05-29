@@ -93,8 +93,8 @@ class JSONLDataset(Dataset):
 
     def __getitem__(self, index):
         """Obtiene un numero n de elementos del chunk."""
-        sample_data = self.Df.loc[index, 'Article']
-        sample_target = self.Df.loc[index, 'Abstract']
+        sample_data = self.Df.iloc[index, 'Article']
+        sample_target = self.Df.iloc[index, 'Abstract']
         source_encodings = self.tokenizer.batch_encode_plus(
             sample_data,
             max_length=self.source_len,
@@ -364,16 +364,6 @@ def setup_local_datasets(
     }
 
     if ".jsonl" in config.file_path:
-
-        with open(config.file_path, 'r', encoding='utf-8') as f:
-            for i, line in enumerate(f):
-                try:
-                    json.loads(line)
-                except json.JSONDecodeError as e:
-                    print(f"Error en línea {i+1}: {e}")
-                    print(f"Contenido problemático: {line[:100]}...")
-
-        print("No se encientraron errores en el archivo jsonl")
         
         chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=500, encoding='utf-8')
         print(f'El archivo {config.file_path} se abrio correctamente')
@@ -381,6 +371,8 @@ def setup_local_datasets(
             test_size = int(len(chunk) * config.test_ratio)
             train = chunk[test_size:]
             test = chunk[:test_size]
+            train.reset_index(drop=True, inplace=True)
+            test.reset_index(drop=True, inplace=True)
 
         train_dataset = JSONLDataset(
             train, 
