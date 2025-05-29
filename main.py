@@ -93,8 +93,8 @@ class JSONLDataset(Dataset):
 
     def __getitem__(self, index):
         """Obtiene un numero n de elementos del chunk."""
-        sample_data = self.Df.iloc[index, 'Article']
-        sample_target = self.Df.iloc[index, 'Abstract']
+        sample_data = self.Df.iloc[index]['Article']
+        sample_target = self.Df.iloc[index]['Abstract']
         source_encodings = self.tokenizer.batch_encode_plus(
             sample_data,
             max_length=self.source_len,
