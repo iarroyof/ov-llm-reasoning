@@ -372,6 +372,8 @@ def setup_local_datasets(
                 except json.JSONDecodeError as e:
                     print(f"Error en línea {i+1}: {e}")
                     print(f"Contenido problemático: {line[:100]}...")
+                    
+        print("No se encientraron errores en el archivo jsonl")
         
         chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100, encoding='utf-8')
         print(f'El archivo {config.file_path} se abrio correctamente')
