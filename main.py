@@ -95,7 +95,7 @@ class JSONLDataset(Dataset):
         """Obtiene un numero n de elementos del chunk."""
         sample_data = self.Df.iloc[index]['Article']
         sample_target = self.Df.iloc[index]['Abstract']
-        source_encodings = self.tokenizer.batch_encode_plus(
+        source_encodings = self.tokenizer.encode_plus(
             sample_data,
             max_length=self.source_len,
             padding='max_length',
@@ -103,7 +103,7 @@ class JSONLDataset(Dataset):
             return_tensors='pt'
         )
         
-        target_encodings = self.tokenizer.batch_encode_plus(
+        target_encodings = self.tokenizer.encode_plus(
             sample_target,
             max_length=self.target_len,
             padding='max_length',
