@@ -363,7 +363,7 @@ def setup_local_datasets(
     }
 
     if ".jsonl" in config.file_path:
-        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100)
+        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100, encoding='utf-8')
         print(f'El archivo {config.file_path} se abrio correctamente')
         for chunk in chunk_iterator:
             test_size = int(len(chunk) * config.test_ratio)
@@ -376,7 +376,7 @@ def setup_local_datasets(
             source_len, 
             target_len)
         
-        testn_dataset = JSONLDataset(
+        test_dataset = JSONLDataset(
             test,
             trainer.tokenizer, 
             source_len, 
@@ -394,7 +394,7 @@ def setup_local_datasets(
     )
     
     val_loader = DataLoader(
-        testn_dataset,
+        test_dataset,
         batch_size=batch_size,
         num_workers=0
     )
