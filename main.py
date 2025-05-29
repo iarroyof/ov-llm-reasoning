@@ -17,6 +17,7 @@ from transformers import PreTrainedTokenizer
 
 import pandas as pd
 from torch.utils.data import Dataset
+import json
 
 # Local imports
 from src.trainers import (
@@ -363,6 +364,15 @@ def setup_local_datasets(
     }
 
     if ".jsonl" in config.file_path:
+
+        with open(config.file_path, 'r', encoding='utf-8') as f:
+            for i, line in enumerate(f):
+                try:
+                    json.loads(line)
+                except json.JSONDecodeError as e:
+                    print(f"Error en línea {i+1}: {e}")
+                    print(f"Contenido problemático: {line[:100]}...")
+        
         chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=100, encoding='utf-8')
         print(f'El archivo {config.file_path} se abrio correctamente')
         for chunk in chunk_iterator:
