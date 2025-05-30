@@ -110,9 +110,11 @@ class JSONLDataset(Dataset):
             truncation=True,
             return_tensors='pt'
         )
-                                            # Keep singular here as it's internal
-        return source_encodings['input_ids'], source_encodings['attention_mask'], target_encodings['input_ids'], target_encodings['attention_mask']   # Keep singular here as it's internal
-        
+        return {
+            "source_ids": source_encodings['input_ids'].squeeze(0),
+            "source_masks": source_encodings['attention_mask'].squeeze(0),
+            "target_ids": target_encodings['input_ids'].squeeze(0)
+        }
         #return source_encodings, target_encodings
 
 class LargeJSONLDataset(Dataset):
@@ -231,6 +233,13 @@ class LargeJSONLDataset(Dataset):
 
         return source_encodings, target_encodings
 
+def t5_collate_fn(batch):
+    """Función para agrupar muestras en lotes"""
+    return {
+        "source_ids": torch.stack([item["source_ids"] for item in batch]),
+        "source_masks": torch.stack([item["source_masks"] for item in batch]),
+        "target_ids": torch.stack([item["target_ids"] for item in batch])
+    }
 
 def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:  # Fixed return type
     """
@@ -344,8 +353,8 @@ def setup_datasets(
         selected_doc_ids=test_ids
     )
     
-    train_loader = DataLoader(train_dataset, batch_size=None, num_workers=0)
-    val_loader = DataLoader(val_dataset, batch_size=None, num_workers=0)
+    train_loader = DataLoader(train_dataset, batch_size=None, num_workers=0, collate_fn=t5_collate_fn)
+    val_loader = DataLoader(val_dataset, batch_size=None, num_workers=0, collate_fn=t5_collate_fn)
     
     return train_loader, val_loader
 
