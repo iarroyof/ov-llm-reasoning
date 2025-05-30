@@ -110,8 +110,10 @@ class JSONLDataset(Dataset):
             truncation=True,
             return_tensors='pt'
         )
-
-        return source_encodings, target_encodings
+                                            # Keep singular here as it's internal
+        return source_encodings['input_ids'], source_encodings['attention_mask'], target_encodings['input_ids'], target_encodings['attention_mask']   # Keep singular here as it's internal
+        
+        #return source_encodings, target_encodings
 
 class LargeJSONLDataset(Dataset):
 
