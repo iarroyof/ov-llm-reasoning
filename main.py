@@ -16,7 +16,7 @@ from torch.nn.modules import Module
 from transformers import PreTrainedTokenizer
 
 import pandas as pd
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, IterableDataset
 import json
 
 # Local imports
@@ -117,10 +117,10 @@ class JSONLDataset(Dataset):
         }
         #return source_encodings, target_encodings
 
-class LargeJSONLDataset(Dataset):
+class IterableJSONLDataset(IterableDataset):
 
     # Funcion para inicializar parametros
-    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len, test_ratio):
+    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len):
         """
         Args:
             file_path (str): Path to the JSONL file.
@@ -128,110 +128,57 @@ class LargeJSONLDataset(Dataset):
         """
         self.file_path = file_path
         self.chunk_size = chunk_size
-        self.current_chunk = None
-        self.current_chunk_index = 0
-        self.total_samples = self._count_total_samples()
         self.tokenizer = tokenizer
         self.source_len = source_len
         self.target_len = target_len
-        self.test_ratio = test_ratio
         self.train = None
         self.test = None
 
-    def _count_total_samples(self):
-        """Cuenta el numero de lineas en el archivo."""
-        # Mejorar la manera en la que se le por chunks
-        n = 0
-        if ".jsonl" in self.file_path:
-            chunk_iterator = pd.read_json(self.file_path, lines=True)
-            #chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
-            self.train, self.test = self.create_train_test_split(self.test_ratio, chunk_iterator)
-            return len(chunk_iterator)
-        elif ".csv" in self.file_path:
-            chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
-
-        for chunk in chunk_iterator:
-            n = len(chunk) + n
-            print(n)
-        return n
-        #with open(self.file_path, 'r') as f:
-        #    return sum(1 for _ in f)
-
-    def create_train_test_split(test_ratio, chunk_iterator):
-        test_size = int(len(chunk_iterator) * test_ratio)
-        train = chunk_iterator[test_size:]
-        test = chunk_iterator[:test_size]
-
-        return train, test
-    
-    def _load_chunk(self):
-        """carga el siguiente chunk del archivo."""
-        if ".jsonl" in self.file_path:
-            chunk_iterator = pd.read_json(self.file_path, lines=True)
-            # chunk_iterator = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
-            return chunk_iterator
-        elif ".csv" in self.file_path:
-            chunk_iterator = pd.read_csv(self.file_path, chunksize=self.chunk_size)
-        
-        for chunk in chunk_iterator:
-            yield chunk
-
     def __len__(self):
-        return self.total_samples
+        with open(self.file_path, 'r', encoding='utf-8') as f:
+            total_lines = sum(1 for _ in f)
+            if self.file_path.endswith('.csv'):
+                return total_lines - 1
+            return total_lines
 
-    def __getitem__(self, index):
-        """Obtiene un numero n de elementos del chunk."""
-
-        if ".jsonl" in self.file_path:
-
-            if self.train == None:
-                chunk_iterator = self._load_chunk()
-                self.train,_ = self.create_train_test_split(self.test_ratio, chunk_iterator)
-            
-            sample_data = self.train.loc[index, 'Article']
-            sample_target = self.train.loc[index, 'Abstract']
-            source_encodings = self.tokenizer.batch_encode_plus(
-                sample_data,
-                max_length=self.source_len,
-                padding='max_length',
-                truncation=True,
-                return_tensors='pt'
-            )
-            
-            target_encodings = self.tokenizer.batch_encode_plus(
-                sample_target,
-                max_length=self.target_len,
-                padding='max_length',
-                truncation=True,
-                return_tensors='pt'
-            )
-        else: 
-            if self.current_chunk is None or self.current_chunk_index >= len(self.current_chunk):
-                # Load the next chunk
-                self.current_chunk = next(self._load_chunk())
-                self.current_chunk_index = 0
-
-            # Get the sample from the current chunk
-            sample = self.current_chunk.iloc[index]
-            self.current_chunk_index = self.current_chunk_index + 1
-
-            source_encodings = self.tokenizer.batch_encode_plus(
-                sample['Article'],
-                max_length=self.source_len,
-                padding='max_length',
-                truncation=True,
-                return_tensors='pt'
-            )
-            
-            target_encodings = self.tokenizer.batch_encode_plus(
-                sample['Abstract'],
-                max_length=self.target_len,
-                padding='max_length',
-                truncation=True,
-                return_tensors='pt'
-            )
-
-        return source_encodings, target_encodings
+    def __iter__(self):
+        """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
+        # Determinar si es CSV o JSONL
+        if self.file_path.endswith('.jsonl'):
+            reader = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        else:
+            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+        
+        current_index = 0
+        
+        for chunk in reader:
+            for _, row in chunk.iterrows():
+                current_index += 1
+                row_source = row[-3] + ' ' +row[-2]
+                row_target = row[-1]
+                # Tokenizar los textos
+                source_encodings = self.tokenizer.encode_plus(
+                    row_source,
+                    max_length=self.source_len,
+                    padding='max_length',
+                    truncation=True,
+                    return_tensors='pt'
+                )
+                
+                target_encodings = self.tokenizer.encode_plus(
+                    row_target,
+                    max_length=self.target_len,
+                    padding='max_length',
+                    truncation=True,
+                    return_tensors='pt'
+                )
+                
+                # Devolver en el mismo formato que JSONLDataset
+                yield {
+                    "source_ids": source_encodings['input_ids'].squeeze(0),
+                    "source_masks": source_encodings['attention_mask'].squeeze(0),
+                    "target_ids": target_encodings['input_ids'].squeeze(0)
+                }
 
 def t5_collate_fn(batch):
     """Función para agrupar muestras en lotes"""
@@ -374,32 +321,32 @@ def setup_local_datasets(
         'chunk_size': config.chunk_size
     }
 
-    if ".jsonl" in config.file_path:
+    #if ".jsonl" in config.file_path:
         
-        chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=500, encoding='utf-8')
-        print(f'El archivo {config.file_path} se abrio correctamente')
-        for chunk in chunk_iterator:
-            test_size = int(len(chunk) * config.test_ratio)
-            train = chunk[test_size:]
-            test = chunk[:test_size]
-            train.reset_index(drop=True, inplace=True)
-            test.reset_index(drop=True, inplace=True)
+    #    chunk_iterator = pd.read_json(config.file_path, lines=True, chunksize=500, encoding='utf-8')
+    #    print(f'El archivo {config.file_path} se abrio correctamente')
+    #    for chunk in chunk_iterator:
+    #        test_size = int(len(chunk) * config.test_ratio)
+    #        train = chunk[test_size:]
+    #        test = chunk[:test_size]
+    #        train.reset_index(drop=True, inplace=True)
+    #        test.reset_index(drop=True, inplace=True)
 
-        train_dataset = JSONLDataset(
-            train, 
-            trainer.tokenizer, 
-            source_len, 
-            target_len)
+    #    train_dataset = JSONLDataset(
+    #        train, 
+    #        trainer.tokenizer, 
+    #        source_len, 
+    #        target_len)
         
-        test_dataset = JSONLDataset(
-            test,
-            trainer.tokenizer, 
-            source_len, 
-            target_len)
-        
+    #    test_dataset = JSONLDataset(
+    #        test,
+    #        trainer.tokenizer, 
+    #        source_len, 
+    #        target_len)
+    #else:
     # For data in csv format and diferent files to load
-    #train_dataset = LargeJSONLDataset(name_arch_train ,batch_size, trainer.tokenizer, source_len, target_len)
-    #val_dataset = LargeJSONLDataset(name_arch_val ,batch_size, trainer.tokenizer, source_len, target_len)
+    train_dataset = IterableJSONLDataset(config.file_path_train ,config.chunk_size, trainer.tokenizer, source_len, target_len)
+    test_dataset = IterableJSONLDataset(config.file_path_test ,config.chunk_size, trainer.tokenizer, source_len, target_len)
 
     # Configurar DataLoaders
     train_loader = DataLoader(
@@ -483,7 +430,8 @@ def main():
             #    article_ids_file=es_settings.get("article_ids_file", "Not Found")
             #)
             ld_config = LocalDataConfig(
-                file_path = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
+                file_path_train = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
+                file_path_test = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
