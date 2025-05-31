@@ -68,7 +68,8 @@ class ElasticSearchConfig:
 @dataclass
 class LocalDataConfig:
     """Configuration for LocalData source"""
-    file_path: str
+    file_path_train: str
+    file_path_test :str
     chunk_size: int
     test_ratio: float = 0.3
     seed: int = 42
@@ -352,13 +353,15 @@ def setup_local_datasets(
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
-        num_workers=0
+        num_workers=0,
+        collate_fn=t5_collate_fn
     )
     
     val_loader = DataLoader(
         test_dataset,
         batch_size=batch_size,
-        num_workers=0
+        num_workers=0,
+        collate_fn=t5_collate_fn
     )
     
     return train_loader, val_loader
