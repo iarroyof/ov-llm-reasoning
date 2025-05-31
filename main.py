@@ -430,8 +430,8 @@ def main():
             #    article_ids_file=es_settings.get("article_ids_file", "Not Found")
             #)
             ld_config = LocalDataConfig(
-                file_path_train = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
-                file_path_test = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
+                file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv',
+                file_path_test = '/app/data/triplets_CC0_part3.csv',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
