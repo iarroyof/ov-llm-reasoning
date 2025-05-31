@@ -155,8 +155,13 @@ class IterableJSONLDataset(IterableDataset):
         for chunk in reader:
             for _, row in chunk.iterrows():
                 current_index += 1
-                row_source = row[-3] + ' ' +row[-2]
-                row_target = row[-1]
+                def safe_str(value):
+                    if pd.isna(value):
+                        return ""
+                    return str(value)
+                
+                row_source = safe_str(row[-3]) + ' ' + safe_str(row[-2])
+                row_target = safe_str(row[-1])
                 # Tokenizar los textos
                 source_encodings = self.tokenizer.encode_plus(
                     row_source,
