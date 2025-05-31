@@ -316,7 +316,8 @@ def setup_local_datasets(
     
     # Parameters for local splits
     split_params = {
-        'file_path':config.file_path,
+        'file_path_train':config.file_path_train,
+        'file_path_test':config.file_path_test,
         'test_ratio': config.test_ratio,
         'seed':config.seed,
         'chunk_size': config.chunk_size
