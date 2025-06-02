@@ -34,6 +34,8 @@ from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
 from src.utils.triplet_filter import FilterMethod
 from src.utils.gpu_monitor import gpu_wait
+from src.test import prueba_sumarization
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -493,6 +495,9 @@ def main():
                 val_loader,
                 training_config
             )
+
+            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            prueba_sumarization(path_sumarization, trainer)
             
             wandb.run.summary.update({
                 "final_test_loss": final_loss,

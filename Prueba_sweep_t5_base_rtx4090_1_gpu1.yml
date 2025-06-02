@@ -10,7 +10,7 @@ parameters:
   batch_size:
     values: [8]
   epochs:
-    values: [4]
+    values: [1]
   target_seq_len:
     values: [8]
   source_seq_len:
