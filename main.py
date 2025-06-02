@@ -34,7 +34,7 @@ from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
 from src.utils.triplet_filter import FilterMethod
 from src.utils.gpu_monitor import gpu_wait
-from src.test import prueba_sumarization
+from src.test.test_model import prueba_sumarization
 
 # Configure logging
 logging.basicConfig(
