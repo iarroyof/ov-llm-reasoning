@@ -442,7 +442,7 @@ def main():
             #)
             ld_config = LocalDataConfig(
                 file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv',
-                file_path_test = '/app/data/triplets_CC0_part3.csv',
+                file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
