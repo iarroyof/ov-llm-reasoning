@@ -33,7 +33,7 @@ def prueba_sumarization(file_path, trainer):
         return trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     # Se ejecuta la pruba para n ejemplos dentro del range
-    for example in dataset.select(range(1000)):
+    for example in range(1000):
         row = dataset.iloc[i]
         text = row['Article']
         reference_summary = row['Abstract']
