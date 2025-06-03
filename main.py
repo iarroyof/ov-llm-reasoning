@@ -469,6 +469,10 @@ def main():
                 if issubclass(trainer_class, T5LargeReasoningTrainer)
                 else trainer_class.from_pretrained(training_config.model_name, device)
             )
+
+            # Realizar el testeo antes de realizar el entrenamiento
+            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            prueba_sumarization(path_sumarization, trainer)
             
             # Setup datasets with caching options for elasticsearch
             #train_loader, val_loader = setup_datasets(
