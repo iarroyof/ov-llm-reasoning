@@ -162,8 +162,8 @@ class IterableJSONLDataset(IterableDataset):
                         return ""
                     return str(value)
                 
-                row_source = safe_str(row[-3]) + ' ' + safe_str(row[-2])
-                row_target = safe_str(row[-1])
+                row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
+                row_target = safe_str(row.iloc[-1])
                 # Tokenizar los textos
                 source_encodings = self.tokenizer.encode_plus(
                     row_source,
