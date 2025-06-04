@@ -472,6 +472,7 @@ def main():
 
             # Realizar el testeo antes de realizar el entrenamiento
             path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            print("Iniciando pruebas de simarization con archivo ", path_sumarization)
             prueba_sumarization(path_sumarization, trainer)
             
             # Setup datasets with caching options for elasticsearch
@@ -499,8 +500,9 @@ def main():
                 val_loader,
                 training_config
             )
-
+        
             path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
             prueba_sumarization(path_sumarization, trainer)
             
             wandb.run.summary.update({
