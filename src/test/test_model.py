@@ -66,9 +66,9 @@ def prueba_sumarization(file_path, trainer):
         except Exception as e:
             print(f"Error calculando ROUGE: {str(e)}")
             # Añadir valores cero si hay error
-            rouge1_scores.append(0.0)
-            rouge2_scores.append(0.0)
-            rougeL_scores.append(0.0)
+            #rouge1_scores.append(0.0)
+            #rouge2_scores.append(0.0)
+            #rougeL_scores.append(0.0)
 
     # 5. Calcular promedios
     final_metrics = {
