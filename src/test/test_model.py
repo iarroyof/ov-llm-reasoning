@@ -34,7 +34,7 @@ def prueba_sumarization(file_path, trainer):
 
     # Se ejecuta la pruba para n ejemplos dentro del range
     num = len(dataset)
-    num = 100
+    #num = 100
     for i in range(num):
         row = dataset.iloc[i]
         text = row['Article']
