@@ -42,7 +42,7 @@ def prueba_sumarization(file_path, trainer):
 
         # Generar resumen
         inputs = trainer.tokenizer.encode(
-            text,
+            "summarize: " + text,
             return_tensors="pt",
             max_length=512,
             truncation=True
