@@ -165,6 +165,14 @@ class IterableJSONLDataset(IterableDataset):
                 row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
                 row_target = safe_str(row.iloc[-1])
                 # Tokenizar los textos
+                print("Lo que esta entrando al modelo en el entrenamiento")
+                print("Row_source: ", row_source)
+                print("Row_target: ", row_target)
+                var = 1
+                if var == 1:
+                    print("Longitud del Source len del tokenizador: ", self.source_len)
+                    print("Longitud del target len del tokenizador: ", self.target_len)
+                    var = 0
                 source_encodings = self.tokenizer.encode_plus(
                     row_source,
                     max_length=self.source_len,
@@ -471,9 +479,9 @@ def main():
             )
 
             # Realizar el testeo antes de realizar el entrenamiento
-            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            print("Iniciando pruebas de simarization con archivo ", path_sumarization)
-            prueba_sumarization(path_sumarization, trainer)
+            #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            #print("Iniciando pruebas de simarization con archivo ", path_sumarization)
+            #prueba_sumarization(path_sumarization, trainer)
             
             # Setup datasets with caching options for elasticsearch
             #train_loader, val_loader = setup_datasets(
@@ -486,6 +494,7 @@ def main():
             #    cache_dir=cache_dir
             #)
             # Setup datasets for local datasets
+            print("Iniciando la creacion de los dataloader")
             train_loader, val_loader = setup_local_datasets(
                 ld_config,
                 trainer,
@@ -493,7 +502,7 @@ def main():
                 training_config.source_len,
                 training_config.target_len
             )
-            
+            print("Iniciando con el entrenamiento del modelo")
             final_loss, final_scores = train_model(
                 trainer,
                 train_loader,
