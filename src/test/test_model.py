@@ -44,7 +44,7 @@ def prueba_sumarization(file_path, trainer):
         inputs = trainer.tokenizer.encode(
             "summarize: " + text,
             return_tensors="pt",
-            max_length=512,
+            max_length=1024,
             truncation=True
         ).to(trainer.device)
         
