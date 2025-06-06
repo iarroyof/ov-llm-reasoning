@@ -165,10 +165,10 @@ class IterableJSONLDataset(IterableDataset):
                 row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
                 row_target = safe_str(row.iloc[-1])
                 # Tokenizar los textos
-                print("Lo que esta entrando al modelo en el entrenamiento")
-                print("Row_source: ", row_source)
-                print("Row_target: ", row_target)
-                print(current_index)
+                #print("Lo que esta entrando al modelo en el entrenamiento")
+                #print("Row_source: ", row_source)
+                #print("Row_target: ", row_target)
+                #print(current_index)
                 
 
                 source_encodings = self.tokenizer.encode_plus(
@@ -477,9 +477,9 @@ def main():
             )
 
             # Realizar el testeo antes de realizar el entrenamiento
-            #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            #print("Iniciando pruebas de simarization con archivo ", path_sumarization)
-            #prueba_sumarization(path_sumarization, trainer)
+            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
+            prueba_sumarization(path_sumarization, trainer)
             
             # Setup datasets with caching options for elasticsearch
             #train_loader, val_loader = setup_datasets(
