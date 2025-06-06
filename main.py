@@ -168,11 +168,7 @@ class IterableJSONLDataset(IterableDataset):
                 print("Lo que esta entrando al modelo en el entrenamiento")
                 print("Row_source: ", row_source)
                 print("Row_target: ", row_target)
-                var = 1
-                if var == 1:
-                    print("Longitud del Source len del tokenizador: ", self.source_len)
-                    print("Longitud del target len del tokenizador: ", self.target_len)
-                    var = 0
+
                 source_encodings = self.tokenizer.encode_plus(
                     row_source,
                     max_length=self.source_len,
