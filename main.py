@@ -168,6 +168,8 @@ class IterableJSONLDataset(IterableDataset):
                 print("Lo que esta entrando al modelo en el entrenamiento")
                 print("Row_source: ", row_source)
                 print("Row_target: ", row_target)
+                print(current_index)
+                
 
                 source_encodings = self.tokenizer.encode_plus(
                     row_source,
