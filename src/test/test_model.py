@@ -40,7 +40,7 @@ def prueba_sumarization(file_path, trainer):
         text = row['Article']
         reference_summary = row['Abstract']
 
-        print("Longitud del texto a la entrada: ", len(text))
+        print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(
             "summarize: " + text,
@@ -50,7 +50,7 @@ def prueba_sumarization(file_path, trainer):
         ).to(trainer.device)
         
         print("Cantidad de tokens a la entrada: ", inputs.shape[1])
-        print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
+        print("Longitud de texto a la entrada( despues de tokenizar): ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
         #print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
 
         outputs = trainer.model.generate(
