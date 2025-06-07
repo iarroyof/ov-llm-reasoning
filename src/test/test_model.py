@@ -51,7 +51,7 @@ def prueba_sumarization(file_path, trainer):
         
         print("Cantidad de tokens a la entrada: ", inputs.shape[1])
         print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
-        print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
+        #print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
 
         outputs = trainer.model.generate(
             inputs,
@@ -59,6 +59,9 @@ def prueba_sumarization(file_path, trainer):
             num_beams=4,
             early_stopping=True
         )
+        print("Cantidad de tokens a la salida: ", outputs.shape[1])
+        print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)))
+        #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
         generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
