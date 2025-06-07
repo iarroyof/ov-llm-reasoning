@@ -12,9 +12,9 @@ parameters:
   epochs:
     values: [4]
   target_seq_len:
-    values: [50]
+    values: [4096]
   source_seq_len:
-    values: [50]
+    values: [4096]
   optimizer:
     values: ["adamw"]
   hf_model_name:
