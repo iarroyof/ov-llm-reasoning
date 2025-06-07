@@ -45,7 +45,7 @@ def prueba_sumarization(file_path, trainer):
         inputs = trainer.tokenizer.encode(
             "summarize: " + text,
             return_tensors="pt",
-            max_length=2048,
+            max_length=4096,
             truncation=True
         ).to(trainer.device)
         
@@ -55,7 +55,7 @@ def prueba_sumarization(file_path, trainer):
 
         outputs = trainer.model.generate(
             inputs,
-            max_length=512,
+            max_length=2048,
             num_beams=4,
             early_stopping=True
         )
