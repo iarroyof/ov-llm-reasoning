@@ -476,42 +476,49 @@ def main():
                 else trainer_class.from_pretrained(training_config.model_name, device)
             )
 
+            # Variable para controlar el resto del procceso
+            band = False
+
             # Realizar el testeo antes de realizar el entrenamiento
             path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
             print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
             prueba_sumarization(path_sumarization, trainer)
             
-            # Setup datasets with caching options for elasticsearch
-            #train_loader, val_loader = setup_datasets(
-            #    es_config,
-            #    trainer,
-            #    training_config.batch_size,
-            #    training_config.source_len,
-            #    training_config.target_len,
-            #    force_recollect=force_recollect,
-            #    cache_dir=cache_dir
-            #)
-            # Setup datasets for local datasets
-            print("Iniciando la creacion de los dataloader")
-            train_loader, val_loader = setup_local_datasets(
-                ld_config,
-                trainer,
-                training_config.batch_size,
-                training_config.source_len,
-                training_config.target_len
-            )
-            print("Iniciando con el entrenamiento del modelo")
-            final_loss, final_scores = train_model(
-                trainer,
-                train_loader,
-                val_loader,
-                training_config
-            )
-        
-            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
-            prueba_sumarization(path_sumarization, trainer)
+            if band:
+                # Setup datasets with caching options for elasticsearch
+                #train_loader, val_loader = setup_datasets(
+                #    es_config,
+                #    trainer,
+                #    training_config.batch_size,
+                #    training_config.source_len,
+                #    training_config.target_len,
+                #    force_recollect=force_recollect,
+                #    cache_dir=cache_dir
+                #)
+                # Setup datasets for local datasets
+                print("Iniciando la creacion de los dataloader")
+                train_loader, val_loader = setup_local_datasets(
+                    ld_config,
+                    trainer,
+                    training_config.batch_size,
+                    training_config.source_len,
+                    training_config.target_len
+                )
+                print("Iniciando con el entrenamiento del modelo")
+                final_loss, final_scores = train_model(
+                    trainer,
+                    train_loader,
+                    val_loader,
+                    training_config
+                )
             
+                path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+                print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
+                prueba_sumarization(path_sumarization, trainer)
+            else:
+                final_loss = 0 
+                final_scores = 0
+
             wandb.run.summary.update({
                 "final_test_loss": final_loss,
                 "final_test_scores": final_scores
