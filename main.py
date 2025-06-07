@@ -477,12 +477,12 @@ def main():
             )
 
             # Variable para controlar el resto del procceso
-            band = False
+            band = True
 
             # Realizar el testeo antes de realizar el entrenamiento
-            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
-            prueba_sumarization(path_sumarization, trainer)
+            #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
+            #prueba_sumarization(path_sumarization, trainer)
             
             if band:
                 # Setup datasets with caching options for elasticsearch
