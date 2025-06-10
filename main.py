@@ -14,6 +14,8 @@ from torch.optim import Adam, AdamW
 from torch.utils.data import DataLoader
 from torch.nn.modules import Module
 from transformers import PreTrainedTokenizer
+from transformers import T5ForConditionalGeneration, T5Tokenizer
+
 
 import pandas as pd
 from torch.utils.data import Dataset, IterableDataset
@@ -477,7 +479,9 @@ def main():
             )
 
             # Variable para controlar el resto del procceso
-            band = True
+            band = False
+            #Se realiza el calculo estadistico
+            resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
             #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
@@ -523,7 +527,91 @@ def main():
                 "final_test_loss": final_loss,
                 "final_test_scores": final_scores
             })
+
+def resumen_estadistico(trainer):
+    """Programa para añadir columnas a los archivos de csv de tripletas de cancer de pulmon"""
+
+    def long(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            total_lines = sum(1 for _ in f)
+            if file_path.endswith('.csv'):
+                return total_lines - 1
+            return total_lines
+
+    # Cargar las rutas para abrir los archivos de las tripletas
+    file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv'
+    file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv'
+    path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+
+    print(f"Total de lineas en {file_path_train} : {long(file_path_train)}")
+    print(f"Total de lineas en {file_path_test} : {long(file_path_test)}")
+    
+    # Iniciar iteracion para obtener conteo de los datos en la columna
+    reader = pd.read_csv(file_path_train ,chunksize= 1000, header=0)
+    long_word_obj = []
+    long_word_verb = []
+    long_word_suj = []
+    long_token_obj = []
+    long_token_verb = []
+    long_token_suj = []
+    for chunk in reader:
+        for _,row in chunk.iterrows():
+        
+            def safe_str(value):
+                if pd.isna(value):
+                    return ""
+                return str(value)
             
+            objeto = safe_str(row.iloc[-1])
+            verbo = safe_str(row.iloc[-2])
+            sujeto = safe_str(row.iloc[-3])
+
+            inputs_O = trainer.tokenizer.encode(
+                "summarize: " + objeto,
+                return_tensors="pt",
+                max_length=4096,
+                truncation=True
+            ).to(trainer.device)
+            inputs_V = trainer.tokenizer.encode(
+                "summarize: " + verbo,
+                return_tensors="pt",
+                max_length=4096,
+                truncation=True
+            ).to(trainer.device)
+            inputs_S = trainer.tokenizer.encode(
+                "summarize: " + sujeto,
+                return_tensors="pt",
+                max_length=4096,
+                truncation=True
+            ).to(trainer.device)
+
+            long_token_obj.append(inputs_O.shape[1])
+            long_token_verb.append(inputs_V.shape[1])
+            long_token_suj.append(inputs_S.shape[1])
+
+            long_word_obj.append(len(objeto))
+            long_word_verb.append(len(verbo))
+            long_word_suj.append(len(sujeto))
+
+    # Realizar el calculo estadistico
+    data_word = {'Sujeto': long_word_suj,
+            'Verbo': long_word_verb,
+            'Objeto': long_word_obj}
+    df = pd.DataFrame(data_word)
+    resumen_estadistico = df.describe()
+    print("Resumen Estadistico con base en palabras")
+    print(resumen_estadistico)
+
+    # Se realiza el calculo estadustico para tokens
+    data_token = {'Sujeto': long_token_suj,
+            'Verbo': long_token_verb,
+            'Objeto': long_token_obj}
+    df = pd.DataFrame(data_token)
+    resumen_estadistico_tokens = df.describe()
+    print("Resumen Estadistico con base en tokens")
+    print(resumen_estadistico_tokens)
+  
+
 if __name__ == "__main__":
     try:
         main()
