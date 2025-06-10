@@ -481,6 +481,7 @@ def main():
             # Variable para controlar el resto del procceso
             band = False
             #Se realiza el calculo estadistico
+            print("Realizando resumen estadistico")
             resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
