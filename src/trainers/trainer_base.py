@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class BaseNeuralReasoningTrainer:
-    def __init__(self, model, tokenizer, device, gen_test_score='bleu', gen_method='beam', temp=0.7):
+    def __init__(self, model, tokenizer, device, gen_test_score='all', gen_method='beam', temp=0.7):
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
@@ -94,7 +94,6 @@ class BaseNeuralReasoningTrainer:
                 total_loss += batch_metrics['loss']
                 all_scores.append(batch_metrics['score'])
                 num_batches += 1
-                
                 if step % 10 == 0:
                     logger.info(f"Testing batch {step} | Batch test Loss: {batch_metrics['loss']} | Batch test score: {batch_metrics['score']}")
         

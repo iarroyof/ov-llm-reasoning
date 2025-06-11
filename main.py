@@ -74,6 +74,8 @@ class LocalDataConfig:
     """Configuration for LocalData source"""
     file_path_train: str
     file_path_test :str
+    path_sumarization_test :str
+    path_sumarization_train :str
     chunk_size: int
     test_ratio: float = 0.3
     seed: int = 42
@@ -125,19 +127,23 @@ class JSONLDataset(Dataset):
 class IterableJSONLDataset(IterableDataset):
 
     # Funcion para inicializar parametros
-    def __init__(self, file_path, chunk_size, tokenizer, source_len, target_len):
+    def __init__(self, file_path, file_path_sumarization, mix, chunk_size, tokenizer, source_len, target_len):
         """
         Args:
             file_path (str): Path to the JSONL file.
             chunk_size (int): Number of lines to read at a time.
         """
         self.file_path = file_path
+        self.path_sumarization = file_path_sumarization
+        self.mix = mix
         self.chunk_size = chunk_size
         self.tokenizer = tokenizer
         self.source_len = source_len
         self.target_len = target_len
         self.train = None
         self.test = None
+        self.readerjson = None
+        self.reader = None
 
     def __len__(self):
         with open(self.file_path, 'r', encoding='utf-8') as f:
@@ -145,56 +151,79 @@ class IterableJSONLDataset(IterableDataset):
             if self.file_path.endswith('.csv'):
                 return total_lines - 1
             return total_lines
+    
+    def safe_str(value):
+            if pd.isna(value):
+                return ""
+            return str(value)
+    
+    def devuelve_tripletas(self):
+        for chunk in self.reader:
+            for _,row in chunk.iterrows():
+                row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
+                row_target = self.safe_str(row.iloc[-1])
+
+                yield row_source, row_target
+
+
+    def devuelve_resumenes(self):
+        for chunk in self.readerjson:
+            for _, row in self.readerjson.iterrows():
+                sumarzation_text = self.safe_str(row['Article'])
+                abstract_text = self.safe_str(row['Abstract'])
+
+                yield "summarize: "+sumarzation_text, abstract_text
+
 
     def __iter__(self):
         """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
         # Determinar si es CSV o JSONL
-        if self.file_path.endswith('.jsonl'):
-            reader = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
-        else:
+        if self.file_path.endswith('.jsonl') and not self.mix:
+            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        elif self.file_path.endswith('.csv') and not self.mix:
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+        elif self.mix:
+            self.readerjson = pd.read_json(self.file_path, lines=True, chunksize=1)
+            self.reader = pd.read_csv(self.file_path ,chunksize=64, header=0)
         
-        current_index = 0
+        current_index = 1
+        # Tokenizar los textos
+        #print("Lo que esta entrando al modelo en el entrenamiento")
+        #print("Row_source: ", row_source)
+        #print("Row_target: ", row_target)
+        #print(current_index)
         
-        for chunk in reader:
-            for _, row in chunk.iterrows():
-                current_index += 1
-                def safe_str(value):
-                    if pd.isna(value):
-                        return ""
-                    return str(value)
-                
-                row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
-                row_target = safe_str(row.iloc[-1])
-                # Tokenizar los textos
-                #print("Lo que esta entrando al modelo en el entrenamiento")
-                #print("Row_source: ", row_source)
-                #print("Row_target: ", row_target)
-                #print(current_index)
-                
+        if current_index == 1:
+            row_source, row_target = self.devuelve_resumenes()
+        else:
+            row_source, row_target = self.devuelve_tripletas()
+            if current_index == 64:
+                current_index = 0
 
-                source_encodings = self.tokenizer.encode_plus(
-                    row_source,
-                    max_length=self.source_len,
-                    padding='max_length',
-                    truncation=True,
-                    return_tensors='pt'
-                )
-                
-                target_encodings = self.tokenizer.encode_plus(
-                    row_target,
-                    max_length=self.target_len,
-                    padding='max_length',
-                    truncation=True,
-                    return_tensors='pt'
-                )
-                
-                # Devolver en el mismo formato que JSONLDataset
-                yield {
-                    "source_ids": source_encodings['input_ids'].squeeze(0),
-                    "source_masks": source_encodings['attention_mask'].squeeze(0),
-                    "target_ids": target_encodings['input_ids'].squeeze(0)
-                }
+        source_encodings = self.tokenizer.encode_plus(
+            row_source,
+            max_length=self.source_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        target_encodings = self.tokenizer.encode_plus(
+            row_target,
+            max_length=self.target_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+
+        current_index += 1
+        
+        # Devolver en el mismo formato que JSONLDataset
+        yield {
+            "source_ids": source_encodings['input_ids'].squeeze(0),
+            "source_masks": source_encodings['attention_mask'].squeeze(0),
+            "target_ids": target_encodings['input_ids'].squeeze(0)
+        }
 
 def t5_collate_fn(batch):
     """Función para agrupar muestras en lotes"""
@@ -362,8 +391,9 @@ def setup_local_datasets(
     #        target_len)
     #else:
     # For data in csv format and diferent files to load
-    train_dataset = IterableJSONLDataset(config.file_path_train ,config.chunk_size, trainer.tokenizer, source_len, target_len)
-    test_dataset = IterableJSONLDataset(config.file_path_test ,config.chunk_size, trainer.tokenizer, source_len, target_len)
+    # La variable bolleana incia si es que se quieren mezclar los datasets
+    train_dataset = IterableJSONLDataset(config.file_path_train, config.path_sumarization_train, True, config.chunk_size, trainer.tokenizer, source_len, target_len)
+    test_dataset = IterableJSONLDataset(config.file_path_test, config.path_sumarization_test, True, config.chunk_size, trainer.tokenizer, source_len, target_len)
 
     # Configurar DataLoaders
     train_loader = DataLoader(
@@ -419,7 +449,8 @@ def train_model(
     
     logger.info("Training completed. Running final evaluation...")
     with ClearCache():# Get configurations from wandb
-        final_loss, final_scores = trainer.test(val_loader)
+        # Se selecciona si se desea imprimir las metricas por paso
+        final_loss, final_scores = trainer.test(val_loader, por_paso=True)
     
     return final_loss, final_scores
 
@@ -451,6 +482,8 @@ def main():
             ld_config = LocalDataConfig(
                 file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv',
                 file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv',
+                path_sumarization_test = '/app/data/articles_and_abstracts_CC0_part3.jsonl',
+                path_sumarization_train = '/app/data/articles_and_abstracts_CC0_part_1_2.jsonl',
                 chunk_size = 900,
                 test_ratio = 0.3,
                 seed = 42
@@ -479,10 +512,10 @@ def main():
             )
 
             # Variable para controlar el resto del procceso
-            band = False
+            band = True
             #Se realiza el calculo estadistico
-            print("Realizando resumen estadistico")
-            resumen_estadistico(trainer)
+            #print("Realizando resumen estadistico")
+            #resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
             #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
