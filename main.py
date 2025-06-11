@@ -221,12 +221,15 @@ class IterableJSONLDataset(IterableDataset):
         if self.mix:
             while True:
                 # Obtiene resumen
+                print(self.current_index)
                 if self.current_index == 1:
                     row_source, row_target = next(gen_resumenes)
+                    print("Source: ",row_source)
                     yield self.tokenizar(row_source, row_target)
 
                 elif self.chunk_size != 1:
                     row_source, row_target = next(gen_tripletas)
+                    print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
                     if self.current_index >= 64:
                         self.current_index = 0
