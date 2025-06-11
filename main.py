@@ -206,8 +206,8 @@ class IterableJSONLDataset(IterableDataset):
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
         elif self.mix:
             print("Iniciando la lectura de archivos")
-            readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
-            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+            readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=1)
+            reader = pd.read_csv(self.file_path ,chunksize=64, header=0)
             print("Lectura de archivos completada")
         
         # Se crean los generadores
@@ -224,12 +224,12 @@ class IterableJSONLDataset(IterableDataset):
                 print(self.current_index)
                 if self.current_index == 1:
                     row_source, row_target = next(gen_resumenes)
-                    print("Source: ",row_source)
+                    #print("Source: ",row_source)
                     yield self.tokenizar(row_source, row_target)
 
                 elif self.chunk_size != 1:
                     row_source, row_target = next(gen_tripletas)
-                    print("Source: ", row_source)
+                    #print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
                     if self.current_index >= 64:
                         self.current_index = 0
