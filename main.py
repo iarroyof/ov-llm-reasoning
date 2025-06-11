@@ -170,7 +170,7 @@ class IterableJSONLDataset(IterableDataset):
             for _, row in chunk.iterrows():
                 sumarzation_text = self.safe_str(row['Article'])
                 abstract_text = self.safe_str(row['Abstract'])
-                
+
                 yield "summarize: "+sumarzation_text, abstract_text
     
     def tokenizar(self, row_source, row_target):
@@ -225,7 +225,7 @@ class IterableJSONLDataset(IterableDataset):
                     row_source, row_target = next(gen_resumenes)
                     yield self.tokenizar(row_source, row_target)
 
-                elif self.chunk_size % 64 == 0:
+                elif self.chunk_size != 1:
                     row_source, row_target = next(gen_tripletas)
                     yield self.tokenizar(row_source, row_target)
                     if self.current_index == 64:
