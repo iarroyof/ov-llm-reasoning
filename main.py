@@ -205,8 +205,10 @@ class IterableJSONLDataset(IterableDataset):
         elif self.file_path.endswith('.csv') and not self.mix:
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
         elif self.mix:
+            print("Iniciando la lectura de archivos")
             readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+            print("Lectura de archivos completada")
         
         # Se crean los generadores
         gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
