@@ -142,6 +142,7 @@ class IterableJSONLDataset(IterableDataset):
         self.target_len = target_len
         self.train = None
         self.test = None
+        self.current_index = 1
 
     def __len__(self):
         with open(self.file_path, 'r', encoding='utf-8') as f:
@@ -188,8 +189,6 @@ class IterableJSONLDataset(IterableDataset):
             truncation=True,
             return_tensors='pt'
         )
-
-        current_index += 1
         
         # Devolver en el mismo formato que JSONLDataset
         return {
@@ -212,19 +211,22 @@ class IterableJSONLDataset(IterableDataset):
         # Se crean los generadores
         gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
         gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
-        current_index = 1
+        
 
         # Se crea condicional para determinar la mezcla de datos
         if self.mix:
             while True:
                 # Obtiene resumen
-                row_source, row_target = next(gen_resumenes)
-                yield self.tokenizar(row_source, row_target)
-                
-                # Obtiene tripletas
-                for _ in range(64):
+                if self.current_index == 1:
+                    row_source, row_target = next(gen_resumenes)
+                    yield self.tokenizar(row_source, row_target)
+                elif self.chunk_size % 64 == 0:
                     row_source, row_target = next(gen_tripletas)
                     yield self.tokenizar(row_source, row_target)
+                    if self.current_index == 64:
+                        self.current_index = 0
+                
+                self.current_index +=1
         elif not self.mix:
             generator = gen_tripletas if self.file_path.endswith('.jsonl') else gen_tripletas
             for row_source, row_target in generator:
