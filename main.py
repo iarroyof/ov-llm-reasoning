@@ -228,7 +228,7 @@ class IterableJSONLDataset(IterableDataset):
                 elif self.chunk_size != 1:
                     row_source, row_target = next(gen_tripletas)
                     yield self.tokenizar(row_source, row_target)
-                    if self.current_index == 64:
+                    if self.current_index >= 64:
                         self.current_index = 0
                 
                 self.current_index +=1
