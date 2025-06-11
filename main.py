@@ -145,11 +145,20 @@ class IterableJSONLDataset(IterableDataset):
         self.current_index = 1
 
     def __len__(self):
-        with open(self.file_path, 'r', encoding='utf-8') as f:
-            total_lines = sum(1 for _ in f)
-            if self.file_path.endswith('.csv'):
-                return total_lines - 1
-            return total_lines
+        
+        if not self.mix:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
+                total_lines = sum(1 for _ in f)
+                if self.file_path.endswith('.csv'):
+                    return total_lines - 1
+                return total_lines
+        elif self.mix:
+            with open(self.path_sumarization, 'r', encoding='utf-8') as f:
+                total_lines = sum(1 for _ in f)
+                if self.file_path.endswith('.csv'):
+                    return total_lines - 1
+                # Se multiplica por 64 dado a que son las tripletas necesarias para completar los 512 tokens establecidos para el atriculo
+                return total_lines * 64
     
     def safe_str(self, value):
             if pd.isna(value):
