@@ -230,7 +230,7 @@ class IterableJSONLDataset(IterableDataset):
         if self.mix:
             while True:
                 # Obtiene resumen
-                print(self.current_index)
+                #print(self.current_index)
                 if self.current_index == 1:
                     row_source, row_target = next(gen_resumenes)
                     #print("Source: ",row_source)
