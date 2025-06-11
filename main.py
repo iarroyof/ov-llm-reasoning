@@ -538,11 +538,22 @@ def resumen_estadistico(trainer):
             if file_path.endswith('.csv'):
                 return total_lines - 1
             return total_lines
+    
+    def conut_tokens(texto):
+        inputs = trainer.tokenizer.encode(
+            texto,
+            return_tensors="pt",
+            max_length=4096,
+            truncation=False
+        ).to(trainer.device)
+
+        return inputs
 
     # Cargar las rutas para abrir los archivos de las tripletas
     file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv'
     file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv'
-    path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+    path_sumarization_test = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+    path_sumarization_train = '/app/data/articles_and_abstracts_CC0_part_1_2.jsonl'
 
     print(f"Total de lineas en {file_path_train} : {long(file_path_train)}")
     print(f"Total de lineas en {file_path_test} : {long(file_path_test)}")
@@ -567,32 +578,14 @@ def resumen_estadistico(trainer):
             verbo = safe_str(row.iloc[-2])
             sujeto = safe_str(row.iloc[-3])
 
-            inputs_O = trainer.tokenizer.encode(
-                "summarize: " + objeto,
-                return_tensors="pt",
-                max_length=4096,
-                truncation=True
-            ).to(trainer.device)
-            inputs_V = trainer.tokenizer.encode(
-                "summarize: " + verbo,
-                return_tensors="pt",
-                max_length=4096,
-                truncation=True
-            ).to(trainer.device)
-            inputs_S = trainer.tokenizer.encode(
-                "summarize: " + sujeto,
-                return_tensors="pt",
-                max_length=4096,
-                truncation=True
-            ).to(trainer.device)
-
-            long_token_obj.append(inputs_O.shape[1])
-            long_token_verb.append(inputs_V.shape[1])
-            long_token_suj.append(inputs_S.shape[1])
+            long_token_obj.append(conut_tokens(objeto).shape[1])
+            long_token_verb.append(conut_tokens(verbo).shape[1])
+            long_token_suj.append(conut_tokens(sujeto).shape[1])
 
             long_word_obj.append(len(objeto))
             long_word_verb.append(len(verbo))
             long_word_suj.append(len(sujeto))
+        
 
     # Realizar el calculo estadistico
     data_word = {'Sujeto': long_word_suj,
@@ -607,6 +600,50 @@ def resumen_estadistico(trainer):
     data_token = {'Sujeto': long_token_suj,
             'Verbo': long_token_verb,
             'Objeto': long_token_obj}
+    df = pd.DataFrame(data_token)
+    resumen_estadistico_tokens = df.describe()
+    print("Resumen Estadistico con base en tokens")
+    print(resumen_estadistico_tokens)
+
+    # Calculo de estadisticas para los elementos de resumen
+    print(f"Total de lineas en {path_sumarization_train} : {long(path_sumarization_train)}")
+    print(f"Total de lineas en {path_sumarization_test} : {long(path_sumarization_test)}")
+    
+    # Iniciar iteracion para obtener conteo de los datos en la columna
+    reader = pd.read_json(path_sumarization_train, lines=True, chunksize=1000)
+    long_sumarzation_words = []
+    long_abstract_words = []
+    long_sumarzation_tokens = []
+    long_abstract_tokens = []
+    for chunk in reader:
+        for _,row in chunk.iterrows():
+        
+            def safe_str(value):
+                if pd.isna(value):
+                    return ""
+                return str(value)
+            
+            sumarzation_text = safe_str(row['Article'])
+            abstract_text = safe_str(row['Abstract'])
+
+            long_sumarzation_tokens.append(conut_tokens("summarize: " + sumarzation_text).shape[1])
+            long_abstract_tokens.append(conut_tokens(abstract_text).shape[1])
+
+            long_sumarzation_words.append(len(sumarzation_text))
+            long_abstract_words.append(len(abstract_text))
+        
+
+    # Realizar el calculo estadistico para palabras
+    data = {'Article': long_sumarzation_words,
+            'Abstract': long_abstract_words}
+    df = pd.DataFrame(data)
+    resumen_estadistico = df.describe()
+    print("Resumen Estadistico con base en palabras")
+    print(resumen_estadistico)
+
+    # Se realiza el calculo estadustico para tokens
+    data_token = {'Article': long_sumarzation_tokens,
+            'Abstract': long_abstract_tokens}
     df = pd.DataFrame(data_token)
     resumen_estadistico_tokens = df.describe()
     print("Resumen Estadistico con base en tokens")
