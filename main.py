@@ -151,7 +151,7 @@ class IterableJSONLDataset(IterableDataset):
                 return total_lines - 1
             return total_lines
     
-    def safe_str(value):
+    def safe_str(self, value):
             if pd.isna(value):
                 return ""
             return str(value)
