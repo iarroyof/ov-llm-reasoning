@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class BaseNeuralReasoningTrainer:
-    def __init__(self, model, tokenizer, device, gen_test_score='all', gen_method='beam', temp=0.7):
+    def __init__(self, model, tokenizer, device, gen_test_score='bleu', gen_method='beam', temp=0.7):
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
