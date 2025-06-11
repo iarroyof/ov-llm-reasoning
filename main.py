@@ -202,12 +202,12 @@ class IterableJSONLDataset(IterableDataset):
         """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
         # Determinar si es CSV o JSONL
         if self.file_path.endswith('.jsonl') and not self.mix:
-            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
         elif self.file_path.endswith('.csv') and not self.mix:
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
         elif self.mix:
             print("Iniciando la lectura de archivos")
-            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
             print("Lectura de archivos completada")
         
@@ -225,6 +225,7 @@ class IterableJSONLDataset(IterableDataset):
                 if self.current_index == 1:
                     row_source, row_target = next(gen_resumenes)
                     yield self.tokenizar(row_source, row_target)
+
                 elif self.chunk_size % 64 == 0:
                     row_source, row_target = next(gen_tripletas)
                     yield self.tokenizar(row_source, row_target)
