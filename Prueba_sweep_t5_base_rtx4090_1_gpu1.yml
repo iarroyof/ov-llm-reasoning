@@ -8,7 +8,7 @@ parameters:
   learning_rate:
     values: [0.001]
   batch_size:
-    values: [1]
+    values: [8]
   epochs:
     values: [4]
   target_seq_len:
