@@ -142,8 +142,6 @@ class IterableJSONLDataset(IterableDataset):
         self.target_len = target_len
         self.train = None
         self.test = None
-        self.readerjson = None
-        self.reader = None
 
     def __len__(self):
         with open(self.file_path, 'r', encoding='utf-8') as f:
@@ -157,8 +155,8 @@ class IterableJSONLDataset(IterableDataset):
                 return ""
             return str(value)
     
-    def devuelve_tripletas(self):
-        for chunk in self.reader:
+    def devuelve_tripletas(self, reader):
+        for chunk in reader:
             for _,row in chunk.iterrows():
                 row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
                 row_target = self.safe_str(row.iloc[-1])
@@ -166,40 +164,15 @@ class IterableJSONLDataset(IterableDataset):
                 yield row_source, row_target
 
 
-    def devuelve_resumenes(self):
-        for chunk in self.readerjson:
-            for _, row in self.readerjson.iterrows():
+    def devuelve_resumenes(self, reader):
+        for chunk in reader:
+            for _, row in chunk.iterrows():
                 sumarzation_text = self.safe_str(row['Article'])
                 abstract_text = self.safe_str(row['Abstract'])
 
                 yield "summarize: "+sumarzation_text, abstract_text
-
-
-    def __iter__(self):
-        """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
-        # Determinar si es CSV o JSONL
-        if self.file_path.endswith('.jsonl') and not self.mix:
-            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
-        elif self.file_path.endswith('.csv') and not self.mix:
-            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
-        elif self.mix:
-            self.readerjson = pd.read_json(self.file_path, lines=True, chunksize=1)
-            self.reader = pd.read_csv(self.file_path ,chunksize=64, header=0)
-        
-        current_index = 1
-        # Tokenizar los textos
-        #print("Lo que esta entrando al modelo en el entrenamiento")
-        #print("Row_source: ", row_source)
-        #print("Row_target: ", row_target)
-        #print(current_index)
-        
-        if current_index == 1:
-            row_source, row_target = self.devuelve_resumenes()
-        else:
-            row_source, row_target = self.devuelve_tripletas()
-            if current_index == 64:
-                current_index = 0
-
+    
+    def tokenizar(self, row_source, row_target):
         source_encodings = self.tokenizer.encode_plus(
             row_source,
             max_length=self.source_len,
@@ -219,11 +192,44 @@ class IterableJSONLDataset(IterableDataset):
         current_index += 1
         
         # Devolver en el mismo formato que JSONLDataset
-        yield {
+        return {
             "source_ids": source_encodings['input_ids'].squeeze(0),
             "source_masks": source_encodings['attention_mask'].squeeze(0),
             "target_ids": target_encodings['input_ids'].squeeze(0)
         }
+
+    def __iter__(self):
+        """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
+        # Determinar si es CSV o JSONL
+        if self.file_path.endswith('.jsonl') and not self.mix:
+            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        elif self.file_path.endswith('.csv') and not self.mix:
+            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+        elif self.mix:
+            readerjson = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+        
+        # Se crean los generadores
+        gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
+        gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
+        current_index = 1
+
+        # Se crea condicional para determinar la mezcla de datos
+        if self.mix:
+            while True:
+                # Obtiene resumen
+                row_source, row_target = next(gen_resumenes)
+                yield self.tokenizar(row_source, row_target)
+                
+                # Obtiene tripletas
+                for _ in range(64):
+                    row_source, row_target = next(gen_tripletas)
+                    yield self.tokenizar(row_source, row_target)
+        elif not self.mix:
+            generator = gen_tripletas if self.file_path.endswith('.jsonl') else gen_tripletas
+            for row_source, row_target in generator:
+                yield self.tokenizar(row_source, row_target)
+
 
 def t5_collate_fn(batch):
     """Función para agrupar muestras en lotes"""
