@@ -211,8 +211,10 @@ class IterableJSONLDataset(IterableDataset):
             print("Lectura de archivos completada")
         
         # Se crean los generadores
+        print("Creando generadores")
         gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
         gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
+        print("Generadores creados")
         
 
         # Se crea condicional para determinar la mezcla de datos
