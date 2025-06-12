@@ -158,7 +158,7 @@ class IterableJSONLDataset(IterableDataset):
                 if self.file_path.endswith('.csv'):
                     return total_lines - 1
                 # Se multiplica por 64 dado a que son las tripletas necesarias para completar los 512 tokens establecidos para el atriculo
-                return total_lines * 64
+                return total_lines * (1+64)
     
     def safe_str(self, value):
             if pd.isna(value):
@@ -232,16 +232,21 @@ class IterableJSONLDataset(IterableDataset):
                 # Obtiene resumen
                 #print(self.current_index)
                 if self.current_index == 1:
-                    row_source, row_target = next(gen_resumenes)
-                    #print("Source: ",row_source)
-                    yield self.tokenizar(row_source, row_target)
+                    try:
+                        row_source, row_target = next(gen_resumenes)
+                        #print("Source: ",row_source)
+                        yield self.tokenizar(row_source, row_target)
+                    except StopIteration:
+                        print("Articulos consumidos")
+                        break
 
                 elif self.chunk_size != 1:
                     row_source, row_target = next(gen_tripletas)
                     #print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
-                    if self.current_index >= 64:
-                        self.current_index = 0
+                
+                if self.current_index >= 64:
+                    self.current_index = 0
                 
                 self.current_index +=1
         elif not self.mix:
