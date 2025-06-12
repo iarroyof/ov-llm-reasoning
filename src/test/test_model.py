@@ -65,18 +65,10 @@ def prueba_sumarization(file_path, trainer):
         #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
         generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-        # En esta parte del codigo se corta el resuemn de referencia para que tenga los mismos tokens de entrada
-        reference = trainer.tokenizer.encode(
-            reference_summary,
-            return_tensors="pt",
-            max_length=100,
-            truncation=True
-        ).to(trainer.device)
         
         # Calcular ROUGE
         try:
-            scores = rouge.get_scores(generated_summary, trainer.tokenizer.decode(reference[0], skip_special_tokens=True))[0]
+            scores = rouge.get_scores(generated_summary, reference_summary)[0]
             rouge1_scores.append(scores['rouge-1']['f'])
             rouge2_scores.append(scores['rouge-2']['f'])
             rougeL_scores.append(scores['rouge-l']['f'])
