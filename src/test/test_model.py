@@ -40,28 +40,28 @@ def prueba_sumarization(file_path, trainer):
         text = row['Article']
         reference_summary = row['Abstract']
 
-        print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
+        #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(
             "summarize: " + text,
             return_tensors="pt",
-            max_length=4096,
+            max_length=512,
             truncation=True
         ).to(trainer.device)
         
-        print("Cantidad de tokens a la entrada: ", inputs.shape[1])
-        print("Longitud de texto a la entrada( despues de tokenizar): ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
+        #print("Cantidad de tokens a la entrada: ", inputs.shape[1])
+        #print("Longitud de texto a la entrada( despues de tokenizar): ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
         #print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
 
         outputs = trainer.model.generate(
             inputs,
-            max_length=2048,
+            max_length=100,
             num_beams=4,
             early_stopping=True
         )
-        print("Cantidad de tokens a la salida: ", outputs.shape[1])
-        print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)))
-        print()
+        #print("Cantidad de tokens a la salida: ", outputs.shape[1])
+        #print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)))
+        #print()
         #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
         generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
