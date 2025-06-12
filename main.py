@@ -480,7 +480,7 @@ def train_model(
     logger.info("Training completed. Running final evaluation...")
     with ClearCache():# Get configurations from wandb
         # Se selecciona si se desea imprimir las metricas por paso
-        final_loss, final_scores = trainer.test(val_loader, por_paso=True)
+        final_loss, final_scores = trainer.test(val_loader)
     
     return final_loss, final_scores
 
@@ -548,9 +548,9 @@ def main():
             #resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
-            #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
-            #prueba_sumarization(path_sumarization, trainer)
+            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
+            prueba_sumarization(path_sumarization, trainer)
             
             if band:
                 # Setup datasets with caching options for elasticsearch
