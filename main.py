@@ -470,7 +470,7 @@ def train_model(
     
     # Set training parameters
     trainer.score_type = 'all'
-    trainer.gen_method = 'beam'
+    trainer.gen_method = 'sample'
     
     logger.info("Starting training...")
     for epoch in range(config.epochs):

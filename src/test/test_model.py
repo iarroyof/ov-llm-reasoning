@@ -65,6 +65,10 @@ def prueba_sumarization(file_path, trainer):
         #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
         generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        if i % 100 == 0:
+            print("Resumen generado:\n", generated_summary)
+            print("Resumen de referencia:\n", reference_summary)
         
         # Calcular ROUGE
         try:
