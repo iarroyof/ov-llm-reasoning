@@ -141,7 +141,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
         except StopIteration:
             print("Articulos consumidos")
             break
-        
+        print("Tripleta:\n",row_source)
         #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(
@@ -168,9 +168,9 @@ def prueba_tripletas(file_path, trainer, chunk_size):
 
         generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        if i % 100 == 0:
-            print("Resumen generado:\n", generated_summary)
-            print("Resumen de referencia:\n", row_target)
+        if i % 2 == 0:
+            print("Tripleta generada:\n", generated_summary)
+            print("Tripleta de referencia:\n", row_target)
         
         # Calcular ROUGE
         try:
@@ -184,6 +184,10 @@ def prueba_tripletas(file_path, trainer, chunk_size):
             #rouge1_scores.append(0.0)
             #rouge2_scores.append(0.0)
             #rougeL_scores.append(0.0)
+        
+        if i >= 10:
+            break
+        i += 1
     
     # 5. Calcular promedios
     final_metrics = {
