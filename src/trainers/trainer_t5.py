@@ -4,7 +4,8 @@ import torch
 from transformers import (
     T5ForConditionalGeneration,
     T5TokenizerFast,
-    T5Tokenizer
+    T5Tokenizer,
+    AutoTokenizer
 )
 from src.trainers.trainer_base import BaseNeuralReasoningTrainer
 
@@ -29,8 +30,10 @@ class T5ReasoningTrainer(BaseNeuralReasoningTrainer):
     @classmethod
     def from_pretrained(cls, model_name, device):
         # Use regular T5Tokenizer for v1_1 models, FastTokenizer for others
-        if 'v1_1' in model_name or 'b-ssm-nq' in model_name or 'pubmed' in model_name:
+        if 'v1_1' in model_name or 'b-ssm-nq' in model_name:
             tokenizer = T5Tokenizer.from_pretrained(model_name, legacy=False)
+        elif 'pubmed' in model_name:
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
         else:
             tokenizer = T5TokenizerFast.from_pretrained(model_name)
 
