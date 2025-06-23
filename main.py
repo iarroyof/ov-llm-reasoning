@@ -296,7 +296,7 @@ def get_trainer_class(model_name: str) -> Type[BaseNeuralReasoningTrainer]:  # F
     model_name_lower = model_name.lower()
     if '11b' in model_name_lower:
         return T5LargeReasoningTrainer
-    elif any(name in model_name_lower for name in ['t5', 'flan', 'mt5', 'umt5']):
+    elif any(name in model_name_lower for name in ['t5', 'flan', 'mt5', 'umt5', 'pubmed']):
         return T5ReasoningTrainer
     elif 'bart' in model_name_lower:
         return BartReasoningTrainer
