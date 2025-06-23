@@ -19,5 +19,5 @@ parameters:
     values: ["adamw"]
   hf_model_name:
     values: [
-      "t5-small"
+      "gayanin/t5-small-finetuned-pubmed"
     ]

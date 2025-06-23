@@ -38,7 +38,7 @@ from src.utils import es_settings
 from src.utils.cache_utils import save_split_cache, load_split_cache
 from src.utils.triplet_filter import FilterMethod
 from src.utils.gpu_monitor import gpu_wait
-from src.test.test_model import prueba_sumarization
+from src.test.test_model import prueba_sumarization, prueba_tripletas
 
 # Configure logging
 logging.basicConfig(
@@ -448,8 +448,8 @@ def setup_local_datasets(
     #else:
     # For data in csv format and diferent files to load
     # La variable bolleana incia si es que se quieren mezclar los datasets
-    train_dataset = IterableJSONLDataset(config.file_path_train, config.path_sumarization_train, True, config.chunk_size, trainer.tokenizer, source_len, target_len)
-    test_dataset = IterableJSONLDataset(config.file_path_test, config.path_sumarization_test, True, config.chunk_size, trainer.tokenizer, source_len, target_len)
+    train_dataset = IterableJSONLDataset(config.file_path_train, config.path_sumarization_train, False, config.chunk_size, trainer.tokenizer, source_len, target_len)
+    test_dataset = IterableJSONLDataset(config.file_path_test, config.path_sumarization_test, False, config.chunk_size, trainer.tokenizer, source_len, target_len)
 
     # Configurar DataLoaders
     train_loader = DataLoader(
@@ -568,15 +568,17 @@ def main():
             )
 
             # Variable para controlar el resto del procceso
-            band = True
+            band = False
             #Se realiza el calculo estadistico
             #print("Realizando resumen estadistico")
             #resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
             path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-            print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
-            prueba_sumarization(path_sumarization, trainer)
+            #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
+            #prueba_sumarization(path_sumarization, trainer)
+            print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
+            prueba_tripletas(ld_config.file_path_test, trainer, 100)
             
             if band:
                 # Setup datasets with caching options for elasticsearch
@@ -607,8 +609,8 @@ def main():
                 )
             
                 path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
-                print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
-                prueba_sumarization(path_sumarization, trainer)
+                #print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
+                #prueba_sumarization(path_sumarization, trainer)
             else:
                 final_loss = 0 
                 final_scores = 0
