@@ -16,6 +16,8 @@ from torch.nn.modules import Module
 from transformers import PreTrainedTokenizer
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
+import nltk
+from nltk.corpus import stopwords
 
 import pandas as pd
 from torch.utils.data import Dataset, IterableDataset
@@ -166,12 +168,21 @@ class IterableJSONLDataset(IterableDataset):
             return str(value)
     
     def devuelve_tripletas(self, reader):
+        # Create a set of stop words 
+        stop_words = set(stopwords.words('english')) 
+
         for chunk in reader:
             for _,row in chunk.iterrows():
                 row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
                 row_target = self.safe_str(row.iloc[-1])
-
-                yield row_source, row_target
+                # Se aplica un filtado para descartar las oraciones con stopwords
+                # Split the sentence into individual words
+                words = row_source.split()
+                filtered_source = [word for word in words if word in stop_words]
+                if filtered_source:
+                    pass
+                else:
+                    yield row_source, row_target
 
 
     def devuelve_resumenes(self, reader):
@@ -210,7 +221,7 @@ class IterableJSONLDataset(IterableDataset):
         """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
         # Determinar si es CSV o JSONL
         if self.file_path.endswith('.jsonl') and not self.mix:
-            readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
+            reader = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
         elif self.file_path.endswith('.csv') and not self.mix:
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
         elif self.mix:
@@ -218,16 +229,14 @@ class IterableJSONLDataset(IterableDataset):
             readerjson = pd.read_json(self.path_sumarization, lines=True, chunksize=1)
             reader = pd.read_csv(self.file_path ,chunksize=64, header=0)
             print("Lectura de archivos completada")
-        
-        # Se crean los generadores
-        print("Creando generadores")
-        gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
-        gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
-        print("Generadores creados")
-        
 
         # Se crea condicional para determinar la mezcla de datos
         if self.mix:
+            # Se crean los generadores
+            print("Creando generadores")
+            gen_resumenes = self.devuelve_resumenes(readerjson) if self.mix or self.file_path.endswith('.jsonl') else None
+            gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
+            print("Generadores creados")
             while True:
                 # Obtiene resumen
                 #print(self.current_index)
@@ -240,7 +249,7 @@ class IterableJSONLDataset(IterableDataset):
                         print("Articulos consumidos")
                         break
 
-                elif self.chunk_size != 1:
+                elif self.current_index != 1:
                     row_source, row_target = next(gen_tripletas)
                     #print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
@@ -250,9 +259,26 @@ class IterableJSONLDataset(IterableDataset):
                 
                 self.current_index +=1
         elif not self.mix:
-            generator = gen_tripletas if self.file_path.endswith('.jsonl') else gen_tripletas
-            for row_source, row_target in generator:
-                yield self.tokenizar(row_source, row_target)
+            # Se crean los generadores
+            print("Creando generadores")
+            gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
+            print("Generadores creados")
+            while True:
+                try:
+                    row_source, row_target = next(gen_tripletas)
+                    print(f'Tripleta:\n{row_source}')
+                    #print("Source: ", row_source)
+                    yield self.tokenizar(row_source, row_target)
+                except StopIteration:
+                    print("Tripletas consumidas")
+                    break
+
+                if self.current_index >= 100:
+                    print("Se alcanzaron 100 muestras")
+                    break
+                
+                print("contador: ", self.current_index)
+                self.current_index +=1
 
 
 def t5_collate_fn(batch):
