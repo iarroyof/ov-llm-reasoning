@@ -19,5 +19,5 @@ parameters:
     values: ["adamw"]
   hf_model_name:
     values: [
-      "HiTZ/Medical-mT5-large", "t5-small"
+      "gayanin/t5-small-finetuned-pubmed", "t5-small"
     ]
