@@ -260,9 +260,9 @@ class IterableJSONLDataset(IterableDataset):
                 self.current_index +=1
         elif not self.mix:
             # Se crean los generadores
-            print("Creando generadores")
+            print("Creando generador")
             gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
-            print("Generadores creados")
+            print("Generador creado")
             while True:
                 try:
                     row_source, row_target = next(gen_tripletas)
@@ -556,6 +556,7 @@ def main():
             logger.info(f"Initial system state: {log_gpu_memory_usage()}")
         
             trainer_class = get_trainer_class(training_config.model_name)
+            print("Nombre del modelo: ", training_config.model_name)
             trainer = (
                 trainer_class.from_pretrained(
                     model_name=training_config.model_name,
@@ -574,7 +575,7 @@ def main():
             #resumen_estadistico(trainer)
 
             # Realizar el testeo antes de realizar el entrenamiento
-            path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+            #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
             #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
             #prueba_sumarization(path_sumarization, trainer)
             print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
