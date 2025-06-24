@@ -275,6 +275,7 @@ class IterableJSONLDataset(IterableDataset):
 
                 if self.current_index >= 10:
                     print("Se alcanzaron 10 muestras")
+                    self.current_index = 0
                     break
                 
                 print("contador: ", self.current_index)
@@ -578,6 +579,8 @@ def main():
             #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
             #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
             #prueba_sumarization(path_sumarization, trainer)
+            print("="*50)
+            print("Pruebas antes del ajuste")
             print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
             prueba_tripletas(ld_config.file_path_test, trainer, 100)
             
@@ -609,9 +612,13 @@ def main():
                     training_config
                 )
             
-                path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
+                #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
                 #print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
                 #prueba_sumarization(path_sumarization, trainer)
+                print("="*50)
+                print("Pruebas despues del entrenamiento")
+                print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
+                prueba_tripletas(ld_config.file_path_test, trainer, 100)
             else:
                 final_loss = 0 
                 final_scores = 0
