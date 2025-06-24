@@ -113,14 +113,19 @@ def prueba_tripletas(file_path, trainer, chunk_size):
     rouge2_scores = []
     rougeL_scores = []
 
-    def devuelve_tripletas(self, reader):
+    def safe_str(value):
+        if pd.isna(value):
+            return ""
+        return str(value)
+
+    def devuelve_tripletas(reader):
         # Create a set of stop words 
         stop_words = set(stopwords.words('english')) 
 
         for chunk in reader:
             for _,row in chunk.iterrows():
-                row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
-                row_target = self.safe_str(row.iloc[-1])
+                row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
+                row_target = safe_str(row.iloc[-1])
                 # Se aplica un filtado para descartar las oraciones con stopwords
                 # Split the sentence into individual words
                 words = row_source.split()
