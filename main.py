@@ -270,14 +270,14 @@ class IterableJSONLDataset(IterableDataset):
             while True:
                 try:
                     row_source, row_target = next(gen_tripletas)
-                    print(f'Tripleta {self.current_index}:\n{row_source}')
+                    #print(f'Tripleta {self.current_index}:\n{row_source}')
                     #print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
                 except StopIteration:
                     print("Tripletas consumidas")
                     break
 
-                if self.current_index >= 10:
+                if self.current_index >= 10000:
                     print("Se alcanzaron 10 muestras")
                     self.current_index = 0
                     break
