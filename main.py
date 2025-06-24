@@ -273,8 +273,8 @@ class IterableJSONLDataset(IterableDataset):
                     print("Tripletas consumidas")
                     break
 
-                if self.current_index >= 100:
-                    print("Se alcanzaron 100 muestras")
+                if self.current_index >= 10:
+                    print("Se alcanzaron 10 muestras")
                     break
                 
                 print("contador: ", self.current_index)
@@ -569,7 +569,7 @@ def main():
             )
 
             # Variable para controlar el resto del procceso
-            band = False
+            band = True
             #Se realiza el calculo estadistico
             #print("Realizando resumen estadistico")
             #resumen_estadistico(trainer)
