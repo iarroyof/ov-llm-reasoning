@@ -120,7 +120,8 @@ def prueba_tripletas(file_path, trainer, chunk_size):
 
     def devuelve_tripletas(reader):
         # Create a set of stop words 
-        stop_words = set(stopwords.words('english')) 
+        stop_words = set(stopwords.words('english'))
+        filtered_source = []
 
         for chunk in reader:
             for _,row in chunk.iterrows():
@@ -129,7 +130,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
                 # Se aplica un filtado para descartar las oraciones con stopwords
                 # Split the sentence into individual words
                 words = row_source.split()
-                filtered_source = [word for word in words if word in stop_words]
+                #filtered_source = [word for word in words if word in stop_words]
                 if filtered_source:
                     pass
                 else:
