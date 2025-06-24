@@ -196,7 +196,7 @@ class IterableJSONLDataset(IterableDataset):
     
     def tokenizar(self, row_source, row_target):
 
-        prefix = "Given the two elements of a triplet give the object: "
+        prefix = "Given the two elements of a triplet infer the object: "
 
         source_encodings = self.tokenizer.encode_plus(
             prefix + row_source,
