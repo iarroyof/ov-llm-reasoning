@@ -155,6 +155,8 @@ def prueba_tripletas(file_path, trainer, chunk_size):
         early_stopping=True
     )
     print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+    
+    prefix = "Given the two elements of a triplet give the object"
 
     while True:
         try:
@@ -166,7 +168,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
         #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(
-            row_source,
+            prefix + row_source,
             return_tensors="pt",
             max_length=512,
             truncation=True
