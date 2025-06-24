@@ -157,7 +157,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
     )
     print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
     
-    prefix = "Given the two elements of a triplet give the object"
+    prefix = "Given the two elements of a triplet give the object: "
 
     while True:
         try:
