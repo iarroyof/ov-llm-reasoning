@@ -140,13 +140,29 @@ def prueba_tripletas(file_path, trainer, chunk_size):
     gen_tripletas = devuelve_tripletas(reader)
     #num = 100
     i = 0
+    # Prueba de modelo previo
+    print("Prueba de modelo: ", trainer)
+    inputs = trainer.tokenizer.encode(
+            "Hola",
+            return_tensors="pt",
+            max_length=512,
+            truncation=True
+        ).to(trainer.device)
+    outputs = trainer.model.generate(
+        inputs,
+        max_length=100,
+        num_beams=4,
+        early_stopping=True
+    )
+    print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+
     while True:
         try:
             row_source, row_target = next(gen_tripletas)
         except StopIteration:
-            print("Articulos consumidos")
+            print("Tripletas consumidas")
             break
-        print("Tripleta:\n",row_source)
+        print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
         #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(
@@ -171,15 +187,15 @@ def prueba_tripletas(file_path, trainer, chunk_size):
         #print()
         #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
 
-        generated_summary = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        generated_triplet = trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        if i % 2 == 0:
-            print("Tripleta generada:\n", generated_summary)
+        if i % 10 == 0:
+            print("Tripleta generada:\n", generated_triplet)
             print("Tripleta de referencia:\n", row_target)
         
         # Calcular ROUGE
         try:
-            scores = rouge.get_scores(generated_summary, row_target)[0]
+            scores = rouge.get_scores(generated_triplet, row_target)[0]
             rouge1_scores.append(scores['rouge-1']['f'])
             rouge2_scores.append(scores['rouge-2']['f'])
             rougeL_scores.append(scores['rouge-l']['f'])
