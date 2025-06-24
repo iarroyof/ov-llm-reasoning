@@ -157,7 +157,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
     #)
     #print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
     
-    prefix = "Given the two elements of a triplet give the object: "
+    prefix = "Given the two elements of a triplet infer the object: "
 
     while True:
         try:
@@ -210,7 +210,7 @@ def prueba_tripletas(file_path, trainer, chunk_size):
             #rouge2_scores.append(0.0)
             #rougeL_scores.append(0.0)
         
-        if i >= 10:
+        if i >= 1000:
             break
         i += 1
     
