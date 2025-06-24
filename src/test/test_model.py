@@ -142,20 +142,20 @@ def prueba_tripletas(file_path, trainer, chunk_size):
     #num = 100
     i = 0
     # Prueba de modelo previo
-    print("Prueba de modelo: ", trainer)
-    inputs = trainer.tokenizer.encode(
-            "Hola",
-            return_tensors="pt",
-            max_length=512,
-            truncation=True
-        ).to(trainer.device)
-    outputs = trainer.model.generate(
-        inputs,
-        max_length=100,
-        num_beams=4,
-        early_stopping=True
-    )
-    print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+    #print("Prueba de modelo: ", trainer)
+    #inputs = trainer.tokenizer.encode(
+    #        "Hola",
+    #        return_tensors="pt",
+    #        max_length=512,
+    #        truncation=True
+    #    ).to(trainer.device)
+    #outputs = trainer.model.generate(
+    #    inputs,
+    #    max_length=100,
+    #    num_beams=4,
+    #    early_stopping=True
+    #)
+    #print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
     
     prefix = "Given the two elements of a triplet give the object: "
 
@@ -165,7 +165,8 @@ def prueba_tripletas(file_path, trainer, chunk_size):
         except StopIteration:
             print("Tripletas consumidas")
             break
-        print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
+        # Se imprime la tripleta
+        #print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
         #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = trainer.tokenizer.encode(

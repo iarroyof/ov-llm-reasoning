@@ -170,6 +170,7 @@ class IterableJSONLDataset(IterableDataset):
     def devuelve_tripletas(self, reader):
         # Create a set of stop words 
         stop_words = set(stopwords.words('english')) 
+        filtered_source = []
 
         for chunk in reader:
             for _,row in chunk.iterrows():
@@ -177,8 +178,8 @@ class IterableJSONLDataset(IterableDataset):
                 row_target = self.safe_str(row.iloc[-1])
                 # Se aplica un filtado para descartar las oraciones con stopwords
                 # Split the sentence into individual words
-                words = row_source.split()
-                filtered_source = [word for word in words if word in stop_words]
+                #words = row_source.split()
+                #filtered_source = [word for word in words if word in stop_words]
                 if filtered_source:
                     pass
                 else:
@@ -194,8 +195,11 @@ class IterableJSONLDataset(IterableDataset):
                 yield "summarize: "+sumarzation_text, abstract_text
     
     def tokenizar(self, row_source, row_target):
+
+        prefix = "Given the two elements of a triplet give the object: "
+
         source_encodings = self.tokenizer.encode_plus(
-            row_source,
+            prefix + row_source,
             max_length=self.source_len,
             padding='max_length',
             truncation=True,
@@ -266,7 +270,7 @@ class IterableJSONLDataset(IterableDataset):
             while True:
                 try:
                     row_source, row_target = next(gen_tripletas)
-                    print(f'Tripleta:\n{row_source}')
+                    print(f'Tripleta {self.current_index}:\n{row_source}')
                     #print("Source: ", row_source)
                     yield self.tokenizar(row_source, row_target)
                 except StopIteration:
@@ -278,7 +282,6 @@ class IterableJSONLDataset(IterableDataset):
                     self.current_index = 0
                     break
                 
-                print("contador: ", self.current_index)
                 self.current_index +=1
 
 
@@ -579,7 +582,7 @@ def main():
             #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
             #print("Iniciando pruebas de sumarization con archivo: ", path_sumarization)
             #prueba_sumarization(path_sumarization, trainer)
-            print("="*50)
+            print("="*100)
             print("Pruebas antes del ajuste")
             print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
             prueba_tripletas(ld_config.file_path_test, trainer, 100)
@@ -615,7 +618,7 @@ def main():
                 #path_sumarization = '/app/data/articles_and_abstracts_CC0_part3.jsonl'
                 #print("Iniciando pruebas de simarization despues de ajuste con archivo ", path_sumarization)
                 #prueba_sumarization(path_sumarization, trainer)
-                print("="*50)
+                print("="*100)
                 print("Pruebas despues del entrenamiento")
                 print("Iniciando pruebas de tripletas con archivo: ", ld_config.file_path_test)
                 prueba_tripletas(ld_config.file_path_test, trainer, 100)
