@@ -9,7 +9,7 @@ import nltk
 from nltk.corpus import stopwords
 
 # Se declara el nombre del modelo a usar
-model_name = "google-t5/t5-small"
+model_name = "t5-small"
 
 # Declaraciones
 # Se carga el tokenizador 
@@ -99,10 +99,10 @@ class IterableJSONLDataset(IterableDataset):
     def __iter__(self):
         """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
         # Determinar si es CSV o JSONL
-        if self.file_path.endswith('.jsonl'):
-            reader = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
-        elif self.file_path.endswith('.csv'):
-            reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
+        #if self.file_path.endswith('.jsonl'):
+        #    reader = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        #elif self.file_path.endswith('.csv'):
+        reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
 
         for chunk in reader:
             yield from self.process_chunk(chunk)
