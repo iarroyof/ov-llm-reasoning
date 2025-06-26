@@ -2,7 +2,7 @@
 from datasets import load_dataset
 from torch.utils.data import Dataset, IterableDataset
 from transformers import AutoTokenizer, DataCollatorForSeq2Seq, AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer
-import evaluate
+from rouge import Rouge
 import numpy as np
 import pandas as pd
 import nltk
@@ -17,7 +17,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 # Se crea un batch de ejemplos usand DataCollector que es mas eficiente
 data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model_name)
 # Metrica de evaluacion
-rouge = evaluate.load("rouge")
+rouge = Rouge()
 # Se carga el modelo que se va ajustar
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
