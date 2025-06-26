@@ -22,8 +22,8 @@ rouge = Rouge()
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
 # Declaracion de rutas de datos
-file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv',
-file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv',
+file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv'
+file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv'
 
 
 
@@ -40,8 +40,9 @@ class IterableJSONLDataset(IterableDataset):
         self.chunk_size = chunk_size
         self.tokenizer = tokenizer
         self.current_index = 1
-        self.source_max_length = 512
-        self.target_max_length = 512
+        self.source_max_length = 128
+        self.target_max_length = 32
+        self.prefix = "Given the two elements of a triplet infer the object: "
 
     def __len__(self):
         with open(self.file_path, 'r', encoding='utf-8') as f:
@@ -107,7 +108,7 @@ class IterableJSONLDataset(IterableDataset):
         for chunk in reader:
             yield from self.process_chunk(chunk)
 
-chunk_size = 100
+chunk_size = 1000
 train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer)
 test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer)
 
@@ -118,18 +119,23 @@ def compute_metrics(eval_pred):
     labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
-    result = rouge.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+    result = rouge.get_scores(decoded_preds, decoded_labels, True)
 
     prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in predictions]
     result["gen_len"] = np.mean(prediction_lens)
 
-    return {k: round(v, 4) for k, v in result.items()}
+    return {
+        "rouge-1": round(result["rouge-1"]["f"], 4),
+        "rouge-2": round(result["rouge-2"]["f"], 4),
+        "rouge-l": round(result["rouge-l"]["f"], 4),
+        "gen_len": round(np.mean(prediction_lens), 4)
+    }
 
 
 # Se declaran los argumentos del ajuste
 training_args = Seq2SeqTrainingArguments(
     output_dir="./temp_output",
-    eval_strategy="steps",
+    evaluation_strategy="steps",
     eval_steps=500,
     max_steps=10000,
     save_steps=10000,
