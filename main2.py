@@ -40,6 +40,8 @@ class IterableJSONLDataset(IterableDataset):
         self.chunk_size = chunk_size
         self.tokenizer = tokenizer
         self.current_index = 1
+        self.source_max_length = 512
+        self.target_max_length = 512
 
     def __len__(self):
         with open(self.file_path, 'r', encoding='utf-8') as f:
@@ -53,82 +55,59 @@ class IterableJSONLDataset(IterableDataset):
                 return ""
             return str(value)
     
-    def devuelve_tripletas(self, reader):
-        # Create a set of stop words 
-        stop_words = set(stopwords.words('english')) 
-        filtered_source = []
-
-        for chunk in reader:
-            for _,row in chunk.iterrows():
-                row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
-                row_target = self.safe_str(row.iloc[-1])
-                # Se aplica un filtado para descartar las oraciones con stopwords
-                # Split the sentence into individual words
-                #words = row_source.split()
-                #filtered_source = [word for word in words if word in stop_words]
-                if filtered_source:
-                    pass
-                else:
-                    yield row_source, row_target
-
-    
-    def tokenizar(self, row_source, row_target):
-
-        prefix = "Given the two elements of a triplet infer the object: "
-
-        source_encodings = self.tokenizer.encode_plus(
-            prefix + row_source,
-            max_length=self.source_len,
-            padding='max_length',
+    def process_chunk(self, chunk):
+        sources = []
+        targets = []
+        
+        for _, row in chunk.iterrows():
+            row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
+            row_target = self.safe_str(row.iloc[-1])
+            
+            # Filtrado de stopwords (opcional, puede ralentizar)
+            words = row_source.split()
+            filtered_source = [word for word in words if word not in stopwords.words('english')]
+            
+            if filtered_source:
+                sources.append(self.prefix + " ".join(filtered_source))
+                targets.append(row_target)
+        
+        # Tokenización por lotes (mucho más eficiente)
+        source_encodings = self.tokenizer(
+            sources,
+            max_length=self.source_max_length,
             truncation=True,
-            return_tensors='pt'
+            padding=False,  
+            return_tensors=None  
         )
         
-        target_encodings = self.tokenizer.encode_plus(
-            row_target,
-            max_length=self.target_len,
-            padding='max_length',
+        target_encodings = self.tokenizer(
+            targets,
+            max_length=self.target_max_length,
             truncation=True,
-            return_tensors='pt'
+            padding=False,  # El collator se encargará del padding
+            return_tensors=None
         )
         
-        # Devolver en el mismo formato que JSONLDataset
-        return {
-            "source_ids": source_encodings['input_ids'].squeeze(0),
-            "source_masks": source_encodings['attention_mask'].squeeze(0),
-            "target_ids": target_encodings['input_ids'].squeeze(0)
-        }
+        # Generar ejemplos en el formato adecuado
+        for i in range(len(sources)):
+            yield {
+                "input_ids": source_encodings["input_ids"][i],
+                "attention_mask": source_encodings["attention_mask"][i],
+                "labels": target_encodings["input_ids"][i]
+            }
 
     def __iter__(self):
         """Generador que lee el archivo por chunks y devuelve muestras tokenizadas"""
         # Determinar si es CSV o JSONL
-        if self.file_path.endswith('.jsonl') and not self.mix:
-            reader = pd.read_json(self.path_sumarization, lines=True, chunksize=self.chunk_size)
-        elif self.file_path.endswith('.csv') and not self.mix:
+        if self.file_path.endswith('.jsonl'):
+            reader = pd.read_json(self.file_path, lines=True, chunksize=self.chunk_size)
+        elif self.file_path.endswith('.csv'):
             reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
 
-        # Se crean los generadores
-        print("Creando generador")
-        gen_tripletas = self.devuelve_tripletas(reader) if self.mix or self.file_path.endswith('.csv') else None
-        print("Generador creado")
-        while True:
-            try:
-                row_source, row_target = next(gen_tripletas)
-                #print(f'Tripleta {self.current_index}:\n{row_source}')
-                #print("Source: ", row_source)
-                yield self.tokenizar(row_source, row_target)
-            except StopIteration:
-                print("Tripletas consumidas")
-                break
+        for chunk in reader:
+            yield from self.process_chunk(chunk)
 
-            if self.current_index >= 10000:
-                print("Se alcanzaron 10 muestras")
-                self.current_index = 0
-                break
-            
-            self.current_index +=1
-
-chunk_size = 1000
+chunk_size = 8
 train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer)
 test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer)
 
@@ -151,8 +130,8 @@ def compute_metrics(eval_pred):
 training_args = Seq2SeqTrainingArguments(
     output_dir="./temp_output",
     eval_strategy="steps",
-    eval_steps=200,
-    max_steps=100000,
+    eval_steps=500,
+    max_steps=10000,
     save_steps=10000,
     learning_rate=2e-5,
     per_device_train_batch_size=16,
@@ -169,7 +148,7 @@ trainer = Seq2SeqTrainer(
     args=training_args,
     train_dataset=train_dataset,
     eval_dataset=test_dataset,
-    processing_class=tokenizer,
+    tokenizer=tokenizer,
     data_collator=data_collator,
     compute_metrics=compute_metrics,
 )
