@@ -133,6 +133,7 @@ def compute_metrics(eval_pred):
 
     prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in predictions]
     result["gen_len"] = np.mean(prediction_lens)
+    gen_len = np.mean(prediction_lens)
 
     # Obtener paso y época actual
     step = trainer.state.global_step
@@ -150,7 +151,7 @@ def compute_metrics(eval_pred):
     print(f"ROUGE-1 F1: {rouge1_f1:.4f} (P: {rouge1_p:.4f}, R: {rouge1_r:.4f})")
     print(f"ROUGE-2 F1: {rouge2_f1:.4f}")
     print(f"ROUGE-L F1: {rougeL_f1:.4f}")
-    print(f"Long. Promedio: {result["gen_len"]:.2f} tokens")
+    print(f"Long. Promedio: {gen_len:.2f} tokens")
     
     # Ejemplo de generación
     print("\nEjemplo de generación:")
@@ -164,7 +165,7 @@ def compute_metrics(eval_pred):
         "rouge1_r": rouge1_r,
         "rouge2_f1": rouge2_f1,
         "rougeL_f1": rougeL_f1,
-        "gen_len": result["gen_len"]
+        "gen_len": gen_len
     }
 
 
