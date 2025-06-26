@@ -60,16 +60,19 @@ class IterableJSONLDataset(IterableDataset):
     def process_chunk(self, chunk):
         sources = []
         targets = []
-        
+        filtered_source = []
+
         for _, row in chunk.iterrows():
             row_source = self.safe_str(row.iloc[-3]) + ' ' + self.safe_str(row.iloc[-2])
             row_target = self.safe_str(row.iloc[-1])
             
-            # Filtrado de stopwords (opcional, puede ralentizar)
-            words = row_source.split()
-            filtered_source = [word for word in words if word not in stopwords.words('english')]
+            # Filtrado de stopwords
+            #words = row_source.split()
+            #filtered_source = [word for word in words if word not in stopwords.words('english')]
             
             if filtered_source:
+                pass
+            else:
                 sources.append(self.prefix + " ".join(filtered_source))
                 targets.append(row_target)
         
@@ -131,11 +134,37 @@ def compute_metrics(eval_pred):
     prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in predictions]
     result["gen_len"] = np.mean(prediction_lens)
 
+    # Obtener paso y época actual
+    step = trainer.state.global_step
+    epoch = trainer.state.epoch
+
+    # Extraer métricas detalladas
+    rouge1_f1 = result["rouge-1"]["f"]
+    rouge1_p = result["rouge-1"]["p"]
+    rouge1_r = result["rouge-1"]["r"]
+    rouge2_f1 = result["rouge-2"]["f"]
+    rougeL_f1 = result["rouge-l"]["f"]
+    
+    # Imprimir en formato legible
+    print(f"\n=== Paso {step} | Época {epoch:.1f} ===")
+    print(f"ROUGE-1 F1: {rouge1_f1:.4f} (P: {rouge1_p:.4f}, R: {rouge1_r:.4f})")
+    print(f"ROUGE-2 F1: {rouge2_f1:.4f}")
+    print(f"ROUGE-L F1: {rougeL_f1:.4f}")
+    print(f"Long. Promedio: {result["gen_len"]:.2f} tokens")
+    
+    # Ejemplo de generación
+    print("\nEjemplo de generación:")
+    print(f"Referencia: {decoded_labels[0]}")
+    print(f"Predicción: {decoded_preds[0]}")
+    print("="*50)
+
     return {
-        "rouge-1": round(result["rouge-1"]["f"], 4),
-        "rouge-2": round(result["rouge-2"]["f"], 4),
-        "rouge-l": round(result["rouge-l"]["f"], 4),
-        "gen_len": round(np.mean(prediction_lens), 4)
+        "rouge1_f1": rouge1_f1,
+        "rouge1_p": rouge1_p,
+        "rouge1_r": rouge1_r,
+        "rouge2_f1": rouge2_f1,
+        "rougeL_f1": rougeL_f1,
+        "gen_len": result["gen_len"]
     }
 
 
