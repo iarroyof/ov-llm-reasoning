@@ -107,7 +107,7 @@ class IterableJSONLDataset(IterableDataset):
         for chunk in reader:
             yield from self.process_chunk(chunk)
 
-chunk_size = 8
+chunk_size = 100
 train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer)
 test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer)
 
