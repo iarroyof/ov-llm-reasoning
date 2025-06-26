@@ -68,13 +68,14 @@ class IterableJSONLDataset(IterableDataset):
             
             # Filtrado de stopwords
             #words = row_source.split()
-            #filtered_source = [word for word in words if word not in stopwords.words('english')]
+            #filtered_source = [word for word in words if word in stopwords.words('english')]
             
             if filtered_source:
                 pass
             else:
-                sources.append(self.prefix + " ".join(filtered_source))
+                sources.append(self.prefix + " ".join(row_source))
                 targets.append(row_target)
+                print(f"Tripleta: {row_source} {row_target}")
         
         # Tokenización por lotes (mucho más eficiente)
         source_encodings = self.tokenizer(
