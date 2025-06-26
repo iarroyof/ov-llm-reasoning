@@ -173,7 +173,7 @@ def compute_metrics(eval_pred):
 training_args = Seq2SeqTrainingArguments(
     output_dir="./temp_output",
     evaluation_strategy="steps",
-    eval_steps=5,                               # Evaluar cada 5 pasos
+    eval_steps=2,                               # Evaluar cada 5 pasos
     logging_steps=1,                            # Metricas cada paso
     max_steps=20,                               # Máximo 20 pasos (100 muestras / batch_size=5 → 20 pasos)
     save_steps=20,                              # Guarda las modificacione al final 
