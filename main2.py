@@ -30,7 +30,7 @@ file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv'
 class IterableJSONLDataset(IterableDataset):
 
     # Funcion para inicializar parametros
-    def __init__(self, file_path, chunk_size, tokenizer):
+    def __init__(self, file_path, chunk_size, tokenizer, max_samples = 100):
         """
         Args:
             file_path (str): Path to the JSONL file.
@@ -39,6 +39,7 @@ class IterableJSONLDataset(IterableDataset):
         self.file_path = file_path
         self.chunk_size = chunk_size
         self.tokenizer = tokenizer
+        self.max_samples = max_samples
         self.current_index = 1
         self.source_max_length = 128
         self.target_max_length = 32
@@ -105,12 +106,18 @@ class IterableJSONLDataset(IterableDataset):
         #elif self.file_path.endswith('.csv'):
         reader = pd.read_csv(self.file_path ,chunksize=self.chunk_size, header=0)
 
+        sample_count = 0
         for chunk in reader:
-            yield from self.process_chunk(chunk)
+            for sample in self.process_chunk(chunk):
+                if sample_count >= self.max_samples:  # Limitar muestras
+                    return
+                yield sample
+                sample_count += 1
 
 chunk_size = 1000
-train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer)
-test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer)
+muestras = 100
+train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer, muestras)
+test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer, muestras)
 
 
 def compute_metrics(eval_pred):
@@ -136,17 +143,18 @@ def compute_metrics(eval_pred):
 training_args = Seq2SeqTrainingArguments(
     output_dir="./temp_output",
     evaluation_strategy="steps",
-    eval_steps=500,
-    max_steps=10000,
-    save_steps=10000,
+    eval_steps=5,                               # Evaluar cada 5 pasos
+    logging_steps=1,                            # Metricas cada paso
+    max_steps=20,                               # Máximo 20 pasos (100 muestras / batch_size=5 → 20 pasos)
+    save_steps=20,                              # Guarda las modificacione al final 
     learning_rate=2e-5,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
+    per_device_train_batch_size=5,              # Batch más pequeño → más pasos/métricas
+    per_device_eval_batch_size=5,
     weight_decay=0.01,
     save_total_limit=3,
     predict_with_generate=True,
-    fp16=True, #change to bf16=True for XPU
-    push_to_hub=True,
+    fp16=False,                                 #change to bf16=True for XPU
+    push_to_hub=False,
 )
 # Se pasan los parametros al trainer
 trainer = Seq2SeqTrainer(
