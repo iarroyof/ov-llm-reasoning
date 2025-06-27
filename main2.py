@@ -118,8 +118,8 @@ class IterableJSONLDataset(IterableDataset):
                 yield sample
                 sample_count += 1
 
-chunk_size = 1000
-muestras = 100
+chunk_size = 10
+muestras = 10
 train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer, muestras)
 test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer, muestras)
 
