@@ -118,8 +118,8 @@ class IterableJSONLDataset(IterableDataset):
                 yield sample
                 sample_count += 1
 
-chunk_size = 10
-muestras = 10
+chunk_size = 1000
+muestras = 10000
 train_dataset = IterableJSONLDataset(file_path_train, chunk_size, tokenizer, muestras)
 test_dataset = IterableJSONLDataset(file_path_test, chunk_size, tokenizer, muestras)
 
@@ -174,13 +174,13 @@ def compute_metrics(eval_pred):
 training_args = Seq2SeqTrainingArguments(
     output_dir="./temp_output",
     evaluation_strategy="steps",
-    eval_steps=2,                               # Evaluar cada 5 pasos
-    logging_steps=1,                            # Metricas cada paso
-    max_steps=20,                               # Máximo 20 pasos (100 muestras / batch_size=5 → 20 pasos)
+    eval_steps=1250,                               # Evaluar cada 5 pasos
+    logging_steps=10,                            # Metricas cada paso
+    max_steps=3750,                               # Máximo 20 pasos (100 muestras / batch_size=5 → 20 pasos)
     save_steps=20,                              # Guarda las modificacione al final 
     learning_rate=2e-5,
-    per_device_train_batch_size=5,              # Batch más pequeño → más pasos/métricas
-    per_device_eval_batch_size=5,
+    per_device_train_batch_size=8,              # Batch más pequeño → más pasos/métricas
+    per_device_eval_batch_size=8,
     weight_decay=0.01,
     save_total_limit=3,
     predict_with_generate=True,
