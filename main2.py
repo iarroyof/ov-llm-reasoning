@@ -104,7 +104,7 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 
         generated_triplet = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        if i % 10 == 0:
+        if i % 100 == 0:
             print("Tripleta generada:\n", generated_triplet)
             print("Tripleta de referencia:\n", row_target)
         
@@ -353,8 +353,7 @@ trainer = Seq2SeqTrainer(
     eval_dataset=test_dataset,
     processing_class=tokenizer,
     data_collator=data_collator,
-    compute_metrics=compute_metrics,
-    device=device
+    compute_metrics=compute_metrics
 )
 
 # Se incia el entrenamientno
