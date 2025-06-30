@@ -73,43 +73,26 @@ def prepare_data(line: str,
             inp = f"{start_token}{inp}{end_token}"
     return inp, tgt
 
-def prepare_data2(line: str,
-                 start_token: str = "[start] ",
-                 end_token: str = " [end]",
-                 pmid: bool = True,
-                 include_labels: bool = False,
-                 include_sent: bool = False,
-                 all_start_end: bool = True):
-    """
-    Convierte una fila del dataset (con formato article_id, sentence_text, 
-    subject, relation, object) en un par (input, target).
-    """
-    clean_line = line.replace('\0', '')
-    # Asume que las columnas están separadas por comas y en este orden:
-    # 0: article_id, 1: sentence_text, 2: subject, 3: relation, 4: object
-    print("Antes del split por comas\n", line)
-    cols = clean_line.strip().split(",")
-    print("Despues del split por comas\n", cols)
+def prepare_data2(subject, relation, obj, all_start_end=True):
+    """Devuelve tuplas con pares de input y tragets"""
+    start_token = "[start] "
+    end_token = " [end]"
 
-    subject = cols[2]
-    relation = cols[3]
-    obj = cols[4]
+    # Asegurarnos de que todos los datos son strings
+    subject = str(subject)
+    relation = str(relation)
+    obj = str(obj)
 
-    # preprocesamiento de relacion, conversion a minusculas
+    # La lógica de procesado de la relación se mantiene
     processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
 
-    # texto de entrada para el modelo T5
+    # Construcción de la entrada y el objetivo
     input_text = f"{subject} {processed_relation}"
+    if all_start_end:
+        input_text = f"{start_token}{input_text}{end_token}"
     
-    # texto objeto que el modelo debe aprender a inferir
     target_text = obj
 
-    # Envuelve la entrada y la salida con tokens especiales.
-    if all_start_end:
-       input_text = f"{start_token}{input_text}{end_token}"
-       
-    # El target ya no necesita los tokens [start]/[end] porque el tokenizador de T5
-    # los añade automáticamente al codificar las etiquetas (labels).
     return (input_text, target_text)
 
 class OverfitCallback(TrainerCallback):
@@ -154,11 +137,23 @@ def main():
     out_dir = os.path.join(cfg.resPath, run.project, run.id)
     os.makedirs(out_dir, exist_ok=True)
 
-    with open(cfg.trainData) as f: train_lines = f.readlines()
-    with open(cfg.testData)  as f: val_lines   = f.readlines()
-    prep = partial(prepare_data2, all_start_end=True)
-    train_pairs = [prep(l) for l in train_lines]
-    val_pairs   = [prep(l) for l in val_lines]
+    # Lectura de archivos tsv junto con la funcion prepare_data
+    #with open(cfg.trainData) as f: train_lines = f.readlines()
+    #with open(cfg.testData)  as f: val_lines   = f.readlines()
+    #prep = partial(prepare_data2, all_start_end=True)
+    #train_pairs = [prep(l) for l in train_lines]
+    #val_pairs   = [prep(l) for l in val_lines]
+
+    # Lectura de archivos csv
+    train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
+    val_df = pd.read_csv(cfg.testData, encoding='utf-8')
+    train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
+    train_pairs = train_results.tolist()
+    
+    val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    val_pairs = val_results.tolist()
+
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
 
