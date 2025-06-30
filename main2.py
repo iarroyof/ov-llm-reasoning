@@ -151,12 +151,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Declaraciones
 # Se carga el tokenizador 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+# Se carga el modelo que se va ajustar
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
 # Se crea un batch de ejemplos usand DataCollector que es mas eficiente
-data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model_name)
+data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
 # Metrica de evaluacion
 rouge = Rouge()
-# Se carga el modelo que se va ajustar
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
 
 print("="*100)
@@ -354,6 +354,7 @@ trainer = Seq2SeqTrainer(
     processing_class=tokenizer,
     data_collator=data_collator,
     compute_metrics=compute_metrics,
+    device=device
 )
 
 # Se incia el entrenamientno
