@@ -127,8 +127,8 @@ def main():
     ap.add_argument("--holdoutData", default="")
     ap.add_argument("--modelName", default="t5-small")
     ap.add_argument("--seqLen", type=int, default=50)
-    ap.add_argument("--batchSize", type=int, default=32)
-    ap.add_argument("--nEpochs", type=int, default=10)
+    ap.add_argument("--batchSize", type=int, default=16)
+    ap.add_argument("--nEpochs", type=int, default=4)
     ap.add_argument("--resPath", default=os.getcwd())
     args = ap.parse_args()
 
