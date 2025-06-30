@@ -1,0 +1,10 @@
+1	cat	hasPart	tail	A cat has a tail.	1.0
+2	dog	hasPart	leg	A dog has four legs.	1.0
+3	bird	capableOf	fly	Birds can fly.	1.0
+4	human	capableOf	speak	Humans can speak.	1.0
+5	fish	livesIn	water	Fish live in water.	1.0
+6	plant	hasProperty	green	Plants are usually green.	1.0
+7	car	hasPart	wheel	Cars have wheels.	1.0
+8	book	hasProperty	pages	Books contain pages.	1.0
+9	sun	locatedIn	sky	The sun is in the sky.	1.0
+10	water	isA	liquid	Water is a liquid.	1.0

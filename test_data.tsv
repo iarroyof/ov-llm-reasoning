@@ -1,0 +1,5 @@
+11	dog	capableOf	bark	Dogs can bark loudly.	1.0
+12	tree	hasPart	root	Trees have roots.	1.0
+13	fish	capableOf	swim	Fish can swim.	1.0
+14	apple	isA	fruit	An apple is a fruit.	1.0
+15	moon	locatedIn	sky	The moon is in the sky.	1.0
