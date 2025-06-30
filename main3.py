@@ -17,6 +17,7 @@ import string
 import argparse
 import logging
 from functools import partial
+from rouge import Rouge
 
 import torch
 import pandas as pd
@@ -72,6 +73,42 @@ def prepare_data(line: str,
             inp = f"{start_token}{inp}{end_token}"
     return inp, tgt
 
+def prepare_data2(line: str,
+                 start_token: str = "[start] ",
+                 end_token: str = " [end]",
+                 pmid: bool = True,
+                 include_labels: bool = False,
+                 include_sent: bool = False,
+                 all_start_end: bool = True):
+    """
+    Convierte una fila del dataset (con formato article_id, sentence_text, 
+    subject, relation, object) en un par (input, target).
+    """
+    # Asume que las columnas están separadas por comas y en este orden:
+    # 0: article_id, 1: sentence_text, 2: subject, 3: relation, 4: object
+    cols = line.strip().split(",")
+
+    subject = cols[2]
+    relation = cols[3]
+    obj = cols[4]
+
+    # preprocesamiento de relacion, conversion a minusculas
+    processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
+
+    # texto de entrada para el modelo T5
+    input_text = f"{subject} {processed_relation}"
+    
+    # texto objeto que el modelo debe aprender a inferir
+    target_text = obj
+
+    # Envuelve la entrada y la salida con tokens especiales.
+    if all_start_end:
+       input_text = f"{start_token}{input_text}{end_token}"
+       
+    # El target ya no necesita los tokens [start]/[end] porque el tokenizador de T5
+    # los añade automáticamente al codificar las etiquetas (labels).
+    return (input_text, target_text)
+
 class OverfitCallback(TrainerCallback):
     def __init__(self, total_epochs: int, a=6.0, b=4.0, c=-2.0):
         self.total_epochs = total_epochs
@@ -116,7 +153,7 @@ def main():
 
     with open(cfg.trainData) as f: train_lines = f.readlines()
     with open(cfg.testData)  as f: val_lines   = f.readlines()
-    prep = partial(prepare_data, all_start_end=True)
+    prep = partial(prepare_data2, all_start_end=True)
     train_pairs = [prep(l) for l in train_lines]
     val_pairs   = [prep(l) for l in val_lines]
     train_inp, train_tgt = zip(*train_pairs)
@@ -183,6 +220,143 @@ def main():
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
 
     wandb.finish()
+
+    # Declaracion de rutas de datos
+    file_path_train = '/app/data/triplets_CC0_part1_and_part2_sin_vector.csv'
+    file_path_test = '/app/data/triplets_CC0_part3_with_header_sin_vector.csv'
+
+    print("="*100)
+    print("Pruebas despues del entrenamiento")
+    print("Iniciando pruebas de tripletas con archivo: ", file_path_test)
+    prueba_tripletas(file_path_test, model, tokenizer, device, 1000)
+
+
+def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
+    # 1. Cargar datos y modelo
+     # Determinar si es CSV o JSONL
+    if file_path.endswith('.jsonl'):
+        reader = pd.read_json(file_path, lines=True, chunksize=chunk_size)
+    elif file_path.endswith('.csv'):
+        reader = pd.read_csv(file_path ,chunksize=chunk_size, header=0)
+
+    rouge = Rouge()
+
+    rouge1_scores = []
+    rouge2_scores = []
+    rougeL_scores = []
+
+    def safe_str(value):
+        if pd.isna(value):
+            return ""
+        return str(value)
+
+    def devuelve_tripletas(reader):
+        # Create a set of stop words 
+        #stop_words = set(stopwords.words('english'))
+        filtered_source = []
+
+        for chunk in reader:
+            for _,row in chunk.iterrows():
+                row_source = safe_str(row.iloc[-3]) + ' ' + safe_str(row.iloc[-2])
+                row_target = safe_str(row.iloc[-1])
+                # Se aplica un filtado para descartar las oraciones con stopwords
+                # Split the sentence into individual words
+                #words = row_source.split()
+                #filtered_source = [word for word in words if word in stop_words]
+                if filtered_source:
+                    pass
+                else:
+                    yield row_source, row_target
+    
+
+    # Se ejecuta la pruba para n ejemplos dentro del range
+    gen_tripletas = devuelve_tripletas(reader)
+    #num = 100
+    i = 0
+    # Prueba de modelo previo
+    #print("Prueba de modelo: ", trainer)
+    #inputs = trainer.tokenizer.encode(
+    #        "Hola",
+    #        return_tensors="pt",
+    #        max_length=512,
+    #        truncation=True
+    #    ).to(trainer.device)
+    #outputs = trainer.model.generate(
+    #    inputs,
+    #    max_length=100,
+    #    num_beams=4,
+    #    early_stopping=True
+    #)
+    #print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+    
+    prefix = "Given the two elements of a triplet infer the object: "
+
+    while True:
+        try:
+            row_source, row_target = next(gen_tripletas)
+        except StopIteration:
+            print("Tripletas consumidas")
+            break
+        # Se imprime la tripleta
+        #print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
+        #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
+        # Generar resumen
+        inputs = tokenizer.encode(
+            prefix + row_source,
+            return_tensors="pt",
+            max_length=512,
+            truncation=True
+        ).to(device)
+        
+        #print("Cantidad de tokens a la entrada: ", inputs.shape[1])
+        #print("Longitud de texto a la entrada( despues de tokenizar): ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
+        #print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
+
+        outputs = model.generate(
+            inputs,
+            max_length=100,
+            num_beams=4,
+            early_stopping=True
+        )
+        #print("Cantidad de tokens a la salida: ", outputs.shape[1])
+        #print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)))
+        #print()
+        #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+
+        generated_triplet = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        if i % 100 == 0:
+            print("Tripleta generada:\n", generated_triplet)
+            print("Tripleta de referencia:\n", row_target)
+        
+        # Calcular ROUGE
+        try:
+            scores = rouge.get_scores(generated_triplet, row_target)[0]
+            rouge1_scores.append(scores['rouge-1']['f'])
+            rouge2_scores.append(scores['rouge-2']['f'])
+            rougeL_scores.append(scores['rouge-l']['f'])
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            #rouge1_scores.append(0.0)
+            #rouge2_scores.append(0.0)
+            #rougeL_scores.append(0.0)
+        
+        if i >= 1000:
+            break
+        i += 1
+    
+    # 5. Calcular promedios
+    final_metrics = {
+        'rouge1': sum(rouge1_scores) / len(rouge1_scores),
+        'rouge2': sum(rouge2_scores) / len(rouge2_scores),
+        'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+    }
+
+    print("Resultados de evaluación:")
+    print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
+    print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
+    print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
     main()
