@@ -86,7 +86,9 @@ def prepare_data2(line: str,
     """
     # Asume que las columnas están separadas por comas y en este orden:
     # 0: article_id, 1: sentence_text, 2: subject, 3: relation, 4: object
+    print("Antes del split por comas\n", line)
     cols = line.strip().split(",")
+    print("Despues del split por comas\n", cols)
 
     subject = cols[2]
     relation = cols[3]
