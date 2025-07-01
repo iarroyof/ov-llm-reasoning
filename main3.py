@@ -124,7 +124,7 @@ def main():
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
-    ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv")
+    ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default="t5-small")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=32)
@@ -140,7 +140,7 @@ def main():
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
-    #prep = partial(prepare_data2, all_start_end=True)
+    prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
     
@@ -156,6 +156,8 @@ def main():
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
     val_pairs = val_pairs[0:200]
+
+    hold_pairs = val_pairs[200:400]
 
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
@@ -212,8 +214,8 @@ def main():
 
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        with open(cfg.holdoutData) as f: hold_lines = f.readlines()
-        hold_pairs = [prep(l) for l in hold_lines]
+        #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
+        #hold_pairs = [prep(l) for l in hold_lines]
         hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
         if hold_inp:
             logging.info("Generating hold‑out predictions…")
