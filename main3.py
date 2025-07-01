@@ -18,6 +18,8 @@ import argparse
 import logging
 from functools import partial
 from rouge import Rouge
+import nltk
+from nltk.corpus import stopwords
 
 import torch
 import pandas as pd
