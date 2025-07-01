@@ -151,11 +151,11 @@ def main():
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:10000]
+    train_pairs = train_pairs[0:50000]
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    val_pairs = val_pairs[0:1000]
+    val_pairs = val_pairs[0:2000]
 
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
