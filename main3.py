@@ -122,6 +122,26 @@ def generate_text(model, tokenizer, texts, max_len, device):
         outs = model.generate(**enc, max_length=max_len+10)
     return tokenizer.batch_decode(outs, skip_special_tokens=True)
 
+def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
+    """Generate outputs in batches to avoid OOM errors"""
+    model.eval()
+    all_outputs = []
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i:i+batch_size]
+        enc = tokenizer(batch_texts, padding=True, truncation=True, max_length=max_len, return_tensors="pt").to(device)
+        
+        with torch.no_grad():                                  # Reduce memory (disable beam search)
+            outs = model.generate(**enc, max_length=max_len+10, num_beams=1)
+        
+        dec = tokenizer.batch_decode(outs, skip_special_tokens=True)
+        all_outputs.extend(dec)
+        
+        # Limpieza explícita de memoria
+        del enc, outs
+        torch.cuda.empty_cache()
+    
+    return all_outputs
+
 def main():
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
@@ -212,7 +232,7 @@ def main():
     # Validation predictions   #Verificar que no se esten acumulando gradientes y revisar si se genero el archivo de predictions.tsv
     # buscar si se puede poner adafactor como optimizador 
     logging.info("Generating validation predictions…")
-    val_preds = generate_text(model, tokenizer, val_inp, cfg.seqLen, device)
+    val_preds = generate_text_2(model, tokenizer, val_inp, cfg.seqLen, device)
     pd.DataFrame({"Subj_Pred": val_inp, "Obj": val_preds, "Obj_true": val_tgt}).to_csv(
         os.path.join(out_dir, "predictions.tsv"), sep="\t", index=False)
 
