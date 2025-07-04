@@ -247,10 +247,11 @@ def main():
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
 
-    print("="*100)
-    print("Pruebas antes del ajuste")
-    print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
-    prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
+    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
+        print("="*100)
+        print("Pruebas antes del ajuste")
+        print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
+        prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
     wandb.finish()
 
