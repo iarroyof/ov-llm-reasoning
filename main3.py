@@ -126,7 +126,7 @@ def main():
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
-    ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
+    ap.add_argument("--holdoutData", default="") # "/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default="t5-small")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
@@ -157,7 +157,7 @@ def main():
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    val_pairs = val_pairs[0:200]
+    val_pairs = val_pairs[0:10000]
 
     hold_pairs = val_pairs[200:400]
 
