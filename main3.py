@@ -146,11 +146,11 @@ def main():
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
-    ap.add_argument("--holdoutData", default="") # "/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
+    ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default="t5-small")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
-    ap.add_argument("--nEpochs", type=int, default=5)
+    ap.add_argument("--nEpochs", type=int, default=10)
     ap.add_argument("--resPath", default=os.getcwd())
     args = ap.parse_args()
 
@@ -173,7 +173,7 @@ def main():
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:1000]
+    train_pairs = train_pairs[0:100000]
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
