@@ -20,6 +20,7 @@ from functools import partial
 from rouge import Rouge
 import nltk
 from nltk.corpus import stopwords
+from evaluate import load
 
 import torch
 import pandas as pd
@@ -41,6 +42,8 @@ logging.basicConfig(
 )
 
 STRIP_CHARS = string.punctuation.replace("[", "").replace("]", "")
+
+bertscore = load("bertscore")
 
 def prepare_data(line: str,
                  start_token: str = "[start] ",
@@ -246,6 +249,8 @@ def main():
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            print("Bert_Score holdoutdata")
+            results = bertscore.compute(predictions=hold_preds, references=hold_tgt, lang="en")
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
