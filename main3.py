@@ -249,9 +249,9 @@ def main():
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
-            results = bertscore.compute(predictions=hold_preds, references=hold_tgt, lang="en")
+            results = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
             print("Tipo de dato hold pred", type(hold_preds))
-            print("Tipo de dato, hold trg", type(hold_tgt))
+            print("Tipo de dato, hold trg", type(list(hold_tgt)))
             print(hold_tgt)
             print("Bert_Score holdoutdata: ", results)
 
