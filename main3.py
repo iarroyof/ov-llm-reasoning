@@ -176,11 +176,11 @@ def main():
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:200000]
+    train_pairs = train_pairs[0:10000]
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    val_pairs = val_pairs[0:10000]
+    val_pairs = val_pairs[0:1000]
 
     hold_pairs = val_pairs[200:400]
 
@@ -249,8 +249,8 @@ def main():
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
-            print("Bert_Score holdoutdata")
             results = bertscore.compute(predictions=hold_preds, references=hold_tgt, lang="en")
+            print("Bert_Score holdoutdata: ", results)
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
