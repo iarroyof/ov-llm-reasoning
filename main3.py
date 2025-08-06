@@ -22,6 +22,7 @@ import nltk
 from nltk.corpus import stopwords
 from evaluate import load
 from bert_score import score
+from sklearn.utils import shuffle
 
 import torch
 import pandas as pd
@@ -174,6 +175,10 @@ def main():
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     val_df = pd.read_csv(cfg.testData, encoding='utf-8')
+    train_df = shuffle(train_df)
+    val_df = shuffle(val_df)
+    train_df.reset_index(inplace=True, drop=True)
+    val_df.reset_index(inplace=True, drop=True)
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
@@ -250,7 +255,7 @@ def main():
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
-            Bert_Pres, Bert_Recall, Bert_F1 = bertscore.score(predictions=hold_preds, references=list(hold_tgt), lang="en")
+            #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
             Bert_Pres, Bert_Recall, Bert_F1 = score(predictions=hold_preds, references=list(hold_tgt), lang="en")
 
             print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
