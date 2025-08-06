@@ -249,11 +249,10 @@ def main():
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
-            results = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            print("Tipo de dato hold pred", type(hold_preds))
-            print("Tipo de dato, hold trg", type(list(hold_tgt)))
-            print(hold_tgt)
-            print("Bert_Score holdoutdata: ", results)
+            Bert_Pres, Bert_Recall, Bert_F1 = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
+            print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
+            print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
+            print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
