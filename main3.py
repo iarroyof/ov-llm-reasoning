@@ -251,7 +251,8 @@ def main():
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             results = bertscore.compute(predictions=hold_preds, references=hold_tgt, lang="en")
             print("Tipo de dato hold pred", type(hold_preds))
-            print("Tipo de datk, hold trg", type(hold_tgt))
+            print("Tipo de dato, hold trg", type(hold_tgt))
+            print(hold_tgt[1])
             print("Bert_Score holdoutdata: ", results)
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
