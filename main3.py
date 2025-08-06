@@ -252,7 +252,7 @@ def main():
             results = bertscore.compute(predictions=hold_preds, references=hold_tgt, lang="en")
             print("Tipo de dato hold pred", type(hold_preds))
             print("Tipo de dato, hold trg", type(hold_tgt))
-            print(hold_tgt[1])
+            print(hold_tgt)
             print("Bert_Score holdoutdata: ", results)
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
