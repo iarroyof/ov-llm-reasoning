@@ -199,6 +199,11 @@ def main():
     model.to(device)
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento")
+    rouge = Rouge()
+
+    rouge1_scores = []
+    rouge2_scores = []
+    rougeL_scores = []
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
@@ -311,6 +316,7 @@ def main():
             print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+
             print("Hypothesis is empty.\n No se puedo calcular ROUGE")
             # Calcular ROUGE
             for i in range(len(hold_preds)):
