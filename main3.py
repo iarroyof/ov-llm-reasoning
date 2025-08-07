@@ -285,9 +285,9 @@ def main():
                     except Exception as e:
                         print(f"Error calculando ROUGE: {str(e)}")
                         # Añadir valores cero si hay error
-                        #rouge1_scores.append(0.0)
-                        #rouge2_scores.append(0.0)
-                        #rougeL_scores.append(0.0)
+                        rouge1_scores.append(0.0)
+                        rouge2_scores.append(0.0)
+                        rougeL_scores.append(0.0)
                 # 5. Calcular promedios
                 final_metrics = {
                     'rouge1': sum(rouge1_scores) / len(rouge1_scores),
@@ -368,7 +368,7 @@ def prueba_part_triplets(pair, model, tokenizer, device):
 
         generated_triplet = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        if i % 100 == 0:
+        if i % 1000 == 0:
             print("Tripleta generada:\n", generated_triplet)
             print("Tripleta de referencia:\n", hold_tgt[i])
         
