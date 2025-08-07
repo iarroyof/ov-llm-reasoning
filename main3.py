@@ -152,7 +152,7 @@ def main():
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
-    ap.add_argument("--modelName", default="Kevincp560/t5-base-finetuned-pubmed")
+    ap.add_argument("--modelName", default="gayanin/t5-small-finetuned-pubmed")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
