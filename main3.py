@@ -299,7 +299,7 @@ def prueba_part_triplets(pair, model, tokenizer, device):
     
     prefix = "Given the two elements of a triplet infer the object: "
 
-    for hold_inp, hold_tgt in zip(*pair) if pair else ([], []):
+    for hold_inp, hold_tgt in zip(*pair):
         
         # Se imprime la tripleta
         #print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
