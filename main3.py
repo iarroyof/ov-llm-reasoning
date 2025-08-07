@@ -269,6 +269,7 @@ def main():
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
             scores = rouge.get_scores(hold_preds, list(hold_tgt))
+            print(scores)
             print(f"rouge-1 : {scores['rouge-1']['f'].mean().item():.4f}")
             print(f"rouge-2 : {scores['rouge-2']['f'].mean().item():.4f}")
             print(f"rouge-l : {scores['rouge-l']['f'].mean().item():.4f}")
