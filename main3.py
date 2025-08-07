@@ -299,14 +299,15 @@ def prueba_part_triplets(pair, model, tokenizer, device):
     
     prefix = "Given the two elements of a triplet infer the object: "
 
-    for hold_inp, hold_tgt in zip(pair):
-        
+    hold_inp, hold_tgt = zip(*pair) if pair else ([], [])
+
+    for hold in hold_inp:
         # Se imprime la tripleta
         #print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
         #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
         # Generar resumen
         inputs = tokenizer.encode(
-            prefix + hold_inp,
+            prefix + hold,
             return_tensors="pt",
             max_length=512,
             truncation=True
@@ -331,11 +332,11 @@ def prueba_part_triplets(pair, model, tokenizer, device):
 
         if i % 100 == 0:
             print("Tripleta generada:\n", generated_triplet)
-            print("Tripleta de referencia:\n", hold_tgt)
+            print("Tripleta de referencia:\n", hold_tgt[i])
         
         # Calcular ROUGE
         try:
-            scores = rouge.get_scores(generated_triplet, hold_tgt)[0]
+            scores = rouge.get_scores(generated_triplet, hold_tgt[i])[0]
             rouge1_scores.append(scores['rouge-1']['f'])
             rouge2_scores.append(scores['rouge-2']['f'])
             rougeL_scores.append(scores['rouge-l']['f'])
