@@ -30,6 +30,8 @@ import wandb
 from datasets import Dataset
 from transformers import (
     T5Tokenizer,
+    T5TokenizerFast,
+    AutoTokenizer,
     T5ForConditionalGeneration,
     DataCollatorForSeq2Seq,
     Trainer,
@@ -152,7 +154,7 @@ def main():
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
-    ap.add_argument("--modelName", default="gayanin/t5-small-finetuned-pubmed")
+    ap.add_argument("--modelName", default="Kevincp560/t5-base-finetuned-pubmed")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
@@ -193,7 +195,10 @@ def main():
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
 
-    tokenizer = T5Tokenizer.from_pretrained(cfg.modelName)
+    if 'pubmed' in cfg.modelName:
+        tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
+    else:
+        tokenizer = T5Tokenizer.from_pretrained(cfg.modelName)
     model     = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
