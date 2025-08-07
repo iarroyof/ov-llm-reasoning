@@ -266,9 +266,98 @@ def main():
         print("="*100)
         print("Pruebas antes del ajuste")
         print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
-        prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
+        prueba_part_triplets(hold_pairs, model, tokenizer, device)
+        #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
     wandb.finish()
+
+def prueba_part_triplets(pair, model, tokenizer, device):
+
+    rouge = Rouge()
+
+    rouge1_scores = []
+    rouge2_scores = []
+    rougeL_scores = []
+
+    #num = 100
+    i = 0
+    # Prueba de modelo previo
+    #print("Prueba de modelo: ", trainer)
+    #inputs = trainer.tokenizer.encode(
+    #        "Hola",
+    #        return_tensors="pt",
+    #        max_length=512,
+    #        truncation=True
+    #    ).to(trainer.device)
+    #outputs = trainer.model.generate(
+    #    inputs,
+    #    max_length=100,
+    #    num_beams=4,
+    #    early_stopping=True
+    #)
+    #print("Salida: ", trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+    
+    prefix = "Given the two elements of a triplet infer the object: "
+
+    for hold_inp, hold_tgt in zip(*pair) if pair else ([], []):
+        
+        # Se imprime la tripleta
+        #print(f"Tripleta {i}:\n",row_source + ' ' + row_target)
+        #print("Longitud del texto a la entrada(sin tokenizar): ", len(text))
+        # Generar resumen
+        inputs = tokenizer.encode(
+            prefix + hold_inp,
+            return_tensors="pt",
+            max_length=512,
+            truncation=True
+        ).to(device)
+        
+        #print("Cantidad de tokens a la entrada: ", inputs.shape[1])
+        #print("Longitud de texto a la entrada( despues de tokenizar): ", len(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True)))
+        #print(trainer.tokenizer.decode(inputs[0], skip_special_tokens=True))
+
+        outputs = model.generate(
+            inputs,
+            max_length=100,
+            num_beams=4,
+            early_stopping=True
+        )
+        #print("Cantidad de tokens a la salida: ", outputs.shape[1])
+        #print("Longitud de texto a la salida: ", len(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True)))
+        #print()
+        #print(trainer.tokenizer.decode(outputs[0], skip_special_tokens=True))
+
+        generated_triplet = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        if i % 100 == 0:
+            print("Tripleta generada:\n", generated_triplet)
+            print("Tripleta de referencia:\n", hold_tgt)
+        
+        # Calcular ROUGE
+        try:
+            scores = rouge.get_scores(generated_triplet, hold_tgt)[0]
+            rouge1_scores.append(scores['rouge-1']['f'])
+            rouge2_scores.append(scores['rouge-2']['f'])
+            rougeL_scores.append(scores['rouge-l']['f'])
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            #rouge1_scores.append(0.0)
+            #rouge2_scores.append(0.0)
+            #rougeL_scores.append(0.0)
+        i += 1
+    
+    # 5. Calcular promedios
+    final_metrics = {
+        'rouge1': sum(rouge1_scores) / len(rouge1_scores),
+        'rouge2': sum(rouge2_scores) / len(rouge2_scores),
+        'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+    }
+
+    print("Resultados de evaluación:")
+    print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
+    print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
+    print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     # 1. Cargar datos y modelo
