@@ -267,12 +267,38 @@ def main():
             print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+            try:
+                scores = rouge.get_scores(hold_preds, list(hold_tgt))
+                print(scores)
+                print(f"rouge-1 : {scores['rouge-1']['f'].mean().item():.4f}")
+                print(f"rouge-2 : {scores['rouge-2']['f'].mean().item():.4f}")
+                print(f"rouge-l : {scores['rouge-l']['f'].mean().item():.4f}")
+            except ValueError:
+                print("Hypothesis is empty.\n No se puedo calcular ROUGE")
+                # Calcular ROUGE
+                for i in range(len(hold_preds)):
+                    try:
+                        scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+                        rouge1_scores.append(scores['rouge-1']['f'])
+                        rouge2_scores.append(scores['rouge-2']['f'])
+                        rougeL_scores.append(scores['rouge-l']['f'])
+                    except Exception as e:
+                        print(f"Error calculando ROUGE: {str(e)}")
+                        # Añadir valores cero si hay error
+                        #rouge1_scores.append(0.0)
+                        #rouge2_scores.append(0.0)
+                        #rougeL_scores.append(0.0)
+                # 5. Calcular promedios
+                final_metrics = {
+                    'rouge1': sum(rouge1_scores) / len(rouge1_scores),
+                    'rouge2': sum(rouge2_scores) / len(rouge2_scores),
+                    'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+                }
 
-            scores = rouge.get_scores(hold_preds, list(hold_tgt))
-            print(scores)
-            print(f"rouge-1 : {scores['rouge-1']['f'].mean().item():.4f}")
-            print(f"rouge-2 : {scores['rouge-2']['f'].mean().item():.4f}")
-            print(f"rouge-l : {scores['rouge-l']['f'].mean().item():.4f}")
+                print("Resultados de evaluación:")
+                print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
+                print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
+                print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
