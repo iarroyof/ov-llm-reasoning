@@ -152,7 +152,7 @@ def main():
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
-    ap.add_argument("--modelName", default="t5-small")
+    ap.add_argument("--modelName", default="t5-base-finetuned-pubmed")
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
@@ -197,6 +197,7 @@ def main():
     model     = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento")
     rouge = Rouge()
@@ -317,7 +318,6 @@ def main():
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
-            print("Hypothesis is empty.\n No se puedo calcular ROUGE")
             # Calcular ROUGE
             for i in range(len(hold_preds)):
                 try:
@@ -345,7 +345,7 @@ def main():
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
-        print("Pruebas antes del ajuste")
+        #print("Pruebas antes del ajuste")
         print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
         prueba_part_triplets(hold_pairs, model, tokenizer, device)
         #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
