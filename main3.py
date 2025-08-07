@@ -197,6 +197,50 @@ def main():
     model     = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+    print("="*100)
+    print("Probando holdoutdata previo al entrenamiento")
+    # Hold‑out predictions
+    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
+        #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
+        #hold_pairs = [prep(l) for l in hold_lines]
+        hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
+        if hold_inp:
+            logging.info("Generating hold‑out predictions…")
+            hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
+            #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
+            #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
+            Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en")
+
+            print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
+            print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
+            print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+
+            # Calcular ROUGE
+            for i in range(len(hold_preds)):
+                try:
+                    scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+                    rouge1_scores.append(scores['rouge-1']['f'])
+                    rouge2_scores.append(scores['rouge-2']['f'])
+                    rougeL_scores.append(scores['rouge-l']['f'])
+                except Exception as e:
+                    print(f"Error calculando ROUGE: {str(e)}")
+                    # Añadir valores cero si hay error
+                    rouge1_scores.append(0.0)
+                    rouge2_scores.append(0.0)
+                    rougeL_scores.append(0.0)
+            # 5. Calcular promedios
+            final_metrics = {
+                'rouge1': sum(rouge1_scores) / len(rouge1_scores),
+                'rouge2': sum(rouge2_scores) / len(rouge2_scores),
+                'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+            }
+
+            print("Resultados de evaluación:")
+            print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
+            print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
+            print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
+
 
     def tok(batch):
         enc = tokenizer(batch["input"], max_length=cfg.seqLen, padding="max_length", truncation=True)
@@ -267,38 +311,31 @@ def main():
             print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
-            try:
-                scores = rouge.get_scores(hold_preds, list(hold_tgt))
-                print(scores)
-                print(f"rouge-1 : {scores['rouge-1']['f'].mean().item():.4f}")
-                print(f"rouge-2 : {scores['rouge-2']['f'].mean().item():.4f}")
-                print(f"rouge-l : {scores['rouge-l']['f'].mean().item():.4f}")
-            except ValueError:
-                print("Hypothesis is empty.\n No se puedo calcular ROUGE")
-                # Calcular ROUGE
-                for i in range(len(hold_preds)):
-                    try:
-                        scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
-                        rouge1_scores.append(scores['rouge-1']['f'])
-                        rouge2_scores.append(scores['rouge-2']['f'])
-                        rougeL_scores.append(scores['rouge-l']['f'])
-                    except Exception as e:
-                        print(f"Error calculando ROUGE: {str(e)}")
-                        # Añadir valores cero si hay error
-                        rouge1_scores.append(0.0)
-                        rouge2_scores.append(0.0)
-                        rougeL_scores.append(0.0)
-                # 5. Calcular promedios
-                final_metrics = {
-                    'rouge1': sum(rouge1_scores) / len(rouge1_scores),
-                    'rouge2': sum(rouge2_scores) / len(rouge2_scores),
-                    'rougeL': sum(rougeL_scores) / len(rougeL_scores)
-                }
+            print("Hypothesis is empty.\n No se puedo calcular ROUGE")
+            # Calcular ROUGE
+            for i in range(len(hold_preds)):
+                try:
+                    scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+                    rouge1_scores.append(scores['rouge-1']['f'])
+                    rouge2_scores.append(scores['rouge-2']['f'])
+                    rougeL_scores.append(scores['rouge-l']['f'])
+                except Exception as e:
+                    print(f"Error calculando ROUGE: {str(e)}")
+                    # Añadir valores cero si hay error
+                    rouge1_scores.append(0.0)
+                    rouge2_scores.append(0.0)
+                    rougeL_scores.append(0.0)
+            # 5. Calcular promedios
+            final_metrics = {
+                'rouge1': sum(rouge1_scores) / len(rouge1_scores),
+                'rouge2': sum(rouge2_scores) / len(rouge2_scores),
+                'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+            }
 
-                print("Resultados de evaluación:")
-                print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
-                print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
-                print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
+            print("Resultados de evaluación:")
+            print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
+            print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
+            print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
@@ -381,9 +418,9 @@ def prueba_part_triplets(pair, model, tokenizer, device):
         except Exception as e:
             print(f"Error calculando ROUGE: {str(e)}")
             # Añadir valores cero si hay error
-            #rouge1_scores.append(0.0)
-            #rouge2_scores.append(0.0)
-            #rougeL_scores.append(0.0)
+            rouge1_scores.append(0.0)
+            rouge2_scores.append(0.0)
+            rougeL_scores.append(0.0)
         i += 1
     
     # 5. Calcular promedios
