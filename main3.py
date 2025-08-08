@@ -266,15 +266,15 @@ def main():
                     rouge_scores["precision-l"].append(0)
             # 5. Calcular promedios
             final_metrics = {
-                'rouge1-r': sum(rouge_scores) / len(rouge_scores),
-                'rouge2-r': sum(rouge_scores) / len(rouge_scores),
-                'rougeL-r': sum(rouge_scores) / len(rouge_scores),
-                'rouge1-f1': sum(rouge_scores) / len(rouge_scores),
-                'rouge2-f1': sum(rouge_scores) / len(rouge_scores),
-                'rougeL-f1': sum(rouge_scores) / len(rouge_scores),
-                'rouge1-pr': sum(rouge_scores) / len(rouge_scores),
-                'rouge2-pr': sum(rouge_scores) / len(rouge_scores),
-                'rougeL-pr': sum(rouge_scores) / len(rouge_scores)
+                'rouge1-r': sum(rouge_scores['recall-1']) / len(rouge_scores['recall-1']),
+                'rouge2-r': sum(rouge_scores['recall-2']) / len(rouge_scores['recall-2']),
+                'rougeL-r': sum(rouge_scores['recall-l']) / len(rouge_scores['recall-l']),
+                'rouge1-f1': sum(rouge_scores['f1-1']) / len(rouge_scores["f1-1"]),
+                'rouge2-f1': sum(rouge_scores['f1-2']) / len(rouge_scores["f1-2"]),
+                'rougeL-f1': sum(rouge_scores['f1-l']) / len(rouge_scores["f1-l"]),
+                'rouge1-pr': sum(rouge_scores['precision-1']) / len(rouge_scores["precision-1"]),
+                'rouge2-pr': sum(rouge_scores['precision-2']) / len(rouge_scores["precision-2"]),
+                'rougeL-pr': sum(rouge_scores['precision-l']) / len(rouge_scores["precision-l"])
             }
 
             print("Resultados de evaluación:")
