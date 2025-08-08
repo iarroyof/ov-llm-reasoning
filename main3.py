@@ -243,15 +243,15 @@ def main():
                 try:
                     scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
                     #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
-                    rouge_scores['recall-1'].append(scores['rouge-1'].recall)
-                    rouge_scores['f1-1'].append(scores['rouge-1'].fmeasure)
-                    rouge_scores["precision-1"].append(scores['rouge-1'].precision)
-                    rouge_scores['recall-2'].append(scores['rouge-2'].recall)
-                    rouge_scores['f1-2'].append(scores['rouge-2'].fmeasure)
-                    rouge_scores["precision-2"].append(scores['rouge-2'].precision)
-                    rouge_scores['recall-l'].append(scores['rouge-l'].recall)
-                    rouge_scores['f1-l'].append(scores['rouge-l'].fmeasure)
-                    rouge_scores["precision-l"].append(scores['rouge-l'].precision)
+                    rouge_scores['recall-1'].append(scores['rouge1'].recall)
+                    rouge_scores['f1-1'].append(scores['rouge1'].fmeasure)
+                    rouge_scores["precision-1"].append(scores['rouge1'].precision)
+                    rouge_scores['recall-2'].append(scores['rouge2'].recall)
+                    rouge_scores['f1-2'].append(scores['rouge2'].fmeasure)
+                    rouge_scores["precision-2"].append(scores['rouge2'].precision)
+                    rouge_scores['recall-l'].append(scores['rougel'].recall)
+                    rouge_scores['f1-l'].append(scores['rougel'].fmeasure)
+                    rouge_scores["precision-l"].append(scores['rougel'].precision)
                 except Exception as e:
                     print(f"Error calculando ROUGE: {str(e)}")
                     # Añadir valores cero si hay error
