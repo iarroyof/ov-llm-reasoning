@@ -50,6 +50,8 @@ logging.basicConfig(
 STRIP_CHARS = string.punctuation.replace("[", "").replace("]", "")
 
 bertscore = load("bertscore")
+scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+
 
 def prepare_data(line: str,
                  start_token: str = "[start] ",
@@ -207,11 +209,18 @@ def main():
 
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento")
-    rouge = Rouge()
 
-    rouge1_scores = []
-    rouge2_scores = []
-    rougeL_scores = []
+    rouge_scores ={
+        "recall-1" : [],
+        "f1-1" : [],
+        "precision-1": [],
+        "recall-2" : [],
+        "f1-2" : [],
+        "precision-2": [],
+        "recall-l" : [],
+        "f1-l" : [],
+        "precision-l": []
+    }
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
@@ -232,27 +241,52 @@ def main():
             # Calcular ROUGE
             for i in range(len(hold_preds)):
                 try:
-                    scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
-                    rouge1_scores.append(scores['rouge-1']['f'])
-                    rouge2_scores.append(scores['rouge-2']['f'])
-                    rougeL_scores.append(scores['rouge-l']['f'])
+                    scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
+                    #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+                    rouge_scores['recall-1'].append(scores['rouge-1'].recall)
+                    rouge_scores['f1-1'].append(scores['rouge-1'].fmeasure)
+                    rouge_scores["precision-1"].append(scores['rouge-1'].precision)
+                    rouge_scores['recall-2'].append(scores['rouge-2'].recall)
+                    rouge_scores['f1-2'].append(scores['rouge-2'].fmeasure)
+                    rouge_scores["precision-2"].append(scores['rouge-2'].precision)
+                    rouge_scores['recall-l'].append(scores['rouge-l'].recall)
+                    rouge_scores['f1-l'].append(scores['rouge-l'].fmeasure)
+                    rouge_scores["precision-l"].append(scores['rouge-l'].precision)
                 except Exception as e:
                     print(f"Error calculando ROUGE: {str(e)}")
                     # Añadir valores cero si hay error
-                    rouge1_scores.append(0.0)
-                    rouge2_scores.append(0.0)
-                    rougeL_scores.append(0.0)
+                    rouge_scores['recall-1'].append(0)
+                    rouge_scores['f1-1'].append(0)
+                    rouge_scores["precision-1"].append(0)
+                    rouge_scores['recall-2'].append(0)
+                    rouge_scores['f1-2'].append(0)
+                    rouge_scores["precision-2"].append(0)
+                    rouge_scores['recall-l'].append(0)
+                    rouge_scores['f1-l'].append(0)
+                    rouge_scores["precision-l"].append(0)
             # 5. Calcular promedios
             final_metrics = {
-                'rouge1': sum(rouge1_scores) / len(rouge1_scores),
-                'rouge2': sum(rouge2_scores) / len(rouge2_scores),
-                'rougeL': sum(rougeL_scores) / len(rougeL_scores)
+                'rouge1-r': sum(rouge_scores) / len(rouge_scores),
+                'rouge2-r': sum(rouge_scores) / len(rouge_scores),
+                'rougeL-r': sum(rouge_scores) / len(rouge_scores),
+                'rouge1-f1': sum(rouge_scores) / len(rouge_scores),
+                'rouge2-f1': sum(rouge_scores) / len(rouge_scores),
+                'rougeL-f1': sum(rouge_scores) / len(rouge_scores),
+                'rouge1-pr': sum(rouge_scores) / len(rouge_scores),
+                'rouge2-pr': sum(rouge_scores) / len(rouge_scores),
+                'rougeL-pr': sum(rouge_scores) / len(rouge_scores)
             }
 
             print("Resultados de evaluación:")
-            print(f"ROUGE-1: {final_metrics['rouge1']:.4f}")
-            print(f"ROUGE-2: {final_metrics['rouge2']:.4f}")
-            print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
+            print(f"ROUGE-1 Recall: {final_metrics['rouge1-r']:.4f}")
+            print(f"ROUGE-2 Recall: {final_metrics['rouge2-r']:.4f}")
+            print(f"ROUGE-L Recall: {final_metrics['rougeL-r']:.4f}")
+            print(f"ROUGE-1 f1score: {final_metrics['rouge1-f1']:.4f}")
+            print(f"ROUGE-2 f1score: {final_metrics['rouge2-f1']:.4f}")
+            print(f"ROUGE-L f1score: {final_metrics['rougeL-f1']:.4f}")
+            print(f"ROUGE-1 precision: {final_metrics['rouge1-pr']:.4f}")
+            print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
+            print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
 
 
     def tok(batch):
