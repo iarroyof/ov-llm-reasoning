@@ -222,12 +222,12 @@ def calcRouge(hold_preds, hold_tgt):
     print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
     print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
 
-def main():
+def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
     ap.add_argument("--testData",  required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
-    ap.add_argument("--modelName", default="Kevincp560/t5-base-finetuned-pubmed")
+    ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
@@ -585,4 +585,6 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
-    main()
+    models = ['t5-base',"Kevincp560/t5-base-finetuned-pubmed"]
+    for modelname in models:
+        main(modelname)
