@@ -339,17 +339,6 @@ def main():
     pd.DataFrame({"Subj_Pred": val_inp, "Obj": val_preds, "Obj_true": val_tgt}).to_csv(
         os.path.join(out_dir, "predictions.tsv"), sep="\t", index=False)
 
-    rouge_scores ={
-        "recall-1" : [],
-        "f1-1" : [],
-        "precision-1": [],
-        "recall-2" : [],
-        "f1-2" : [],
-        "precision-2": [],
-        "recall-l" : [],
-        "f1-l" : [],
-        "precision-l": []
-    }
     print("="*100)
     print('Holdoutpairs predictions')
     # Hold‑out predictions
@@ -371,11 +360,11 @@ def main():
 
             calcRouge(hold_preds, hold_tgt)
 
-    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        print("="*100)
+    #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
+        #print("="*100)
         #print("Pruebas antes del ajuste")
-        print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
-        prueba_part_triplets(hold_pairs, model, tokenizer, device)
+        #print("Iniciando pruebas de tripletas con archivo: ", cfg.holdoutData)
+        #prueba_part_triplets(hold_pairs, model, tokenizer, device)
         #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
     wandb.finish()
