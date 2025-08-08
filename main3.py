@@ -153,6 +153,13 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
     
     return all_outputs
 
+def calcBert(hold_preds, hold_tgt):
+    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
+
+    print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
+    print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
+    print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+
 def calcRouge(hold_preds, hold_tgt):
     rouge_scores ={
         "recall-1" : [],
@@ -283,11 +290,7 @@ def main():
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en")
-
-            print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
-            print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
-            print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+            calcBert(hold_preds, hold_tgt)
 
             calcRouge(hold_preds, hold_tgt)
 
@@ -352,11 +355,7 @@ def main():
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en")
-
-            print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
-            print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
-            print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+            calcBert(hold_preds, hold_tgt)
 
             calcRouge(hold_preds, hold_tgt)
 
