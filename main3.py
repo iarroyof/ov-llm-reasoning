@@ -153,6 +153,68 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
     
     return all_outputs
 
+def calcRouge(hold_preds, hold_tgt):
+    rouge_scores ={
+        "recall-1" : [],
+        "f1-1" : [],
+        "precision-1": [],
+        "recall-2" : [],
+        "f1-2" : [],
+        "precision-2": [],
+        "recall-l" : [],
+        "f1-l" : [],
+        "precision-l": []
+    }
+    # Calcular ROUGE
+    for i in range(len(hold_preds)):
+        try:
+            scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
+            #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+            rouge_scores['recall-1'].append(scores['rouge1'].recall)
+            rouge_scores['f1-1'].append(scores['rouge1'].fmeasure)
+            rouge_scores["precision-1"].append(scores['rouge1'].precision)
+            rouge_scores['recall-2'].append(scores['rouge2'].recall)
+            rouge_scores['f1-2'].append(scores['rouge2'].fmeasure)
+            rouge_scores["precision-2"].append(scores['rouge2'].precision)
+            rouge_scores['recall-l'].append(scores['rougeL'].recall)
+            rouge_scores['f1-l'].append(scores['rougeL'].fmeasure)
+            rouge_scores["precision-l"].append(scores['rougeL'].precision)
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            rouge_scores['recall-1'].append(0)
+            rouge_scores['f1-1'].append(0)
+            rouge_scores["precision-1"].append(0)
+            rouge_scores['recall-2'].append(0)
+            rouge_scores['f1-2'].append(0)
+            rouge_scores["precision-2"].append(0)
+            rouge_scores['recall-l'].append(0)
+            rouge_scores['f1-l'].append(0)
+            rouge_scores["precision-l"].append(0)
+    # 5. Calcular promedios
+    final_metrics = {
+        'rouge1-r': sum(rouge_scores['recall-1']) / len(rouge_scores['recall-1']),
+        'rouge2-r': sum(rouge_scores['recall-2']) / len(rouge_scores['recall-2']),
+        'rougeL-r': sum(rouge_scores['recall-l']) / len(rouge_scores['recall-l']),
+        'rouge1-f1': sum(rouge_scores['f1-1']) / len(rouge_scores["f1-1"]),
+        'rouge2-f1': sum(rouge_scores['f1-2']) / len(rouge_scores["f1-2"]),
+        'rougeL-f1': sum(rouge_scores['f1-l']) / len(rouge_scores["f1-l"]),
+        'rouge1-pr': sum(rouge_scores['precision-1']) / len(rouge_scores["precision-1"]),
+        'rouge2-pr': sum(rouge_scores['precision-2']) / len(rouge_scores["precision-2"]),
+        'rougeL-pr': sum(rouge_scores['precision-l']) / len(rouge_scores["precision-l"])
+    }
+
+    print("Resultados de evaluación:")
+    print(f"ROUGE-1 Recall: {final_metrics['rouge1-r']:.4f}")
+    print(f"ROUGE-2 Recall: {final_metrics['rouge2-r']:.4f}")
+    print(f"ROUGE-L Recall: {final_metrics['rougeL-r']:.4f}")
+    print(f"ROUGE-1 f1score: {final_metrics['rouge1-f1']:.4f}")
+    print(f"ROUGE-2 f1score: {final_metrics['rouge2-f1']:.4f}")
+    print(f"ROUGE-L f1score: {final_metrics['rougeL-f1']:.4f}")
+    print(f"ROUGE-1 precision: {final_metrics['rouge1-pr']:.4f}")
+    print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
+    print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
+
 def main():
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", required=True)
@@ -210,17 +272,6 @@ def main():
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento")
 
-    rouge_scores ={
-        "recall-1" : [],
-        "f1-1" : [],
-        "precision-1": [],
-        "recall-2" : [],
-        "f1-2" : [],
-        "precision-2": [],
-        "recall-l" : [],
-        "f1-l" : [],
-        "precision-l": []
-    }
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
@@ -238,55 +289,7 @@ def main():
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
-            # Calcular ROUGE
-            for i in range(len(hold_preds)):
-                try:
-                    scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
-                    #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
-                    rouge_scores['recall-1'].append(scores['rouge1'].recall)
-                    rouge_scores['f1-1'].append(scores['rouge1'].fmeasure)
-                    rouge_scores["precision-1"].append(scores['rouge1'].precision)
-                    rouge_scores['recall-2'].append(scores['rouge2'].recall)
-                    rouge_scores['f1-2'].append(scores['rouge2'].fmeasure)
-                    rouge_scores["precision-2"].append(scores['rouge2'].precision)
-                    rouge_scores['recall-l'].append(scores['rougeL'].recall)
-                    rouge_scores['f1-l'].append(scores['rougeL'].fmeasure)
-                    rouge_scores["precision-l"].append(scores['rougeL'].precision)
-                except Exception as e:
-                    print(f"Error calculando ROUGE: {str(e)}")
-                    # Añadir valores cero si hay error
-                    rouge_scores['recall-1'].append(0)
-                    rouge_scores['f1-1'].append(0)
-                    rouge_scores["precision-1"].append(0)
-                    rouge_scores['recall-2'].append(0)
-                    rouge_scores['f1-2'].append(0)
-                    rouge_scores["precision-2"].append(0)
-                    rouge_scores['recall-l'].append(0)
-                    rouge_scores['f1-l'].append(0)
-                    rouge_scores["precision-l"].append(0)
-            # 5. Calcular promedios
-            final_metrics = {
-                'rouge1-r': sum(rouge_scores['recall-1']) / len(rouge_scores['recall-1']),
-                'rouge2-r': sum(rouge_scores['recall-2']) / len(rouge_scores['recall-2']),
-                'rougeL-r': sum(rouge_scores['recall-l']) / len(rouge_scores['recall-l']),
-                'rouge1-f1': sum(rouge_scores['f1-1']) / len(rouge_scores["f1-1"]),
-                'rouge2-f1': sum(rouge_scores['f1-2']) / len(rouge_scores["f1-2"]),
-                'rougeL-f1': sum(rouge_scores['f1-l']) / len(rouge_scores["f1-l"]),
-                'rouge1-pr': sum(rouge_scores['precision-1']) / len(rouge_scores["precision-1"]),
-                'rouge2-pr': sum(rouge_scores['precision-2']) / len(rouge_scores["precision-2"]),
-                'rougeL-pr': sum(rouge_scores['precision-l']) / len(rouge_scores["precision-l"])
-            }
-
-            print("Resultados de evaluación:")
-            print(f"ROUGE-1 Recall: {final_metrics['rouge1-r']:.4f}")
-            print(f"ROUGE-2 Recall: {final_metrics['rouge2-r']:.4f}")
-            print(f"ROUGE-L Recall: {final_metrics['rougeL-r']:.4f}")
-            print(f"ROUGE-1 f1score: {final_metrics['rouge1-f1']:.4f}")
-            print(f"ROUGE-2 f1score: {final_metrics['rouge2-f1']:.4f}")
-            print(f"ROUGE-L f1score: {final_metrics['rougeL-f1']:.4f}")
-            print(f"ROUGE-1 precision: {final_metrics['rouge1-pr']:.4f}")
-            print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
-            print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
+            calcRouge(hold_preds, hold_tgt)
 
 
     def tok(batch):
@@ -366,55 +369,7 @@ def main():
             print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
             print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
-            # Calcular ROUGE
-            for i in range(len(hold_preds)):
-                try:
-                    scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
-                    #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
-                    rouge_scores['recall-1'].append(scores['rouge1'].recall)
-                    rouge_scores['f1-1'].append(scores['rouge1'].fmeasure)
-                    rouge_scores["precision-1"].append(scores['rouge1'].precision)
-                    rouge_scores['recall-2'].append(scores['rouge2'].recall)
-                    rouge_scores['f1-2'].append(scores['rouge2'].fmeasure)
-                    rouge_scores["precision-2"].append(scores['rouge2'].precision)
-                    rouge_scores['recall-l'].append(scores['rougeL'].recall)
-                    rouge_scores['f1-l'].append(scores['rougeL'].fmeasure)
-                    rouge_scores["precision-l"].append(scores['rougeL'].precision)
-                except Exception as e:
-                    print(f"Error calculando ROUGE: {str(e)}")
-                    # Añadir valores cero si hay error
-                    rouge_scores['recall-1'].append(0)
-                    rouge_scores['f1-1'].append(0)
-                    rouge_scores["precision-1"].append(0)
-                    rouge_scores['recall-2'].append(0)
-                    rouge_scores['f1-2'].append(0)
-                    rouge_scores["precision-2"].append(0)
-                    rouge_scores['recall-l'].append(0)
-                    rouge_scores['f1-l'].append(0)
-                    rouge_scores["precision-l"].append(0)
-            # 5. Calcular promedios
-            final_metrics = {
-                'rouge1-r': sum(rouge_scores['recall-1']) / len(rouge_scores['recall-1']),
-                'rouge2-r': sum(rouge_scores['recall-2']) / len(rouge_scores['recall-2']),
-                'rougeL-r': sum(rouge_scores['recall-l']) / len(rouge_scores['recall-l']),
-                'rouge1-f1': sum(rouge_scores['f1-1']) / len(rouge_scores["f1-1"]),
-                'rouge2-f1': sum(rouge_scores['f1-2']) / len(rouge_scores["f1-2"]),
-                'rougeL-f1': sum(rouge_scores['f1-l']) / len(rouge_scores["f1-l"]),
-                'rouge1-pr': sum(rouge_scores['precision-1']) / len(rouge_scores["precision-1"]),
-                'rouge2-pr': sum(rouge_scores['precision-2']) / len(rouge_scores["precision-2"]),
-                'rougeL-pr': sum(rouge_scores['precision-l']) / len(rouge_scores["precision-l"])
-            }
-
-            print("Resultados de evaluación:")
-            print(f"ROUGE-1 Recall: {final_metrics['rouge1-r']:.4f}")
-            print(f"ROUGE-2 Recall: {final_metrics['rouge2-r']:.4f}")
-            print(f"ROUGE-L Recall: {final_metrics['rougeL-r']:.4f}")
-            print(f"ROUGE-1 f1score: {final_metrics['rouge1-f1']:.4f}")
-            print(f"ROUGE-2 f1score: {final_metrics['rouge2-f1']:.4f}")
-            print(f"ROUGE-L f1score: {final_metrics['rougeL-f1']:.4f}")
-            print(f"ROUGE-1 precision: {final_metrics['rouge1-pr']:.4f}")
-            print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
-            print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
+            calcRouge(hold_preds, hold_tgt)
 
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         print("="*100)
