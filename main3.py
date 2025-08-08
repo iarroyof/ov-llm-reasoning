@@ -23,6 +23,8 @@ from nltk.corpus import stopwords
 from evaluate import load
 from bert_score import score
 from sklearn.utils import shuffle
+from rouge_score import rouge_scorer
+
 
 import torch
 import pandas as pd
