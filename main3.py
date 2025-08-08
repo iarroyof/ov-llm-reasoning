@@ -173,7 +173,7 @@ def main():
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
     
-    
+    print("Modelo: ", cfg.modelName)
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     val_df = pd.read_csv(cfg.testData, encoding='utf-8')
