@@ -278,9 +278,8 @@ def main(model_name):
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
+    hold_pairs = val_pairs[1200:1400]
     val_pairs = val_pairs[0:1000]
-
-    hold_pairs = val_pairs[200:400]
 
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
