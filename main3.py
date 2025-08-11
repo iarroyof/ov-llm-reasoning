@@ -153,7 +153,19 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
     
     return all_outputs
 
+def aleatorizarData(train_df, val_df):
+    """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
+    
+    train_df = shuffle(train_df)
+    val_df = shuffle(val_df)
+    train_df.reset_index(inplace=True, drop=True)
+    val_df.reset_index(inplace=True, drop=True)
+    
+    return train_df, val_df
+
 def calcBert(hold_preds, hold_tgt):
+    """Funcion para calcular la metrica berscore para precision, recall y f1score"""
+
     Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
 
     print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
@@ -161,6 +173,8 @@ def calcBert(hold_preds, hold_tgt):
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
 def calcRouge(hold_preds, hold_tgt):
+    """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
+
     rouge_scores ={
         "recall-1" : [],
         "f1-1" : [],
@@ -252,10 +266,11 @@ def main(model_name):
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     val_df = pd.read_csv(cfg.testData, encoding='utf-8')
-    train_df = shuffle(train_df)
-    val_df = shuffle(val_df)
-    train_df.reset_index(inplace=True, drop=True)
-    val_df.reset_index(inplace=True, drop=True)
+    print('Train Data: ',cfg.trainData)
+    print('Test Data: ',cfg.testData)
+
+    train_df, val_df=aleatorizarData(train_df, val_df)
+
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
