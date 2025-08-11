@@ -224,8 +224,10 @@ def calcRouge(hold_preds, hold_tgt):
 
 def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
-    ap.add_argument("--trainData", required=True)
-    ap.add_argument("--testData",  required=True)
+    ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
+    ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
+    #ap.add_argument("--trainData", required=True)
+    #ap.add_argument("--testData",required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
