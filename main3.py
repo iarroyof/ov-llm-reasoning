@@ -280,7 +280,7 @@ def main(model_name):
     val_pairs = val_results.tolist()
     val_pairs = val_pairs[0:1000]
 
-    hold_pairs = val_pairs[200:400]
+    hold_pairs = val_pairs[1200:1400]
 
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
