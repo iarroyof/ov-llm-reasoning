@@ -601,6 +601,6 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
-    models = ['t5-base',"Kevincp560/t5-base-finetuned-pubmed", 'gayanin/t5-small-finetuned-pubmed']
+    models = ['t5-base',"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum']
     for modelname in models:
         main(modelname)
