@@ -173,14 +173,15 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
-    random.seed(42)
-    tgt_aleatorizadas = random.shuffle(list(hold_tgt))
+    if aleatorizar:
+        random.seed(42)
+        tgt_aleatorizadas = random.shuffle(list(hold_tgt))
 
-    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
+        Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
 
-    print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
-    print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
-    print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+        print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
+        print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
+        print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
