@@ -157,8 +157,8 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
 def aleatorizarData(train_df, val_df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
-    train_df = shuffle(train_df, int(42))
-    val_df = shuffle(val_df, int(42))
+    train_df = shuffle(train_df, random_state = 42)
+    val_df = shuffle(val_df, random_state = 42)
     train_df.reset_index(inplace=True, drop=True)
     val_df.reset_index(inplace=True, drop=True)
     
