@@ -24,6 +24,7 @@ from evaluate import load
 from bert_score import score
 from sklearn.utils import shuffle
 from rouge_score import rouge_scorer
+import random
 
 
 import torch
@@ -156,17 +157,26 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
 def aleatorizarData(train_df, val_df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
-    train_df = shuffle(train_df)
-    val_df = shuffle(val_df)
+    train_df = shuffle(train_df, 42)
+    val_df = shuffle(val_df, 42)
     train_df.reset_index(inplace=True, drop=True)
     val_df.reset_index(inplace=True, drop=True)
     
     return train_df, val_df
 
-def calcBert(hold_preds, hold_tgt):
+def calcBert(hold_preds, hold_tgt, aleatorizar):
     """Funcion para calcular la metrica berscore para precision, recall y f1score"""
 
     Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
+
+    print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
+    print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
+    print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+
+    random.seed(42)
+    tgt_aleatorizadas = random.shuffle(list(hold_tgt))
+
+    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
 
     print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
@@ -238,10 +248,10 @@ def calcRouge(hold_preds, hold_tgt):
 
 def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
-    ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
-    ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
-    #ap.add_argument("--trainData", required=True)
-    #ap.add_argument("--testData",required=True)
+    #ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
+    #ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
+    ap.add_argument("--trainData", required=True)
+    ap.add_argument("--testData",required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
@@ -258,7 +268,7 @@ def main(model_name):
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
-    prep = partial(prepare_data2, all_start_end=True)
+    #prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
     
@@ -269,7 +279,7 @@ def main(model_name):
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
 
-    #train_df, val_df=aleatorizarData(train_df, val_df)
+    train_df, val_df=aleatorizarData(train_df, val_df)
 
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
@@ -306,7 +316,7 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            calcBert(hold_preds, hold_tgt)
+            calcBert(hold_preds, hold_tgt, aleatorizar=False)
 
             calcRouge(hold_preds, hold_tgt)
 
@@ -371,7 +381,7 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            calcBert(hold_preds, hold_tgt)
+            calcBert(hold_preds, hold_tgt, aleatorizar = False)
 
             calcRouge(hold_preds, hold_tgt)
 

@@ -350,8 +350,8 @@ def main(model_name):
                       callbacks=[OverfitCallback(cfg.nEpochs)])
 
     trainer.train()
-    model.save_pretrained(out_dir)
-    tokenizer.save_pretrained(out_dir)
+    # model.save_pretrained(out_dir)
+    # tokenizer.save_pretrained(out_dir)
 
     # Validation predictions   #Verificar que no se esten acumulando gradientes y revisar si se genero el archivo de predictions.tsv
     # buscar si se puede poner adafactor como optimizador 
