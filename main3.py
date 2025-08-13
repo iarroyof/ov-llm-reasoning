@@ -179,7 +179,11 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
         print("="*10)
         random.seed(42)
         tgt_aleatorizadas = list(hold_tgt)
+        print("Antes de aleatorizar")
+        print(tgt_aleatorizadas[:5])
         random.shuffle(tgt_aleatorizadas)
+        print("Despues de aleatorizar")
+        print(tgt_aleatorizadas[:5])
 
         Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
 
