@@ -174,8 +174,12 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
     if aleatorizar:
+        print("="*10)
+        print("Muetras con goldlabes aleatorizadas")
+        print("="*10)
         random.seed(42)
-        tgt_aleatorizadas = random.shuffle(list(hold_tgt))
+        tgt_aleatorizadas = list(hold_tgt)
+        random.shuffle(tgt_aleatorizadas)
 
         Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
 
