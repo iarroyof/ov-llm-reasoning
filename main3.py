@@ -253,10 +253,10 @@ def calcRouge(hold_preds, hold_tgt):
 
 def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
-    #ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
-    #ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
-    ap.add_argument("--trainData", required=True)
-    ap.add_argument("--testData",required=True)
+    ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
+    ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
+    #ap.add_argument("--trainData", required=True)   #CUDA_VISIBLE_DEVICES=0 python main3.py --trainData /app/data/triplets_CC0_part1_and_part2_sin_vector.csv --testData /app/data/triplets_CC0_part3_with_header_sin_vector.csv
+    #ap.add_argument("--testData",required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
@@ -284,7 +284,7 @@ def main(model_name):
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
 
-    train_df, val_df=aleatorizarData(train_df, val_df)
+    #train_df, val_df=aleatorizarData(train_df, val_df)
 
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
