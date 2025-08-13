@@ -321,7 +321,7 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            calcBert(hold_preds, hold_tgt, aleatorizar=False)
+            calcBert(hold_preds, hold_tgt, aleatorizar=True)
 
             calcRouge(hold_preds, hold_tgt)
 
@@ -386,7 +386,7 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            calcBert(hold_preds, hold_tgt, aleatorizar = False)
+            calcBert(hold_preds, hold_tgt, aleatorizar = True)
 
             calcRouge(hold_preds, hold_tgt)
 
