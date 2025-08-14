@@ -185,7 +185,8 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
         print("Despues de aleatorizar")
         print(tgt_aleatorizadas[:5])
 
-        Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
+        #Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
+        Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en")
 
         print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
         print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
