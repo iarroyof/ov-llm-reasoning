@@ -167,7 +167,8 @@ def aleatorizarData(train_df, val_df):
 def calcBert(hold_preds, hold_tgt, aleatorizar):
     """Funcion para calcular la metrica berscore para precision, recall y f1score"""
 
-    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
+    #Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
+    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en")
 
     print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
