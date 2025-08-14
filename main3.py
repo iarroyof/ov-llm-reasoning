@@ -269,6 +269,7 @@ def main(model_name):
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
     ap.add_argument("--resPath", default=os.getcwd())
+    ap.add_argument("--description", required=True)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -282,7 +283,7 @@ def main(model_name):
     #prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
-    
+    print("Descripcion del experimento: ", cfg.description)
     print("Modelo: ", cfg.modelName)
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
@@ -290,7 +291,9 @@ def main(model_name):
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
 
-    train_df, val_df=aleatorizarData(train_df, val_df)
+    if not "shuffle" in cfg.trainData:
+        print("Aleatorizando")
+        train_df, val_df=aleatorizarData(train_df, val_df)
 
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
