@@ -164,7 +164,7 @@ def aleatorizarData(train_df, val_df):
     
     return train_df, val_df
 
-def calcBert(hold_preds, hold_tgt, aleatorizar):
+def calcBert(hold_preds, hold_tgt, aleatorizar, run):
     """Funcion para calcular la metrica berscore para precision, recall y f1score"""
 
     Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
@@ -192,6 +192,13 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
         print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
         print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
         print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+        my_table = wandb.Table(
+            columns=["gold_labels"],
+            data=tgt_aleatorizadas,
+            log_mode="IMMUTABLE"
+        )
+        # Log the table to W&B
+        run.log({"Shuffle_goldlabes": my_table})
 
 
 def calcRouge(hold_preds, hold_tgt):
@@ -331,7 +338,7 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            calcBert(hold_preds, hold_tgt, aleatorizar=True)
+            calcBert(hold_preds, hold_tgt, aleatorizar=True, run = run)
 
             calcRouge(hold_preds, hold_tgt)
 
