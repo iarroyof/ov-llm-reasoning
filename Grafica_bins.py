@@ -96,6 +96,8 @@ def build_plot(s1: np.ndarray, s2: np.ndarray,
 
     # KDE curves
     x_vals = np.linspace(0, 1, 200)
+    print(f"Elementos en s1: {len(s1)}")
+    print(f"Elementos en s2: {len(s2)}")
     for data, color, label in [
         (s1, line_colors[0], f"{name1} KDE"),
         (s2, line_colors[1], f"{name2} KDE")
