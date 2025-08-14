@@ -164,7 +164,19 @@ def aleatorizarData(train_df, val_df):
     
     return train_df, val_df
 
-def calcBert(hold_preds, hold_tgt, aleatorizar, run, finetuned):
+def aleatorizar_column(hold_tgt):
+    """Funcion que mezcala y regresa una columna que se le de"""
+    random.seed(42)
+    tgt_aleatorizadas = list(hold_tgt)
+    print("Antes de aleatorizar")
+    print(tgt_aleatorizadas[:5])
+    random.shuffle(tgt_aleatorizadas)
+    print("Despues de aleatorizar")
+    print(tgt_aleatorizadas[:5])
+
+    return tgt_aleatorizadas
+
+def calcBert(hold_preds, hold_tgt, run, save):
     """Funcion para calcular la metrica berscore para precision, recall y f1score"""
 
     Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
@@ -174,36 +186,20 @@ def calcBert(hold_preds, hold_tgt, aleatorizar, run, finetuned):
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
-    if aleatorizar:
-        print("="*10)
-        print("Muetras con goldlabes aleatorizadas")
-        print("="*10)
-        random.seed(42)
-        tgt_aleatorizadas = list(hold_tgt)
-        print("Antes de aleatorizar")
-        print(tgt_aleatorizadas[:5])
-        random.shuffle(tgt_aleatorizadas)
-        print("Despues de aleatorizar")
-        print(tgt_aleatorizadas[:5])
-
-        Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en", model_type="distilbert-base-uncased")
-        #Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, tgt_aleatorizadas, lang="en") #Sin modelo
-
-        print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
-        print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
-        print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
-        if finetuned:
-            name ="gold_labels_shufle_finetuned" + str(run.id)
-        else:
-            name ="gold_labels_shufle" + str(run.id)
-
+    if save:
         my_table = wandb.Table(
-            columns=[name],
-            data=[[x] for x in tgt_aleatorizadas]
+            columns=["F1 Bert Score"],
+            data=[[x] for x in list(Bert_F1)]
         )
         # Log the table to W&B
-        run.log({"Shuffle_goldlabes": my_table})
+        run.log({"F1 BERTScore": my_table})
+    
+    return Bert_F1
 
+def save_colum_csv(title_colum, title_arch, colum, out_dir):
+    pd.DataFrame({title_colum: colum}).to_csv(os.path.join(out_dir, title_arch+".tsv"), sep="\t", index=False)
+
+    print(f"archivo: {title_arch}.tsv, guardado en: {out_dir}")
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
@@ -282,6 +278,7 @@ def main(model_name):
     ap.add_argument("--nEpochs", type=int, default=4)
     ap.add_argument("--resPath", default=os.getcwd())
     ap.add_argument("--description", required=True)
+    ap.add_argument("--shuffle", default=True)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -342,8 +339,15 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            calcBert(hold_preds, hold_tgt, aleatorizar=True, run = run, finetuned=False)
-
+            bert_f1_score = calcBert(hold_preds, hold_tgt, run = run, save=False)
+            save_colum_csv("Obj_true", "Obj_true", bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False)
+                save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
 
@@ -407,8 +411,15 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            calcBert(hold_preds, hold_tgt, aleatorizar = True, run=run, finetuned=True)
-
+            bert_f1_score = calcBert(hold_preds, hold_tgt, run=run, save=False)
+            save_colum_csv("Obj_true_finetuned", "Obj_true_finetuned", bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False)
+                save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
