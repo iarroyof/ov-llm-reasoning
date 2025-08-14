@@ -193,6 +193,7 @@ def calcBert(hold_preds, hold_tgt, aleatorizar):
         print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
         print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
+
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
@@ -302,7 +303,7 @@ def main(model_name):
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    hold_pairs = val_pairs[1200:1400]
+    hold_pairs = val_pairs[1001:1400]
     val_pairs = val_pairs[0:1000]
 
     train_inp, train_tgt = zip(*train_pairs)
