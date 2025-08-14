@@ -279,6 +279,7 @@ def main(model_name):
     ap.add_argument("--resPath", default=os.getcwd())
     ap.add_argument("--description", required=True)
     ap.add_argument("--shuffle", default=True)
+    ap.add_argument("--save_f1score", default=True)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -339,15 +340,17 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            bert_f1_score = calcBert(hold_preds, hold_tgt, run = run, save=False)
-            save_colum_csv("Obj_true", "Obj_true", bert_f1_score, out_dir)
+            bert_f1_score = calcBert(hold_preds, hold_tgt, run = run, save=cfg.save_f1score)
+            if cfg.save_f1score:
+                save_colum_csv("Obj_true", "Obj_true", bert_f1_score, out_dir)
             if cfg.shuffle:
                 print("="*10)
                 print("Resultados con goldlabes aleatorizadas")
                 print("="*10)
                 tgt_shuffled = aleatorizar_column(hold_tgt)
                 bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False)
-                save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
+                if cfg.save_f1score:
+                    save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
 
@@ -411,15 +414,17 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            bert_f1_score = calcBert(hold_preds, hold_tgt, run=run, save=False)
-            save_colum_csv("Obj_true_finetuned", "Obj_true_finetuned", bert_f1_score, out_dir)
+            bert_f1_score = calcBert(hold_preds, hold_tgt, run=run, save=cfg.save_f1score)
+            if cfg.save_f1score:
+                save_colum_csv("Obj_true_finetuned", "Obj_true_finetuned", bert_f1_score, out_dir)
             if cfg.shuffle:
                 print("="*10)
                 print("Resultados con goldlabes aleatorizadas")
                 print("="*10)
                 tgt_shuffled = aleatorizar_column(hold_tgt)
-                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False)
-                save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
+                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score)
+                if cfg.save_f1score:
+                    save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", tgt_shuffled, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
