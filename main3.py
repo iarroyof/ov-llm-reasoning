@@ -194,7 +194,7 @@ def calcBert(hold_preds, hold_tgt, aleatorizar, run):
         print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
         my_table = wandb.Table(
             columns=["gold_labels"],
-            data=tgt_aleatorizadas
+            data=[tgt_aleatorizadas]
         )
         # Log the table to W&B
         run.log({"Shuffle_goldlabes": my_table})
