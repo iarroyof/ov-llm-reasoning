@@ -200,6 +200,7 @@ def save_colum_csv(title_colum, title_arch, colum, out_dir):
     pd.DataFrame({title_colum: colum}).to_csv(os.path.join(out_dir, title_arch+".tsv"), sep="\t", index=False)
 
     print(f"archivo: {title_arch}.tsv, guardado en: {out_dir}")
+    print(f'Ruta: {out_dir}/{title_arch}.tsv')
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
@@ -342,7 +343,7 @@ def main(model_name):
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
             bert_f1_score = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm='antes ajuste tgts no aleatorizadas')
             if cfg.save_f1score:
-                save_colum_csv("Obj_true", "Obj_true", bert_f1_score, out_dir)
+                save_colum_csv("F1_BERT_Score", "Obj_No_shuffle_antes_ajuste", bert_f1_score, out_dir)
             if cfg.shuffle:
                 print("="*10)
                 print("Resultados con goldlabes aleatorizadas")
@@ -350,7 +351,7 @@ def main(model_name):
                 tgt_shuffled = aleatorizar_column(hold_tgt)
                 bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False, tm='antes ajuste tgts aleatorizadas')
                 if cfg.save_f1score:
-                    save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", bert_f1_score, out_dir)
+                    save_colum_csv("F1_BERT_Score", "Obj_shuffle_antes_ajuste", bert_f1_score, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
 
@@ -416,7 +417,7 @@ def main(model_name):
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
             bert_f1_score = calcBert(hold_preds, list(hold_tgt), run=run, save=cfg.save_f1score, tm='despues ajuste tgts no aleatorizadas')
             if cfg.save_f1score:
-                save_colum_csv("Obj_true_finetuned", "Obj_true_finetuned", bert_f1_score, out_dir)
+                save_colum_csv("F1_BERT_Score", "Obj_No_Shuffle_Finetuned", bert_f1_score, out_dir)
             if cfg.shuffle:
                 print("="*10)
                 print("Resultados con goldlabes aleatorizadas")
@@ -424,7 +425,7 @@ def main(model_name):
                 tgt_shuffled = aleatorizar_column(hold_tgt)
                 bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='despues ajuste tgts aleatorizadas')
                 if cfg.save_f1score:
-                    save_colum_csv("Obj_true_shuffle", "Obj_true_shuffle", bert_f1_score, out_dir)
+                    save_colum_csv("F1_BERT_Score", "Obj_Shuffle_Finetuned", bert_f1_score, out_dir)
             calcRouge(hold_preds, hold_tgt)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
