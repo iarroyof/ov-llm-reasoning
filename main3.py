@@ -349,7 +349,7 @@ def main(model_name):
                 print("Resultados con goldlabes aleatorizadas")
                 print("="*10)
                 tgt_shuffled = aleatorizar_column(hold_tgt)
-                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=False, tm='antes ajuste tgts aleatorizadas')
+                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='antes ajuste tgts aleatorizadas')
                 if cfg.save_f1score:
                     save_colum_csv("F1_BERT_Score", "Obj_shuffle_antes_ajuste", bert_f1_score, out_dir)
             calcRouge(hold_preds, hold_tgt)
