@@ -192,7 +192,7 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
             data=[[x] for x in list(Bert_F1)]
         )
         # Log the table to W&B
-        run.log({"F1 BERTScore" + tm: my_table})
+        run.log({"F1 BERTScore " + tm: my_table})
     
     return Bert_F1
 
