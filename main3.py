@@ -361,7 +361,7 @@ def main(model_name):
                 print("Resultados con goldlabes aleatorizadas")
                 print("="*10)
                 tgt_shuffled = aleatorizar_column(hold_tgt)
-                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='antes ajuste tgts aleatorizadas')
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='antes ajuste tgts aleatorizadas')
                 if cfg.save_f1score:
                     auxname = "Obj_shuffle_antes_ajuste"
                     if 'pubmed' in cfg.modelName:
@@ -441,7 +441,7 @@ def main(model_name):
                 print("Resultados con goldlabes aleatorizadas")
                 print("="*10)
                 tgt_shuffled = aleatorizar_column(hold_tgt)
-                bert_f1_score = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='despues ajuste tgts aleatorizadas')
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='despues ajuste tgts aleatorizadas')
                 if cfg.save_f1score:
                     auxname = "Obj_Shuffle_Finetuned"
                     if 'pubmed' in cfg.modelName:
