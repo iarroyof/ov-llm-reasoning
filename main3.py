@@ -186,6 +186,12 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
 
+    bertscores = {
+        "Precision": Bert_Pres.mean().item(),
+        "Recall": Bert_Recall.mean().item(),
+        "F1Score": Bert_F1.mean().item()
+    }
+
     if save:
         my_table = wandb.Table(
             columns=["F1 Bert Score"],
@@ -194,7 +200,7 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
         # Log the table to W&B
         run.log({"F1 BERTScore " + tm: my_table})
     
-    return Bert_F1
+    return Bert_F1, bertscores
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     pd.DataFrame({title_colum: colum}).to_csv(os.path.join(out_dir, title_arch+".tsv"), sep="\t", index=False)
@@ -288,6 +294,9 @@ def main(model_name):
     out_dir = os.path.join(cfg.resPath, run.project, run.id)
     os.makedirs(out_dir, exist_ok=True)
 
+    #Declarando variable para guradar los bertscores
+    SBertSr = {}
+
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
@@ -341,7 +350,7 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            bert_f1_score = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm='antes ajuste tgts no aleatorizadas')
+            bert_f1_score, SBertSr['previo'] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm='antes ajuste tgts no aleatorizadas')
             if cfg.save_f1score:
                 auxname = "Obj_No_shuffle_antes_ajuste"
                 if 'pubmed' in cfg.modelName:
@@ -421,7 +430,7 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            bert_f1_score = calcBert(hold_preds, list(hold_tgt), run=run, save=cfg.save_f1score, tm='despues ajuste tgts no aleatorizadas')
+            bert_f1_score, SBertSr['despues'] = calcBert(hold_preds, list(hold_tgt), run=run, save=cfg.save_f1score, tm='despues ajuste tgts no aleatorizadas')
             if cfg.save_f1score:
                 auxname = "Obj_No_Shuffle_Finetuned"
                 if 'pubmed' in cfg.modelName:
@@ -448,6 +457,8 @@ def main(model_name):
         #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
     wandb.finish()
+
+    return SBertSr
 
 def prueba_part_triplets(pair, model, tokenizer, device):
 
@@ -666,6 +677,11 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
-    models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    dic_save_BERT_Scores = {}
+    models = ["t5-base", "Kevincp560/t5-base-finetuned-pubmed"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     for modelname in models:
-        main(modelname)
+        dic_save_BERT_Scores[modelname] = main(modelname)
+
+    print(dic_save_BERT_Scores)
+
+    print(pd.DataFrame.from_dict(dic_save_BERT_Scores))
