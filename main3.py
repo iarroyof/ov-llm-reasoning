@@ -682,6 +682,9 @@ if __name__ == "__main__":
     for modelname in models:
         dic_save_BERT_Scores[modelname] = main(modelname)
 
-    print(dic_save_BERT_Scores)
-
-    print(pd.DataFrame.from_dict(dic_save_BERT_Scores))
+    for namemodel in dic_save_BERT_Scores.keys():
+        print(dic_save_BERT_Scores[namemodel])
+    
+    for namemodel in dic_save_BERT_Scores.keys():
+        print(namemodel)
+        print(pd.DataFrame.from_dict(dic_save_BERT_Scores[namemodel]))
