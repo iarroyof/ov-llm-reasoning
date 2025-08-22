@@ -272,6 +272,8 @@ def calcRouge(hold_preds, hold_tgt):
     print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
     print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
 
+    return final_metrics
+
 def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
@@ -294,8 +296,9 @@ def main(model_name):
     out_dir = os.path.join(cfg.resPath, run.project, run.id)
     os.makedirs(out_dir, exist_ok=True)
 
-    #Declarando variable para guradar los bertscores
+    #Declarando variable para guradar los bertscores y los rougescores
     SBertSr = {}
+    RScores = {}
 
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
@@ -367,7 +370,7 @@ def main(model_name):
                     if 'pubmed' in cfg.modelName:
                         auxname = auxname + '_Pubmed'
                     save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
-            calcRouge(hold_preds, hold_tgt)
+            RScores['previo'] = calcRouge(hold_preds, hold_tgt)
 
 
     def tok(batch):
@@ -447,7 +450,7 @@ def main(model_name):
                     if 'pubmed' in cfg.modelName:
                         auxname = auxname + '_Pubmed'
                     save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
-            calcRouge(hold_preds, hold_tgt)
+            RScores['despues'] = calcRouge(hold_preds, hold_tgt)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -458,7 +461,7 @@ def main(model_name):
 
     wandb.finish()
 
-    return SBertSr, args
+    return SBertSr, RScores, args
 
 def prueba_part_triplets(pair, model, tokenizer, device):
 
@@ -678,9 +681,10 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 
 if __name__ == "__main__":
     dic_save_BERT_Scores = {}
+    dic_save_Rouge_Scores = {}
     models = ["t5-base", "Kevincp560/t5-base-finetuned-pubmed"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     for modelname in models:
-        dic_save_BERT_Scores[modelname], arguments = main(modelname)
+        dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores, arguments = main(modelname)
 
     print("Resumen:")
     print(f"Data\n{arguments}")
@@ -691,4 +695,9 @@ if __name__ == "__main__":
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
         print(pd.DataFrame.from_dict(dic_save_BERT_Scores[namemodel]))
+        print()
+    
+    for namemodel in dic_save_Rouge_Scores.keys():
+        print(namemodel)
+        print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel]))
         print()
