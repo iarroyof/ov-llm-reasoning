@@ -99,15 +99,15 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
     
     return all_outputs
 
-def aleatorizarData(train_df, val_df):
+def aleatorizarData(train_df, test_df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
     train_df = shuffle(train_df, random_state = 42)
-    val_df = shuffle(val_df, random_state = 42)
+    test_df = shuffle(test_df, random_state = 42)
     train_df.reset_index(inplace=True, drop=True)
-    val_df.reset_index(inplace=True, drop=True)
+    test_df.reset_index(inplace=True, drop=True)
     
-    return train_df, val_df
+    return train_df, test_df
 
 def aleatorizar_column(hold_tgt):
     """Funcion que mezcala y regresa una columna que se le de"""
@@ -255,20 +255,20 @@ def main(model_name):
     print("Modelo: ", cfg.modelName)
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
-    val_df = pd.read_csv(cfg.testData, encoding='utf-8')
+    test_df = pd.read_csv(cfg.testData, encoding='utf-8')
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
 
     if not "shuffle" in cfg.trainData:
         print("Aleatorizando")
-        train_df, val_df=aleatorizarData(train_df, val_df)
+        train_df, test_df=aleatorizarData(train_df, test_df)
 
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
     train_pairs = train_pairs[0:10000]
 
-    val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    val_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
     hold_pairs = val_pairs[1200:1400]
     val_pairs = val_pairs[0:1000]
