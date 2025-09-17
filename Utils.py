@@ -20,7 +20,7 @@ def prepare_data2(subject, relation, obj, all_start_end=True):
 
     return (input_text, target_text)
 
-#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 def prepare_data(line: str,
                  start_token: str = "[start] ",
@@ -54,3 +54,4 @@ def prepare_data(line: str,
         if all_start_end:
             inp = f"{start_token}{inp}{end_token}"
     return inp, tgt
+

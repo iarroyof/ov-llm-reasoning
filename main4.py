@@ -1,4 +1,3 @@
-# En este codigo se explorar el ajuste fino sin que se guarde en wandb y verificar los resultados de entrenamiento
 #!/usr/bin/env python3
 """
 Fine‑tune **T5‑small** on subject–predicate–object (SPO) triples with maximum backward‑compatibility to older 🤗 Transformers versions (no `predict_with_generate`).
@@ -25,7 +24,8 @@ from evaluate import load
 from bert_score import score
 from sklearn.utils import shuffle
 from rouge_score import rouge_scorer
-from Utils import prepare_data, prepare_data2
+import random
+
 
 import torch
 import pandas as pd
@@ -52,7 +52,6 @@ STRIP_CHARS = string.punctuation.replace("[", "").replace("]", "")
 
 bertscore = load("bertscore")
 scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
-
 
 
 class OverfitCallback(TrainerCallback):
@@ -103,21 +102,56 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
 def aleatorizarData(train_df, val_df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
-    train_df = shuffle(train_df)
-    val_df = shuffle(val_df)
+    train_df = shuffle(train_df, random_state = 42)
+    val_df = shuffle(val_df, random_state = 42)
     train_df.reset_index(inplace=True, drop=True)
     val_df.reset_index(inplace=True, drop=True)
     
     return train_df, val_df
 
-def calcBert(hold_preds, hold_tgt):
+def aleatorizar_column(hold_tgt):
+    """Funcion que mezcala y regresa una columna que se le de"""
+    random.seed(42)
+    tgt_aleatorizadas = list(hold_tgt)
+    print("Antes de aleatorizar")
+    print(tgt_aleatorizadas[:5])
+    random.shuffle(tgt_aleatorizadas)
+    print("Despues de aleatorizar")
+    print(tgt_aleatorizadas[:5])
+
+    return tgt_aleatorizadas
+
+def calcBert(hold_preds, hold_tgt, run, save, tm):
     """Funcion para calcular la metrica berscore para precision, recall y f1score"""
 
-    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en", model_type="distilbert-base-uncased")
+    Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, hold_tgt, lang="en", model_type="distilbert-base-uncased")
+    #Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en")  #Sin modelo
 
     print(f"Bert_Score Precision: {Bert_Pres.mean().item():.4f}")
     print(f"Bert_Score Recall: {Bert_Recall.mean().item():.4f}")
     print(f"Bert_Score F1Score: {Bert_F1.mean().item():.4f}")
+
+    bertscores = {
+        "Precision": Bert_Pres.mean().item(),
+        "Recall": Bert_Recall.mean().item(),
+        "F1Score": Bert_F1.mean().item()
+    }
+
+    if save:
+        my_table = wandb.Table(
+            columns=["F1 Bert Score"],
+            data=[[x] for x in list(Bert_F1)]
+        )
+        # Log the table to W&B
+        run.log({"F1 BERTScore " + tm: my_table})
+    
+    return Bert_F1, bertscores
+
+def save_colum_csv(title_colum, title_arch, colum, out_dir):
+    pd.DataFrame({title_colum: colum}).to_csv(os.path.join(out_dir, title_arch+".tsv"), sep="\t", index=False)
+
+    print(f"archivo: {title_arch}.tsv, guardado en: {out_dir}")
+    print(f'Ruta: {out_dir}/{title_arch}.tsv')
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
@@ -183,11 +217,13 @@ def calcRouge(hold_preds, hold_tgt):
     print(f"ROUGE-2 precision: {final_metrics['rouge2-pr']:.4f}")
     print(f"ROUGE-L precision: {final_metrics['rougeL-pr']:.4f}")
 
+    return final_metrics
+
 def main(model_name):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
     ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
     ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
-    #ap.add_argument("--trainData", required=True)
+    #ap.add_argument("--trainData", required=True)   #CUDA_VISIBLE_DEVICES=0 python main3.py --trainData /app/data/triplets_CC0_part1_and_part2_sin_vector.csv --testData /app/data/triplets_CC0_part3_with_header_sin_vector.csv
     #ap.add_argument("--testData",required=True)
     ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
@@ -195,6 +231,9 @@ def main(model_name):
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=4)
     ap.add_argument("--resPath", default=os.getcwd())
+    ap.add_argument("--description", required=True)
+    ap.add_argument("--shuffle", default=True)
+    ap.add_argument("--save_f1score", default=True)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -202,34 +241,37 @@ def main(model_name):
     out_dir = os.path.join(cfg.resPath, run.project, run.id)
     os.makedirs(out_dir, exist_ok=True)
 
+    #Declarando variable para guradar los bertscores y los rougescores
+    SBertSr = {}
+    RScores = {}
+
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
     #prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
-    
+    print("Descripcion del experimento: ", cfg.description)
     print("Modelo: ", cfg.modelName)
-    #--------------------------------
     # Lectura de archivos csv
-    #--------------------------------
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     val_df = pd.read_csv(cfg.testData, encoding='utf-8')
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
 
-    #train_df, val_df=aleatorizarData(train_df, val_df)
+    if not "shuffle" in cfg.trainData:
+        print("Aleatorizando")
+        train_df, val_df=aleatorizarData(train_df, val_df)
 
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    #train_pairs = train_pairs[0:10000]
+    train_pairs = train_pairs[0:10000]
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    #val_pairs = val_pairs[0:1000]
-
-    hold_pairs = val_pairs[200:400]
+    hold_pairs = val_pairs[1200:1400]
+    val_pairs = val_pairs[0:1000]
 
     train_inp, train_tgt = zip(*train_pairs)
     val_inp,   val_tgt   = zip(*val_pairs)
@@ -256,9 +298,24 @@ def main(model_name):
             #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
             #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
-            calcBert(hold_preds, hold_tgt)
-
-            calcRouge(hold_preds, hold_tgt)
+            bert_f1_score, SBertSr['previo'] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm='antes ajuste tgts no aleatorizadas')
+            if cfg.save_f1score:
+                auxname = "Obj_No_shuffle_antes_ajuste"
+                if 'pubmed' in cfg.modelName:
+                    auxname = auxname + '_Pubmed'
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='antes ajuste tgts aleatorizadas')
+                if cfg.save_f1score:
+                    auxname = "Obj_shuffle_antes_ajuste"
+                    if 'pubmed' in cfg.modelName:
+                        auxname = auxname + '_Pubmed'
+                    save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            RScores['previo'] = calcRouge(hold_preds, hold_tgt)
 
 
     def tok(batch):
@@ -298,8 +355,8 @@ def main(model_name):
                       callbacks=[OverfitCallback(cfg.nEpochs)])
 
     trainer.train()
-    # model.save_pretrained(out_dir)
-    # tokenizer.save_pretrained(out_dir)
+    model.save_pretrained(out_dir)
+    tokenizer.save_pretrained(out_dir)
 
     # Validation predictions   #Verificar que no se esten acumulando gradientes y revisar si se genero el archivo de predictions.tsv
     # buscar si se puede poner adafactor como optimizador 
@@ -321,9 +378,24 @@ def main(model_name):
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
-            calcBert(hold_preds, hold_tgt)
-
-            calcRouge(hold_preds, hold_tgt)
+            bert_f1_score, SBertSr['despues'] = calcBert(hold_preds, list(hold_tgt), run=run, save=cfg.save_f1score, tm='despues ajuste tgts no aleatorizadas')
+            if cfg.save_f1score:
+                auxname = "Obj_No_Shuffle_Finetuned"
+                if 'pubmed' in cfg.modelName:
+                    auxname = auxname + '_Pubmed'
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='despues ajuste tgts aleatorizadas')
+                if cfg.save_f1score:
+                    auxname = "Obj_Shuffle_Finetuned"
+                    if 'pubmed' in cfg.modelName:
+                        auxname = auxname + '_Pubmed'
+                    save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            RScores['despues'] = calcRouge(hold_preds, hold_tgt)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -333,6 +405,8 @@ def main(model_name):
         #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
     wandb.finish()
+
+    return SBertSr, RScores, args
 
 def prueba_part_triplets(pair, model, tokenizer, device):
 
@@ -551,9 +625,24 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
-    # Se le pasan unicamente los nombres de los modelos
-    models = ['t5-base']#,"Kevincp560/t5-base-finetuned-pubmed", 'gayanin/t5-small-finetuned-pubmed'
-    # Se le pasan tuplas que contienen los datos de entrenamiento, de pureba y de validacion
-    #data = [()]
+    dic_save_BERT_Scores = {}
+    dic_save_Rouge_Scores = {}
+    models = ["t5-base", "Kevincp560/t5-base-finetuned-pubmed"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     for modelname in models:
-        main(modelname)
+        dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname)
+
+    print("Resumen:")
+    print(f"Data\n{arguments}")
+    for namemodel in dic_save_BERT_Scores.keys():
+        print(namemodel)
+        print(dic_save_BERT_Scores[namemodel])
+    
+    for namemodel in dic_save_BERT_Scores.keys():
+        print(namemodel)
+        print(pd.DataFrame.from_dict(dic_save_BERT_Scores[namemodel]))
+        print()
+    
+    for namemodel in dic_save_Rouge_Scores.keys():
+        print(namemodel)
+        print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel]))
+        print()
