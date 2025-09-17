@@ -627,7 +627,7 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
-    models = ["t5-base", "Kevincp560/t5-base-finetuned-pubmed"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     for modelname in models:
         dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname)
 
