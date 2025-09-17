@@ -274,7 +274,7 @@ def main(model_name):
     test_pairs = test_pairs[0:1000]
 
     train_inp, train_tgt = zip(*train_pairs)
-    test_inp,   val_tgt   = zip(*test_pairs)
+    test_inp,   test_tgt   = zip(*test_pairs)
 
     if 'pubmed' in cfg.modelName:
         tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
@@ -327,7 +327,7 @@ def main(model_name):
         return batch
 
     ds_train = Dataset.from_dict({"input": train_inp, "target": train_tgt}).map(tok, batched=True, remove_columns=["input","target"])
-    ds_val   = Dataset.from_dict({"input": test_inp,   "target": val_tgt}).map(tok,   batched=True, remove_columns=["input","target"])
+    ds_val   = Dataset.from_dict({"input": test_inp,   "target": test_tgt}).map(tok,   batched=True, remove_columns=["input","target"])
 
     collator = DataCollatorForSeq2Seq(tokenizer, model=model)
 
@@ -362,7 +362,7 @@ def main(model_name):
     # buscar si se puede poner adafactor como optimizador 
     logging.info("Generating validation predictions…")
     val_preds = generate_text_2(model, tokenizer, test_inp, cfg.seqLen, device)
-    pd.DataFrame({"Subj_Pred": test_inp, "Obj": val_preds, "Obj_true": val_tgt}).to_csv(
+    pd.DataFrame({"Subj_Pred": test_inp, "Obj": val_preds, "Obj_true": test_tgt}).to_csv(
         os.path.join(out_dir, "predictions.tsv"), sep="\t", index=False)
 
     print("="*100)
