@@ -250,7 +250,7 @@ def main(model_name):
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
     #prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
-    #val_pairs   = [prep(l) for l in val_lines]
+    #test_pairs   = [prep(l) for l in val_lines]
     print("Descripcion del experimento: ", cfg.description)
     print("Modelo: ", cfg.modelName)
     # Lectura de archivos csv
@@ -269,12 +269,12 @@ def main(model_name):
     train_pairs = train_pairs[0:10000]
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
-    val_pairs = test_results.tolist()
-    hold_pairs = val_pairs[1200:1400]
-    val_pairs = val_pairs[0:1000]
+    test_pairs = test_results.tolist()
+    hold_pairs = test_pairs[1200:1400]
+    test_pairs = test_pairs[0:1000]
 
     train_inp, train_tgt = zip(*train_pairs)
-    val_inp,   val_tgt   = zip(*val_pairs)
+    val_inp,   val_tgt   = zip(*test_pairs)
 
     if 'pubmed' in cfg.modelName:
         tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
