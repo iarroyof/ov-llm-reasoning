@@ -327,7 +327,7 @@ def main(model_name):
         return batch
 
     ds_train = Dataset.from_dict({"input": train_inp, "target": train_tgt}).map(tok, batched=True, remove_columns=["input","target"])
-    ds_val   = Dataset.from_dict({"input": test_inp,   "target": test_tgt}).map(tok,   batched=True, remove_columns=["input","target"])
+    ds_test   = Dataset.from_dict({"input": test_inp,   "target": test_tgt}).map(tok,   batched=True, remove_columns=["input","target"])
 
     collator = DataCollatorForSeq2Seq(tokenizer, model=model)
 
@@ -349,7 +349,7 @@ def main(model_name):
     trainer = Trainer(model=model,
                       args=train_args,
                       train_dataset=ds_train,
-                      eval_dataset=ds_val,
+                      eval_dataset=ds_test,
                       tokenizer=tokenizer,
                       data_collator=collator,
                       callbacks=[OverfitCallback(cfg.nEpochs)])
