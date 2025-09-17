@@ -25,7 +25,7 @@ from evaluate import load
 from bert_score import score
 from sklearn.utils import shuffle
 from rouge_score import rouge_scorer
-
+from Utils import prepare_data, prepare_data2
 
 import torch
 import pandas as pd
@@ -54,60 +54,6 @@ bertscore = load("bertscore")
 scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
 
-def prepare_data(line: str,
-                 start_token: str = "[start] ",
-                 end_token: str = " [end]",
-                 pmid: bool = True,
-                 include_labels: bool = False,
-                 include_sent: bool = False,
-                 all_start_end: bool = True):
-    """Convert one TSV row to (input, target) pair."""
-    cols = line.rstrip("\n").split("\t")
-    if pmid:
-        cols.pop(0)
-    predicate = " ".join(re.findall(r"[A-Z][a-z]*", cols[1])).lower() or cols[1]
-    if not re.match(r"^-?\d+(?:\.\d+)?$", cols[4].strip()):
-        extras = []
-        i = 4
-        while i < len(cols) and not re.match(r"^-?\d+(?:\.\d+)?$", cols[i].strip()):
-            extras.append(cols.pop(i))
-        cols[3] = " ".join([cols[3]] + extras)
-    sample = [cols[0], predicate, cols[2], f"{start_token}{cols[3]}{end_token}", float(cols[4])]
-    if include_labels:
-        tgt = tuple(sample[-2:])
-    else:
-        sample.pop(-1)
-        tgt = sample[-1]
-    if include_sent:
-        inp = " ".join([sample[0], sample[2], sample[1]])
-    else:
-        sample.pop(0)
-        inp = " ".join([sample[1], sample[0]])
-        if all_start_end:
-            inp = f"{start_token}{inp}{end_token}"
-    return inp, tgt
-
-def prepare_data2(subject, relation, obj, all_start_end=True):
-    """Devuelve tuplas con pares de input y tragets"""
-    start_token = "[start] "
-    end_token = " [end]"
-
-    # Asegurarnos de que todos los datos son strings
-    subject = str(subject)
-    relation = str(relation)
-    obj = str(obj)
-
-    # La lógica de procesado de la relación se mantiene
-    processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
-
-    # Construcción de la entrada y el objetivo
-    input_text = f"{subject} {processed_relation}"
-    if all_start_end:
-        input_text = f"{start_token}{input_text}{end_token}"
-    
-    target_text = obj
-
-    return (input_text, target_text)
 
 class OverfitCallback(TrainerCallback):
     def __init__(self, total_epochs: int, a=6.0, b=4.0, c=-2.0):
@@ -259,12 +205,14 @@ def main(model_name):
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
     #with open(cfg.testData)  as f: val_lines   = f.readlines()
-    prep = partial(prepare_data2, all_start_end=True)
+    #prep = partial(prepare_data2, all_start_end=True)
     #train_pairs = [prep(l) for l in train_lines]
     #val_pairs   = [prep(l) for l in val_lines]
     
     print("Modelo: ", cfg.modelName)
+    #--------------------------------
     # Lectura de archivos csv
+    #--------------------------------
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     val_df = pd.read_csv(cfg.testData, encoding='utf-8')
     print('Train Data: ',cfg.trainData)
@@ -275,11 +223,11 @@ def main(model_name):
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:10000]
+    #train_pairs = train_pairs[0:10000]
 
     val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     val_pairs = val_results.tolist()
-    val_pairs = val_pairs[0:1000]
+    #val_pairs = val_pairs[0:1000]
 
     hold_pairs = val_pairs[200:400]
 
@@ -603,6 +551,9 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
     print(f"ROUGE-L: {final_metrics['rougeL']:.4f}")
 
 if __name__ == "__main__":
+    # Se le pasan unicamente los nombres de los modelos
     models = ['t5-base',"Kevincp560/t5-base-finetuned-pubmed", 'gayanin/t5-small-finetuned-pubmed']
+    # Se le pasan tuplas que contienen los datos de entrenamiento, de pureba y de validacion
+    data = [()]
     for modelname in models:
         main(modelname)
