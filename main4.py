@@ -552,8 +552,8 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 
 if __name__ == "__main__":
     # Se le pasan unicamente los nombres de los modelos
-    models = ['t5-base',"Kevincp560/t5-base-finetuned-pubmed", 'gayanin/t5-small-finetuned-pubmed']
+    models = ['t5-base']#,"Kevincp560/t5-base-finetuned-pubmed", 'gayanin/t5-small-finetuned-pubmed'
     # Se le pasan tuplas que contienen los datos de entrenamiento, de pureba y de validacion
-    data = [()]
+    #data = [()]
     for modelname in models:
         main(modelname)
