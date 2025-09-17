@@ -1,3 +1,5 @@
+import re
+
 def prepare_data2(subject, relation, obj, all_start_end=True):
     """Devuelve tuplas con pares de input y tragets"""
     start_token = "[start] "
