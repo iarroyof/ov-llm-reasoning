@@ -361,8 +361,8 @@ def main(model_name):
     # Validation predictions   #Verificar que no se esten acumulando gradientes y revisar si se genero el archivo de predictions.tsv
     # buscar si se puede poner adafactor como optimizador 
     logging.info("Generating validation predictions…")
-    val_preds = generate_text_2(model, tokenizer, test_inp, cfg.seqLen, device)
-    pd.DataFrame({"Subj_Pred": test_inp, "Obj": val_preds, "Obj_true": test_tgt}).to_csv(
+    test_preds = generate_text_2(model, tokenizer, test_inp, cfg.seqLen, device)
+    pd.DataFrame({"Subj_Pred": test_inp, "Obj": test_preds, "Obj_true": test_tgt}).to_csv(
         os.path.join(out_dir, "predictions.tsv"), sep="\t", index=False)
 
     print("="*100)
