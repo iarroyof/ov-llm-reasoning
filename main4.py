@@ -268,8 +268,8 @@ def main(model_name):
     train_pairs = train_results.tolist()
     train_pairs = train_pairs[0:10000]
 
-    val_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
-    val_pairs = val_results.tolist()
+    test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    val_pairs = test_results.tolist()
     hold_pairs = val_pairs[1200:1400]
     val_pairs = val_pairs[0:1000]
 
