@@ -24,7 +24,7 @@ from evaluate import load
 from bert_score import score
 from sklearn.utils import shuffle
 from rouge_score import rouge_scorer
-from Utils import prepare_data, prepare_data2
+from Utils import prepare_data, prepare_data2, generate_text, generate_text_2
 
 import random
 import torch
