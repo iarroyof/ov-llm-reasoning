@@ -479,7 +479,7 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['concepnet']
+    datasets = ['conceptnet']
     for modelname in models:
         for dataset in datasets:
             dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
