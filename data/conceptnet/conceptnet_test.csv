@@ -1,0 +1,2401 @@
+S,R,O
+baseball,is a,sport
+yo-yo,is a,toy
+dog,capable of,bark
+pen,used for,write
+something that be very good,has property,good
+dog,is a,mammal
+polo,is a,game
+bottle,made of,plastic
+book,made of,paper
+sex,has property,fun
+gold,is a,metal
+sushi,is a,food
+telephone,used for,communicate
+sleep,has subevent,dream
+soccer,is a,sport
+fish,at location,water
+rose,is a,flower
+cloud,at location,sky
+linux,is a,operate system
+child,at location,school
+fly,is a,insect
+computer,at location,office
+apple,has property,red
+clothe,at location,closet
+book,at location,shelf
+violin,is a,string instrument
+bottle,made of,glass
+coat,at location,closet
+computer,at location,library
+key,used for,open lock
+cat,capable of,hunt mouse
+camera,used for,take picture
+basketball player,has property,tall
+bass,is a,fish
+spoon,used for,eat
+paper clip,at location,desk
+keyboard,part of,computer
+paper,made of,wood
+computer,used for,work
+shark,at location,any ocean
+chicken,capable of,cross road
+hammer,used for,drive nail
+word,at location,book
+keyboard,used for,type
+animal,at location,zoo
+water,used for,drink
+window,made of,glass
+net,used for,catch fish
+dog,at location,kennel
+dog,is a,animal
+attend school,has subevent,learn
+librarian,at location,library
+football,is a,game
+water,at location,lake
+car,capable of,go fast
+sky,has property,blue
+football,is a,sport
+love,is a,emotion
+knife,capable of,spread butter
+music,has property,soothe
+ball,has property,round
+see,is a,tool
+do housework,causes,clean house
+dog,is a,pet
+tennis,is a,sport
+lion,is a,animal
+statue of liberty,is a,gift from france
+bird,has a,feather
+teacher,capable of,school student
+pool,used for,swim
+wing,used for,fly
+shoe,at location,closet
+sleep,has subevent,snore
+human,capable of,die only once
+have checkup,has prequisite,go to doctor
+have haircut,has prequisite,go to barber
+bus stop,used for,wait for bus
+book,used for,learn
+chair,at location,office
+see,used for,cut wood
+plant,has a,leave
+book,receives action,read
+pilot,capable of,land plane
+person,not capable of,fly
+doctor,has property,smart
+see exhibit,has prequisite,go to museum
+cup,capable of,hold liquid
+food,at location,refrigerator
+car,made of,metal
+trout,is a,fish
+cheese,made of,milk
+sunset,has property,pretty
+see band,has prequisite,buy ticket
+car,has a,seat
+boy,capable of,date girl
+penguin,not capable of,fly
+read,causes,learn
+do housework,causes,have clean house
+bed,used for,have sex
+turtle,is a,reptile
+match,used for,start fire
+carpet,used for,cover floor
+knife,at location,kitchen
+eat,has subevent,chew
+sex,is a,activity
+vegetable,is a,food
+toe,part of,foot
+book,used for,read
+pilot,capable of,fly airplane
+statue of liberty,is a,in new york
+maintain muscle strength,has prequisite,exercise
+guitar,has a,six string
+magician,capable of,fool audience
+listen to music,has prequisite,turn on radio
+doll,is a,toy
+ocean,has a,salt water
+commit perjury,has prequisite,lie
+cloth,used for,clean
+key,capable of,open door
+cloth,used for,make clothe
+smoke,causes,lung cancer
+buy something,has prequisite,have money
+sleep,has prequisite,close your eye
+pen,at location,office
+rock,is a,music
+pan,used for,cook
+exercise,causes,sweat
+student,capable of,study
+car,at location,park lot
+bird,at location,sky
+book,at location,library
+venus,is a,planet
+swiss cheese,has a,hole
+fruit,has property,good for you
+boat,used for,travel on water
+seven day,at location,week
+have physical exam,has prequisite,go to doctor
+rain,is a,water
+host,capable of,welcome guest
+key,capable of,open lock
+saddle,used for,ride horse
+love,causes desire,kiss someone
+tickle,has subevent,laugh
+bookshelf,at location,library
+carpet,at location,house
+glass,at location,cupboard
+shirt,at location,closet
+apple,has property,green
+peach,is a,fruit
+book,used for,study
+silver,is a,metal
+finch,is a,bird
+cat,capable of,drink water
+tree,has a,leave
+horse,has a,four leg
+seven continent,at location,earth
+corn,is a,vegetable
+murder,is a,crime
+shingle,at location,roof
+diminish your own hunger,has prequisite,eat
+someone,at location,hospital
+start family,has subevent,have sex
+fruit,used for,eat
+have checkup,has prequisite,make doctor appointment
+bicycle,at location,garage
+money,at location,bank
+cat,at location,bed
+water,at location,river
+golden retriever,is a,dog
+blue,is a,color
+chicken,capable of,lie egg
+bed,at location,bedroom
+iron,is a,metal
+java,is a,program language
+ostrich,is a,bird
+ant,is a,insect
+house,has a,window
+car,has a,four wheel
+jellyfish,at location,most ocean
+dog,capable of,guide blind person
+boat,at location,water
+earth,has a,one moon
+bicycle,has a,two wheel
+go to sport event,has prequisite,buy ticket
+dream,has prequisite,sleep
+music,is a,sound
+saxophone,is a,musical instrument
+light match,causes,fire
+dealer,capable of,deal card
+go to bed,has prequisite,turn off light
+chicken,is a,food
+voice,used for,sing
+computer,used for,play game
+earth,has property,spherical
+elephant,at location,zoo
+prisoner,at location,jail
+key,used for,open door
+apple,is a,fruit
+airplane,at location,sky
+child,desires,play with toy
+go to get haircut,causes,your hair will be short
+play,motivated by goal,have some fun
+man,capable of,father child
+biology,is a,science
+exercise,has prequisite,energy
+dog,capable of,guard house
+tile,at location,roof
+telephone,is a,communication device
+plate,at location,cupboard
+fruit,has a,seed
+mastercard,is a,credit card
+fall,causes,injury
+stop your bicycle,has subevent,apply brake
+mushroom,is a,fungus
+read newspaper,motivated by goal,be inform
+clock,capable of,tell time
+run,has subevent,sweat
+cat,capable of,eat mouse
+pistol,is a,gun
+glass,used for,drink
+play sport,used for,fun
+human,at location,school
+literature,at location,library
+glass,at location,cabinet
+cat,at location,lap
+jump rope,used for,exercise
+play,causes,fun
+poodle,is a,dog
+dolphin,is a,mammal
+nurse,at location,hospital
+pineapple,is a,fruit
+kill,causes,death
+finger,part of,hand
+page,part of,book
+star,at location,space
+bury cat,has subevent,dig hole
+goldfish,is a,carp
+dice,has a,six side
+light fire,has subevent,strike match
+wash your car,has subevent,get wet
+chimney,at location,roof
+bicycle,at location,street
+lawn mower,at location,garage
+go on vacation,causes,relaxation
+circle,has property,round
+tablecloth,at location,table
+pray,has prequisite,believe in god
+sex,has property,enjoyable
+pilot,capable of,land airplane
+galaxy,at location,universe
+person,capable of,voice opinion
+cat,has a,whisker
+find lose item,has prequisite,search
+use computer,has subevent,type on keyboard
+cat,at location,windowsill
+bride,at location,wed
+water,has property,essential to all life
+watch movie,has prequisite,buy ticket
+needle,used for,sew
+pilot,capable of,fly plane
+go to opera,has prequisite,buy ticket
+doctor,capable of,help sick person
+bicycle storage area,used for,store bicycle
+computer,is a,electronic device
+star,at location,sky
+bread,at location,breadbox
+dresser,at location,bedroom
+toilet,at location,bathroom
+window,at location,house
+tuba,is a,musical instrument
+orchid,is a,flower
+kettle,used for,boil water
+water,has property,liquid
+person,capable of,eat
+badminton,is a,sport
+golf,is a,sport
+canada,is a,country
+home,related to,family
+sex,causes,child
+read,causes,learn something
+gardener,capable of,water plant
+neighbour,at location,door
+parakeet,is a,bird
+have haircut,causes,have short hair
+go for drive,has prequisite,get into car
+fish,not capable of,live out of water
+dog,capable of,be pet
+pickle,at location,jar
+opera singer,at location,opera
+something,at location,something else
+bottle,has a,liquid
+tickle,causes,laughter
+go to bed,has prequisite,turn out light
+stop your car,has prequisite,apply brake
+bird,at location,roof
+plate,at location,table
+saw,used for,cut wood
+girl,capable of,wear dress
+pretend,has prequisite,imagine
+table,used for,put thing on
+bomb,capable of,destroy city
+yoyo,is a,toy
+chicken,capable of,produce egg
+commit perjury,has subevent,lie
+key,at location,pocket
+jellyfish,at location,aquarium
+potato,at location,kitchen
+sink,at location,kitchen
+wallet,at location,pocket
+money,at location,wallet
+horn,is a,musical instrument
+build,at location,city
+snowman,made of,snow
+tree,is a,plant
+book,at location,bookshelf
+smoke,causes,cancer
+person,capable of,love
+weapon,used for,kill
+tire,part of,car
+baseball,is a,game
+horse,has property,brown
+cat,has a,four leg
+glue,has property,sticky
+world,has property,round
+make person laugh,has prequisite,tell joke
+human,at location,love
+gather energy for tomorrow,has subevent,sleep
+car,at location,freeway
+read,has subevent,turn page
+guitar,used for,make music
+frisbee,at location,park
+read newspaper,has prequisite,get newspaper
+wheel,has property,round
+go for haircut,has prequisite,go to barber
+breathe,has subevent,inhale
+comb,capable of,part hair
+eiffel tower,is a,in paris
+person,capable of,catch cold
+stapler,at location,your desk
+sex,has property,pleasurable
+sushi,is a,japanese food
+paper,has property,crumple
+ping pong,is a,game
+double edge razor,used for,shave
+rest,has prequisite,lie down
+person,capable of,cross street
+go to sleep,used for,rest
+chess board,used for,play chess
+park area,used for,park car
+student,at location,classroom
+human,at location,country
+human,at location,home
+potato,at location,restaurant
+state,at location,country
+stapler,at location,desk
+book,part of,library
+gravity,is a,force
+woodwind,is a,instrument
+piano,is a,instrument
+guitar,is a,string instrument
+anger,is a,emotion
+food,receives action,eat
+cat,capable of,catch mouse
+toilet paper,at location,bathroom
+giraffe,at location,zoo
+china,is a,country
+day,has property,bright
+banana,is a,fruit
+pillow,at location,bedroom
+horse,used for,ride
+christianity,is a,religion
+food,at location,supermarket
+eiffel tower,at location,paris
+food,at location,table
+grass,at location,park
+earth,not is a,perfect sphere
+milk,at location,fridge
+plastic,is a,material
+black hole,at location,space
+criminal,at location,jail
+car,at location,car show
+play game with your friend,causes,fun
+creek,at location,forest
+bowl,at location,cupboard
+contemplate,has prequisite,think
+coffee cup,at location,desk
+dog,not capable of,fly
+paint,capable of,coat wall
+vegetarian,not capable of,eat meat
+school,used for,learn
+wine,used for,drink
+peanut butter,at location,jar
+seat,at location,theatre
+pass your university exam,has prequisite,study
+canvas,used for,paint on
+book,has a,knowledge
+climb,has subevent,fall
+listen to music,has subevent,dance
+be tire,causes desire,have rest
+apply for job,causes,get job
+someone,at location,museum
+letter,at location,post office
+get up early,has prequisite,set alarm clock
+maintain good health,causes,long life
+go see play,has prequisite,buy ticket
+horse,capable of,jump fence
+have rest,has subevent,close your eye
+chest of drawer,used for,store clothe
+motherboard,at location,computer
+7 continent,at location,earth
+capital,at location,country
+college,is a,place
+child,capable of,share toy
+kiss,is a,sign of affection
+fruit,has property,healthy
+puppy,has property,cute
+wrench,used for,tighten bolt
+ball,capable of,bounce
+necklace,is a,jewelry
+sex,has property,good
+lion,is a,carnivore
+dog,is a,man best friend
+jump out of window,has prequisite,open window
+tissue holder,used for,hold tissue
+person,desires,clothe
+pass course,has prequisite,study
+water,at location,pool
+snow,at location,mountain
+lizard,at location,dessert
+cpu,part of,computer
+whale,at location,ocean
+elementary school,is a,school
+soup,is a,food
+student,at location,school
+pencil,used for,write
+dog,capable of,run
+plane,capable of,fly
+nose,part of,face
+chess,is a,game
+rabbit,is a,mammal
+cat,is a,animal
+butterfly,is a,insect
+go for drive,has prequisite,get car
+hat,receives action,wear on head
+rifle,is a,gun
+robin,is a,bird
+woman,has a,baby
+car,receives action,drive
+planet earth,has property,round
+walk in rain,has subevent,get wet
+coffee,has property,serve hot
+highway,is a,road
+ball,is a,toy
+hammer,used for,pound nail
+telephone,at location,your desk
+teacher,capable of,teach student
+awake,has subevent,yawn
+door,at location,build
+cat,capable of,corner mouse
+dust bunny,at location,bed
+butter,is a,food
+student,at location,university
+procreate,causes,have child
+chair,at location,desk
+bottle,is a,container
+slide,at location,park
+play game,has subevent,fun
+water and oil,not capable of,mix
+guitar,has a,6 string
+sleep,has prequisite,close eye
+basketball,has property,round
+rock,at location,mountain
+go to zoo,causes,see animal
+brake,capable of,slow car
+pass class,has prequisite,study
+see old thing,has prequisite,go to museum
+meet person,has subevent,shake their hand
+needle,has property,sharp
+play game,has subevent,win
+ocean,used for,sail
+passenger,capable of,board airplane
+get job,has subevent,interview
+car,capable of,crash
+bank,used for,store money
+commit suicide,has subevent,die
+triangle,has a,three side
+book,receives action,write
+miner,capable of,mine coal
+tool,at location,garage
+enjoy film,has subevent,laugh
+dream,has subevent,sleep
+shovel,capable of,dig hole
+cookie,has property,sweet
+urinate,motivated by goal,your bladder be full
+go to laundromat,causes,clean clothe
+play violin,causes,music
+write instrument,used for,write
+tack,has property,sharp
+pub,used for,have drink
+agree with someone,has subevent,nod
+sand,at location,desert
+restaurant,is a,place
+meat,used for,eat
+go to movie,has prequisite,buy ticket
+screwdriver,capable of,turn screw
+stay healthy,causes,long life
+tongue,capable of,taste food
+pianist,capable of,play piano
+salad,is a,food
+die,has subevent,stop breathe
+school bus,has property,yellow
+gun,capable of,kill person
+mouse,at location,garage
+lock,at location,door
+crab,at location,sand
+corner cupboard,at location,kitchen
+water,at location,waterfall
+bomb,capable of,explode
+cornea,part of,eye
+tomato,is a,vegetable
+wake up,has first subevent,open your eye
+sleep,motivated by goal,rest
+egg,is a,food
+chair,used for,sit
+leaf,at location,tree
+bread,made of,flour
+fry pan,used for,cook
+arm,part of,body
+tree,capable of,grow
+carpenter,capable of,build house
+green,is a,color
+bed,used for,sleep
+blanket,used for,sleep
+baby,capable of,cry
+lion,at location,zoo
+monitor,part of,computer
+islam,is a,religion
+human,capable of,eat
+usenet newsgroup,part of,usenet
+san francisco,is a,city
+have sex,has subevent,have orgasm
+boat,is a,on water
+man,capable of,date woman
+sport,has property,fun
+computer,used for,communication
+dog,has a,four leg
+farmer,capable of,farm land
+match,capable of,light candle
+air,is a,gas
+snore,has prequisite,sleep
+drive,has prequisite,get in car
+brain,at location,head
+pen,has a,ink
+visit other country,has prequisite,travel
+dentist,is a,doctor
+hockey,is a,sport
+empty your bladder,has prequisite,go to bathroom
+thief,capable of,case house
+apple,receives action,eat
+neighbor,at location,door
+passenger,capable of,board plane
+hanger,at location,closet
+read magazine,has subevent,turn page
+babysitter,capable of,mind baby
+boy,capable of,kiss girl
+skate,has subevent,fall down
+french,is a,language
+bar stool,used for,sit on
+play tennis,has subevent,hit ball
+see your favorite show,causes,laugh
+go to play,causes,be entertain
+program,at location,television
+sing,causes,sore throat
+teacher,at location,classroom
+person,capable of,wind clock
+thief,capable of,case joint
+have fun,has subevent,smile
+book,at location,your desk
+love,causes desire,propose to woman
+rest,has subevent,sleep
+commercial,at location,television
+reproduce,has subevent,have sex
+horse,capable of,carry person
+get up early,has prequisite,set your alarm clock
+cook,capable of,prepare meal
+person,capable of,taste food
+internet,used for,research
+cold,causes desire,light fire
+fan,used for,move air
+chair,has property,comfortable
+author,capable of,write book
+artist,capable of,paint portrait
+highway,used for,travel
+person,capable of,thank another person
+play game,used for,have fun
+bathe,has subevent,use soap
+bathtub,used for,bathe
+chalk,used for,write on blackboard
+someone,at location,post office
+floor,used for,walk on
+weasel,at location,zoo
+lizard,at location,bush
+mouse,at location,laboratory
+man,desires,woman
+take shower,has subevent,wash your hair
+death,part of,life
+drum,is a,percussion instrument
+scissor,used for,cut
+grass,at location,lawn
+soap,used for,clean
+food,used for,eat
+cake,has property,sweet
+viola,is a,instrument
+wheel,part of,car
+person,capable of,sleep
+human,is a,mammal
+rice,is a,food
+eraser,made of,rubber
+chopstick,used for,eat
+knife,used for,cut
+saturn,is a,planet
+mar,is a,planet
+mouse,is a,mammal
+galaxy,part of,universe
+exercise,has property,good for you
+jack,is a,child game
+jack,is a,game
+build,has property,big
+your tooth,at location,your mouth
+ride horse,has subevent,fall off
+gamble,has property,addictive
+food,at location,oven
+cut your hair,has prequisite,go to barber
+person,capable of,captain ship
+computer,at location,your house
+refrigerator,used for,keep food cold
+lizard,has property,cold blood
+disco,used for,dance
+bathe,has prequisite,take your clothe off
+reproduce,has prequisite,have sex
+seat,at location,theater
+car,at location,city
+fly in airplane,has prequisite,buy ticket
+swim,has prequisite,get into water
+cross street,causes,get to other side
+colorado,is a,state
+california,is a,state
+dog,has a,fur
+get something,has prequisite,ask for it
+flask,used for,hold liquid
+get pay,has prequisite,work
+quill,used for,write
+food,at location,fridge
+marijuana,is a,drug
+computer,at location,school
+fish,at location,ocean
+wristwatch,used for,tell time
+book,at location,classroom
+write,has subevent,think
+go for swim,has subevent,get wet
+pepper and salt,used for,season food
+person,capable of,water plant
+pretend,has prequisite,use your imagination
+cereal bowl,used for,eat cereal
+human,has a,five finger on each hand
+compete,has subevent,win
+box,is a,container
+coke,is a,soda
+chew your food,causes,good digestion
+brain,is a,head
+floor,at location,table
+library,has a,book
+book,has a,story
+can food,at location,pantry
+play guitar,has subevent,sing
+cat,has a,fur
+lawyer,capable of,object in court
+something,at location,school
+telephone,at location,office
+hummingbird,capable of,hover
+cat,is a,curious animal
+drink,has prequisite,open your mouth
+star trek,is a,popular television show
+read,motivated by goal,learn
+radio,capable of,play music
+literature,used for,read
+attend lecture,has subevent,take note
+read news,has prequisite,buy newspaper
+stage,used for,play
+fur,used for,keep animal warm
+answer question,has prequisite,think
+fork,at location,table
+baseball field,used for,play baseball
+winter,has property,cold
+drink alcohol,has subevent,get drunk
+dream,has prequisite,fall asleep
+finger,capable of,push button
+person,part of,society
+compete,motivated by goal,win
+full bladder,causes desire,urinate
+human,capable of,die
+play poker,has subevent,bluff
+pillow case,used for,cover pillow
+person,capable of,believe in god
+star,at location,night sky
+bird,at location,air
+pantry,at location,kitchen
+towel rack,at location,bathroom
+open gift,causes,surprise
+telephone,used for,communication
+monkey,desires,eat banana
+violin,used for,play music
+computer,capable of,compute
+salt,used for,melt ice
+drawer,at location,desk
+banana,has property,yellow
+physic,is a,science
+wine,is a,beverage
+tiger,at location,zoo
+cucumber,is a,vegetable
+person,capable of,think
+eye,used for,see
+red,is a,color
+study,has subevent,read
+denim,is a,fabric
+metal,is a,music
+france,is a,country
+frog,is a,amphibian
+novel,is a,book
+brazil,is a,country
+information,at location,internet
+have sex,causes,baby
+work,not has property,fun
+bicycle,used for,transportation
+shoe,used for,protect foot
+dog,not capable of,talk
+have rest,motivated by goal,you be very tire
+most pizza,has a,cheese on it
+paper,used for,make paper airplane
+sit down,has prequisite,bend your knee
+atheist,capable of,doubt existence of god
+person,desires,dance
+something,at location,library
+detective,capable of,piece together clue
+play sport,has subevent,run
+horse,receives action,ride
+alcohol,capable of,cloud judgement
+something,at location,store
+some car,has property,expensive
+pony,is a,horse
+house,has a,door
+teacher,capable of,help student
+your neighbor,at location,door
+gun,used for,kill someone
+wine,has a,alcohol
+poker,is a,card game
+remember phone number,has prequisite,repeat it to yourself
+food,at location,kitchen
+visit other country,has prequisite,get passport
+moon,at location,space
+flower,at location,park
+take bus,has prequisite,go to bus stop
+frisbee,has property,round
+alcohol,capable of,cloud your judgement
+rose,has a,thorn
+human,at location,park
+jewish person,at location,synagogue
+kitchen,used for,cook food
+human,at location,workplace
+mirror,at location,bedroom
+oxygen,is a,gas
+train,capable of,arrive late
+woman,capable of,chair committee
+girl,at location,school
+cheese,is a,food
+someone,at location,zoo
+submarine,at location,water
+move car,causes,accident
+blacksmith,capable of,shoe horse
+duck,has a,bill
+hamburger,at location,fast-food restaurant
+get drunk,has prequisite,drink alcohol
+person,capable of,laugh at joke
+carpet pad,at location,carpet
+condominium,used for,live in
+sate your hunger,has prequisite,eat
+shoe,receives action,wear on foot
+cross street,has prequisite,look both way
+someone,at location,lake
+bicycle,is a,two wheel vehicle
+shirt,is a,clothe
+something,at location,beach
+play piano,has prequisite,take lesson
+fire,capable of,burn thing
+stopwatch,capable of,time race
+attend classical concert,has prequisite,buy ticket
+usher,capable of,seat guest
+cup,used for,drink from
+person,capable of,talk to each other
+walk in rain,causes,you get wet
+bomb,capable of,destroy build
+fan,used for,circulate air
+parent,capable of,name child
+raisin,is a,dry grape
+bird,at location,forest
+traveller,at location,airport
+something,at location,tree
+something,at location,mall
+go to school,has subevent,learn
+man,has a,penis
+bomb,used for,blow thing up
+mechanic,capable of,service car
+someone,at location,theater
+jump out of window,has subevent,die
+cake,at location,oven
+read magazine,has prequisite,buy magazine
+mother,capable of,care for her child
+play sport,has subevent,have fun
+tv,is a,abbreviation for television
+pipe,used for,smoke tobacco
+water,capable of,reflect image
+go to bed,causes,sleep
+tickle,causes,laugh
+tool,used for,fix thing
+study,has subevent,read book
+saxophone,is a,instrument
+bomb,used for,kill person
+plant,has property,green
+skyscraper,is a,build
+soap,used for,wash your hand
+person,capable of,thank god
+fruit,has property,sweet
+person,capable of,sail boat
+person,capable of,pay bill
+master bedroom,used for,sleep
+have asthma attack,has prequisite,have asthma
+ticket office,used for,buy ticket
+bookstore,used for,buy book
+diner,used for,eat
+sailor,capable of,sail ship
+have food,used for,eat
+student,capable of,fail test
+tooth,used for,chew food
+classroom,used for,teach
+propose to woman,causes,marriage
+ruler,capable of,measure distance
+airplane,used for,travel
+dresser,used for,store clothe
+feather,used for,tickle someone
+window,used for,look outside
+submarine,is a,ship
+bagpipe,used for,play music
+listen to radio,has subevent,hear music
+find lose item,has prequisite,look for it
+pulpit,used for,preach
+live,has subevent,breathe
+dog,is a,loyal friend
+fish,at location,river
+salt,at location,ocean
+card catalog,at location,library
+cd,at location,cd player
+planet,at location,space
+clarinet,at location,orchestra
+wine list,at location,restaurant
+mouthwash,at location,bathroom
+rosebush,at location,backyard
+elephant,at location,circus
+play game,has subevent,have fun
+sheet,used for,cover bed
+computer,capable of,process information
+potato,is a,vegetable
+bread,used for,eat
+music stand,used for,hold music
+razor,used for,shave
+student,at location,at school
+ball,used for,throw
+dinner,is a,meal
+notebook,at location,desk
+ear,used for,hear
+chocolate,is a,food
+son,part of,family
+gun,is a,weapon
+lettuce,is a,vegetable
+car,is a,vehicle
+fork,used for,eat
+human,is a,animal
+fall,is a,season
+night,has property,dark
+steel,is a,metal
+sword,has property,sharp
+chocolate,is a,candy
+leaf,part of,tree
+crappie,is a,fish
+salamander,is a,amphibian
+table tennis,is a,sport
+pelican,is a,bird
+pencil,used for,write something on paper
+god,part of,religion
+library,used for,do research
+paris,is a,city
+music,is a,form of art
+most person,has property,right hand
+most person,has property,right-handed
+car,has a,headlight
+girl,is a,hold puppy
+bicycle,is a,form of transportation
+nose,at location,face
+there,is a,food at grocery store
+propose to woman,motivated by goal,you love her
+have sex,has subevent,sweat
+house,has a,room
+pig,not capable of,fly
+clothe,at location,drawer
+sushi,is a,raw fish
+sock,at location,drawer
+student,capable of,master subject
+eat breakfast,has prequisite,wake up
+apple,has property,good for you
+soap,used for,wash yourself
+corn,is a,food
+glass,has property,half full
+high rise,is a,build
+go to party,used for,fun
+program,has prequisite,learn program language
+music,created by,composer
+sock,at location,sock drawer
+policeman,capable of,direct traffic
+paper,has property,recyclable
+chicken,is a,meat
+sofa,is a,sit on
+see art,has prequisite,go to museum
+go for haircut,has prequisite,find barber
+knife,capable of,spread peanut butter
+classroom,is a,in school
+floor,at location,carpet
+clerk,capable of,stock shelve
+bunsen burner,at location,chemistry lab
+horse,at location,race track
+rope,at location,boat
+police officer,capable of,direct traffic
+dog,has property,very loyal
+read,has subevent,learn
+bridge,used for,cross river
+cat,has a,claw
+puck,at location,hockey game
+bill,at location,mail box
+grocer,capable of,stock shelve
+person,capable of,shoulder burden
+watch even news,has prequisite,turn on tv
+have epileptic fit,has subevent,fall down
+bell,at location,church
+reproduce,has prequisite,find mate
+book,at location,backpack
+movie,at location,theater
+have nervous breakdown,has subevent,cry
+get some money from someone,has prequisite,ask
+deaf person,not capable of,hear
+floor,used for,walk
+woman,capable of,mother child
+go for swim,has subevent,drown
+actor,at location,movie
+match,capable of,light fire
+empty your bladder,has prequisite,go to toilet
+tank,receives action,use in war
+car,capable of,slow down
+nurse,capable of,care for patient
+detective,capable of,tail suspect
+contraceptive,used for,prevent pregnancy
+grain of sand,has property,very small
+wait in line,causes,boredom
+visitor,capable of,ring doorbell
+knife,at location,drawer
+gideon bible,at location,motel
+towel bar,used for,hang towel
+some plastic,receives action,recycle
+passenger,capable of,board train
+sew,has prequisite,thread needle
+think,has prequisite,brain
+clothe,at location,store
+typewriter,used for,type letter
+rack,at location,oven
+party,has property,fun
+fire engine,has property,red
+dog,is a,canine
+watch television show,has prequisite,turn on tv
+go to hairdresser,has subevent,get haircut
+something,at location,sea
+something,at location,refrigerator
+soda,is a,drink
+spanish restaurant,used for,eat spanish food
+pocket knife,is a,useful tool
+enjoy film,has subevent,eat popcorn
+ski,has prequisite,snow
+two person,has a,sex
+chat with friend,causes,laughter
+vintner,capable of,bottle wine
+love,is a,feel
+someone,at location,shop
+dog,capable of,guard your house
+watch tv,has subevent,fall asleep
+plane,capable of,crash
+canada,has property,north of unite state
+relax,causes,sleep
+banjo,is a,string instrument
+guitare,is a,instrument
+diminish your own hunger,has subevent,eat
+express how funny something,has subevent,be laugh
+chop firewood,has prequisite,axe
+play frisbee,has subevent,catch frisbee
+stop your car,has prequisite,press brake
+bathe,causes,be clean
+stone,is a,another word for rock
+baseball,is a,american pastime
+beanie,is a,hat
+cowboy boot,made of,leather
+rubber duck,has property,yellow
+baby animal,has property,cute
+fedora,is a,hat
+play ball,has subevent,catch ball
+shotgun,is a,gun
+gather energy for tomorrow,has prequisite,sleep
+have examination,has prequisite,see doctor
+plane,capable of,arrive at airport
+get up early,has prequisite,go to bed early
+make friend,has prequisite,smile
+person,desires,laugh
+new york,is a,state
+clarinet,is a,instrument
+reproduce,causes,child
+bean,is a,vegetable
+play basketball,has subevent,dribble
+camper,capable of,sleep in tent
+hear news,has prequisite,turn on tv
+hill,used for,climb
+comb,used for,style hair
+turtle,capable of,live long time
+tie your shoelace,used for,keep your shoe on
+paint house,has prequisite,ladder
+woman,capable of,wear dress
+president,capable of,govern country
+piggy bank,used for,save money
+think,used for,solve problem
+watch television,has prequisite,turn television on
+sofa bed,used for,sleep on
+buy food,has prequisite,go to store
+towel rack,used for,hold towel
+brownstone,used for,live in
+lawyer,capable of,settle lawsuit
+fork,used for,eat food
+egg,at location,supermarket
+sun,at location,center of solar system
+tenor,at location,opera
+audience,at location,theatre
+human,at location,church
+staple,at location,stapler
+key,at location,purse
+trash,at location,dumpster
+city,at location,county
+shop basket,at location,supermarket
+science,at location,university
+closet,at location,bedroom
+foot,at location,shoe
+cavity,at location,tooth
+statue,at location,museum
+person,desires,feel important
+book,created by,writer
+xylophone,is a,percussion instrument
+broom,used for,sweep
+knife,used for,stab
+english,is a,language
+lemon,has property,sour
+trigger,part of,gun
+baseball,used for,play baseball
+table,at location,kitchen
+oil,has property,slippery
+cup,used for,drink
+tree,at location,forest
+pencil,made of,wood
+london,is a,city
+swim,is a,sport
+child,capable of,play
+door,part of,house
+pot,used for,cook
+rock,has property,heavy
+palm,part of,hand
+coffee,made of,coffee bean
+paper,has property,white
+fish,is a,animal
+jean,made of,denim
+fruit,has property,edible
+robot,is a,machine
+pilot,capable of,fly helicopter
+backgammon,is a,game
+jupiter,is a,planet
+lake,is a,body of water
+spider,is a,arachnid
+whale,is a,mammal
+beaver,is a,mammal
+pheasant,is a,bird
+crow,is a,bird
+hawk,is a,bird
+goose,is a,bird
+perl,is a,program language
+c,is a,program language
+bird,capable of,sing
+sex,causes,orgasm
+fish,at location,aquarium
+dog,desires,chew on bone
+dog,not capable of,sweat
+cat,is a,carnivore
+buy present for others,has prequisite,have money
+twenty four hour,at location,day
+phone,at location,your desk
+atheist,not capable of,believe in god
+dog,used for,companionship
+college,at location,city
+feather,at location,bird
+shovel,used for,dig hole
+soap,used for,clean something
+apple,has property,good to eat
+eat breakfast in bed,has subevent,watch tv
+commit to memory,has subevent,repeat
+learn,has prequisite,study
+unix,is a,operate system
+unix,is a,system
+write term paper,has prequisite,research
+sailboat,receives action,propel by wind
+kitten,defined as,baby cat
+pray,has subevent,kneel down
+shop,has prequisite,have money
+kill,has property,wrong
+bottle,used for,store liquid
+sleep,has prequisite,get in bed
+music,has property,relax
+men and woman,has property,different
+tongue,at location,your mouth
+plate,at location,kitchen
+become inebriate,has prequisite,drink alcohol
+sail,has property,fun
+boy,is a,young man
+beer,is a,alcoholic beverage
+study,has prequisite,concentration
+city,is a,place
+fart,causes,bad smell
+smoke cigarette,causes,lung cancer
+compete against someone,has prequisite,enter competition
+roof tile,at location,roof
+toothbrush,used for,clean your tooth
+go to performance,has prequisite,buy ticket
+create idea,has prequisite,think
+surprise someone,has prequisite,hide
+meet interest person,has subevent,talk to them
+take phone call,has prequisite,pick up phone
+reach tentative agreement,has prequisite,compromise
+lie,has subevent,you feel guilty
+key chain,used for,keep key together
+foot,at location,desk
+pea,is a,vegetable
+compete,has subevent,you lose
+submarine,capable of,travel under water
+watch even news,has prequisite,turn on television
+play,has subevent,have fun
+have bath,has prequisite,fill tub with water
+apple,at location,apple tree
+slave,is a,person
+drive,has subevent,listen to radio
+restaurant,used for,eat out
+chess board,has a,64 square
+school,at location,city
+chat with friend,has subevent,laugh
+have bath,has subevent,get wet
+baggage,at location,airport
+paint picture,has subevent,look at model
+relax,has subevent,sleep
+cookie,at location,jar
+baby,capable of,cry loud
+strike match,causes,fire
+banker,capable of,lend money
+bury cat,has prequisite,dig hole
+earn live,has prequisite,work
+twenty-four hour,at location,day
+person,capable of,board plane
+furnace,at location,basement
+play sport,used for,competition
+stair,used for,climb
+park lot,used for,park car
+terrorist,capable of,arm bomb
+wood,used for,fence in property
+pool,used for,get out of heat
+play game,has prequisite,learn rule
+duck,has a,web foot
+play basketball,has subevent,score point
+ball,capable of,roll down hill
+stethoscope,at location,doctor
+make patchwork quilt,has subevent,sew
+leave,at location,tree
+plant,has a,green leave
+pay bill,has prequisite,have money
+skin,used for,cover body
+spanish,is a,language
+baseball,is a,be entertain
+yo-yo,is a,river
+go to bed,capable of,bark
+pen,at location,write
+golf,has property,good
+dog,is a,wood
+polo,is a,sweat
+colorado,made of,plastic
+book,made of,mall
+sex,at location,fun
+gold,is a,eat
+sushi,is a,sit on
+telephone,is a,communicate
+sleep,has prequisite,dream
+soccer,at location,sport
+fish,at location,school
+plant,is a,flower
+cloud,at location,school
+linux,is a,classroom
+child,at location,fence in property
+fly,has subevent,insect
+paint house,at location,office
+apple,has property,fun
+clothe,capable of,closet
+book,used for,shelf
+violin,is a,write
+fruit,made of,glass
+cat,at location,closet
+computer,capable of,library
+key,causes,open lock
+play basketball,capable of,hunt mouse
+propose to woman,used for,take picture
+basketball player,has subevent,tall
+bass,has prequisite,fish
+spoon,has prequisite,eat
+paper clip,at location,state
+keyboard,has prequisite,computer
+paper,has subevent,wood
+chair,used for,work
+shark,used for,any ocean
+teacher,capable of,cross road
+book,used for,drive nail
+lizard,at location,book
+keyboard,capable of,type
+animal,not has property,zoo
+c,used for,drink
+window,at location,glass
+man,used for,catch fish
+key,at location,kennel
+day,is a,animal
+attend school,has subevent,animal
+clothe,at location,library
+football,capable of,game
+knife,at location,lake
+car,capable of,drink alcohol
+sky,has property,vehicle
+bury cat,is a,sport
+love,at location,emotion
+knife,capable of,have money
+music,has property,get into car
+ball,has prequisite,round
+student,is a,tool
+do housework,causes,food
+dog,has subevent,pet
+tennis,is a,vegetable
+lion,causes,animal
+key,is a,gift from france
+literature,has a,feather
+teacher,is a,school student
+pool,used for,post office
+wing,at location,fly
+shoe,has a,closet
+sleep,has subevent,wear on foot
+human,capable of,door
+have checkup,has prequisite,movie
+have haircut,has prequisite,fun
+bus stop,used for,three side
+book,capable of,learn
+chair,has property,office
+see,at location,cut wood
+plant,has a,string instrument
+food,receives action,read
+fish,capable of,land plane
+person,not capable of,cry loud
+fall,has property,smart
+author,has prequisite,go to museum
+cup,has subevent,hold liquid
+vegetarian,at location,refrigerator
+car,used for,metal
+trout,has property,fish
+cheese,has subevent,milk
+sunset,has prequisite,pretty
+see band,has prequisite,basement
+urinate,has a,seat
+boy,has subevent,date girl
+penguin,not capable of,cold
+read,is a,learn
+do housework,has a,have clean house
+bed,used for,science
+student,is a,reptile
+match,at location,start fire
+carpet,used for,bark
+knife,at location,laugh
+car,has subevent,chew
+sex,has subevent,activity
+vegetable,is a,instrument
+meet interest person,part of,foot
+traveller,used for,read
+pilot,has property,fly airplane
+razor,is a,in new york
+play ball,has prequisite,exercise
+someone,has a,six string
+magician,is a,fool audience
+listen to music,has prequisite,eat
+doll,is a,right-handed
+ocean,has property,salt water
+commit perjury,has a,lie
+cloth,used for,exercise
+key,capable of,search
+voice,used for,make clothe
+smoke,causes,zoo
+buy something,has prequisite,have orgasm
+sleep,has property,close your eye
+pen,used for,office
+rock,at location,music
+read,used for,cook
+exercise,capable of,sweat
+pelican,capable of,study
+car,part of,park lot
+watch tv,at location,sky
+book,at location,sleep
+venus,part of,planet
+swiss cheese,has a,guard your house
+have epileptic fit,has property,good for you
+boat,at location,travel on water
+seven day,has a,week
+wheel,has prequisite,go to doctor
+remember phone number,is a,water
+host,has property,welcome guest
+key,at location,open lock
+saddle,at location,ride horse
+love,is a,kiss someone
+tickle,has subevent,supermarket
+buy present for others,at location,library
+bar stool,at location,house
+glass,made of,cupboard
+wheel,at location,closet
+apple,has property,propose to woman
+peach,has subevent,fruit
+listen to radio,used for,study
+silver,is a,eat
+key,is a,bird
+go to hairdresser,capable of,drink water
+tree,capable of,leave
+paint picture,has a,four leg
+seven continent,used for,earth
+corn,is a,kitchen
+murder,at location,crime
+shingle,part of,roof
+diminish your own hunger,has subevent,eat
+someone,used for,hospital
+student,has subevent,have sex
+see exhibit,used for,eat
+have checkup,at location,make doctor appointment
+bottle,at location,garage
+money,made of,bank
+food,at location,bed
+pilot,at location,river
+golden retriever,is a,serve hot
+blue,has property,color
+chicken,at location,lie egg
+plant,at location,bedroom
+iron,desires,metal
+java,at location,program language
+ostrich,used for,bird
+ant,is a,space
+go to get haircut,has a,window
+car,has a,walk
+beanie,at location,most ocean
+dog,used for,guide blind person
+boat,has prequisite,water
+earth,at location,one moon
+procreate,has a,two wheel
+go to sport event,causes,buy ticket
+dream,has a,sleep
+glass,is a,sound
+gravity,is a,musical instrument
+light match,receives action,fire
+author,capable of,deal card
+go to bed,has prequisite,closet
+slide,is a,food
+lemon,used for,sing
+computer,capable of,play game
+kiss,has property,spherical
+elephant,at location,table
+prisoner,at location,closet
+college,used for,open door
+alcohol,is a,fruit
+airplane,used for,sky
+passenger,desires,play with toy
+go to get haircut,has property,your hair will be short
+play,motivated by goal,make paper airplane
+man,capable of,you feel guilty
+biology,is a,read
+exercise,is a,energy
+play sport,capable of,guard house
+tile,at location,communication device
+live,is a,communication device
+plate,is a,cupboard
+fruit,has subevent,seed
+mastercard,is a,go to barber
+fall,has prequisite,injury
+stop your bicycle,has subevent,fish
+cross street,is a,fungus
+gravity,motivated by goal,be inform
+clock,has a,tell time
+dog,has subevent,sweat
+cat,at location,eat mouse
+pistol,causes,gun
+notebook,used for,drink
+play sport,has prequisite,fun
+human,at location,most ocean
+literature,capable of,library
+glass,at location,boredom
+cat,has a,lap
+jump rope,used for,two wheel vehicle
+play,causes,bird
+poodle,causes,dog
+soccer,is a,mammal
+nurse,is a,hospital
+cereal bowl,is a,fruit
+kill,causes,dribble
+finger,part of,laugh at joke
+page,part of,cd player
+star,at location,interview
+bury cat,has prequisite,dig hole
+goldfish,at location,carp
+pass course,has a,six side
+shovel,has subevent,strike match
+wash your car,has subevent,popular television show
+chimney,at location,wed
+bicycle,has property,street
+lawn mower,at location,pantry
+go on vacation,has prequisite,relaxation
+circle,has property,book
+tablecloth,is a,table
+pray,used for,believe in god
+sex,has property,walk on
+pilot,has property,land airplane
+galaxy,at location,water
+person,at location,voice opinion
+sex,has a,whisker
+commit perjury,has prequisite,search
+use computer,has subevent,transportation
+robot,at location,windowsill
+bride,used for,wed
+water,has property,pocket
+ball,has prequisite,buy ticket
+needle,has property,sew
+duck,capable of,fly plane
+jean,has prequisite,buy ticket
+doctor,capable of,water
+bicycle storage area,at location,store bicycle
+computer,is a,bathe
+star,at location,language
+bread,used for,breadbox
+dresser,at location,park car
+toilet,at location,jar
+student,at location,house
+tuba,is a,eat
+diner,is a,flower
+kettle,at location,boil water
+leaf,has property,liquid
+person,capable of,lie
+badminton,is a,bookshelf
+golf,is a,cover pillow
+canada,is a,look outside
+home,related to,mammal
+sex,causes,hockey game
+read,causes,school
+gardener,capable of,cook
+neighbour,at location,chew food
+day,is a,bird
+pepper and salt,causes,have short hair
+lizard,has prequisite,get into car
+fish,not capable of,window
+fruit,capable of,be pet
+rain,at location,jar
+opera singer,at location,school
+murder,at location,something else
+thief,has a,liquid
+paper,causes,laughter
+learn,has prequisite,turn out light
+stop your car,has prequisite,carp
+canvas,at location,roof
+plate,has prequisite,table
+be tire,used for,cut wood
+girl,is a,wear dress
+pretend,is a,imagine
+table,used for,play chess
+bomb,has a,destroy city
+yoyo,is a,amphibian
+chicken,part of,produce egg
+commit perjury,has subevent,game
+egg,at location,pocket
+go to bed,at location,aquarium
+city,at location,kitchen
+sink,at location,have money
+wallet,at location,build house
+money,at location,library
+sword,is a,musical instrument
+build,has prequisite,city
+teacher,made of,snow
+tree,at location,plant
+visitor,at location,bookshelf
+passenger,causes,cancer
+chopstick,capable of,love
+clothe,used for,kill
+apple,part of,car
+contraceptive,is a,game
+canvas,has property,brown
+take bus,has a,four leg
+glue,has property,music
+world,has a,round
+make person laugh,has property,tell joke
+human,used for,love
+gather energy for tomorrow,has subevent,forest
+fork,at location,freeway
+read,has subevent,yellow
+guitar,used for,get wet
+frisbee,at location,tree
+read newspaper,capable of,get newspaper
+wheel,has property,cupboard
+go for haircut,used for,go to barber
+bury cat,has subevent,inhale
+comb,capable of,doctor
+eiffel tower,is a,serve hot
+read,capable of,catch cold
+stapler,has subevent,your desk
+toilet,has property,pleasurable
+sushi,used for,japanese food
+paper,has prequisite,crumple
+ping pong,used for,game
+double edge razor,used for,fungus
+frisbee,has prequisite,lie down
+window,capable of,cross street
+rice,used for,rest
+crappie,used for,play chess
+carpet,used for,park car
+student,has a,classroom
+go to school,at location,country
+human,has property,home
+author,at location,restaurant
+state,is a,country
+stapler,is a,desk
+book,part of,propel by wind
+planet earth,is a,force
+woodwind,is a,shelf
+shingle,is a,instrument
+guitar,is a,desk
+cookie,is a,emotion
+oil,receives action,eat
+cat,capable of,mammal
+toilet paper,at location,roll down hill
+giraffe,used for,zoo
+china,is a,amphibian
+day,has property,tell time
+banana,capable of,fruit
+pillow,used for,bedroom
+go to bed,used for,ride
+christianity,is a,country
+snowman,at location,supermarket
+eiffel tower,capable of,paris
+football,at location,table
+grass,has subevent,park
+earth,has prequisite,perfect sphere
+milk,at location,big
+boat,is a,material
+exercise,at location,space
+criminal,capable of,jail
+water,at location,car show
+play game with your friend,capable of,fun
+creek,is a,forest
+bowl,has prequisite,cupboard
+contemplate,has prequisite,orgasm
+coffee cup,is a,desk
+dog,at location,fly
+plane,capable of,coat wall
+vegetarian,not capable of,freeway
+shop,used for,learn
+wine,capable of,drink
+peanut butter,at location,eat spanish food
+lizard,at location,theatre
+pass your university exam,used for,study
+have fun,used for,paint on
+book,has a,learn
+climb,has prequisite,fall
+listen to music,has subevent,wash your hair
+wine list,causes desire,have rest
+lemon,causes,get job
+someone,has a,museum
+letter,at location,orchestra
+get up early,has prequisite,deal card
+maintain good health,causes,instrument
+go see play,capable of,buy ticket
+horse,capable of,get drunk
+have rest,has prequisite,close your eye
+sex,used for,store clothe
+motherboard,has prequisite,computer
+computer,at location,earth
+capital,at location,find barber
+college,at location,place
+child,capable of,country
+kiss,has prequisite,sign of affection
+fruit,is a,healthy
+sofa bed,has property,cute
+wrench,at location,tighten bolt
+play game,capable of,bounce
+jump out of window,is a,jewelry
+sex,used for,good
+lion,used for,carnivore
+dog,at location,man best friend
+jump out of window,has prequisite,fence in property
+tissue holder,not capable of,hold tissue
+person,at location,clothe
+pass course,has prequisite,musical instrument
+water,has a,pool
+snow,is a,mountain
+lizard,has subevent,dessert
+cpu,part of,wind clock
+whale,at location,food
+elementary school,capable of,school
+knife,is a,food
+nurse,at location,school
+something,used for,write
+key,capable of,run
+write,capable of,fly
+pistol,part of,face
+chess,causes,game
+rabbit,created by,mammal
+thief,is a,animal
+butterfly,has property,insect
+go for drive,has property,get car
+hat,has prequisite,wear on head
+rifle,has prequisite,gun
+robin,at location,bird
+woman,has a,exercise
+car,receives action,fur
+planet earth,capable of,round
+walk in rain,used for,get wet
+coffee,has property,type on keyboard
+highway,is a,wood
+ball,is a,fungus
+eye,used for,pound nail
+lawn mower,at location,your desk
+teacher,capable of,tree
+awake,is a,yawn
+chat with friend,at location,build
+have rest,capable of,corner mouse
+dust bunny,used for,bed
+butter,at location,food
+plant,at location,university
+procreate,causes,sew
+earth,at location,desk
+bottle,is a,forest
+slide,has a,park
+play game,has subevent,red
+water and oil,capable of,mix
+guitar,has a,captain ship
+sleep,has prequisite,play music
+basketball,at location,round
+rock,at location,relaxation
+go to zoo,has a,see animal
+maintain muscle strength,capable of,slow car
+surprise someone,has prequisite,study
+book,has prequisite,go to museum
+meet person,at location,shake their hand
+needle,has property,cry loud
+play game,has subevent,zoo
+winter,used for,sail
+passenger,at location,board airplane
+chimney,has subevent,interview
+book,capable of,crash
+bank,used for,computer
+commit suicide,has subevent,game
+tenor,has a,three side
+book,at location,write
+miner,capable of,fall asleep
+day,at location,garage
+enjoy film,capable of,laugh
+dream,has subevent,kitchen
+shovel,has prequisite,dig hole
+cookie,has property,lawn
+urinate,is a,your bladder be full
+go to laundromat,has property,clean clothe
+play violin,used for,music
+reproduce,used for,write
+yo-yo,has property,sharp
+pilot,used for,have drink
+jack,has subevent,nod
+france,at location,desert
+restaurant,is a,measure distance
+earn live,used for,eat
+go to movie,used for,buy ticket
+screwdriver,capable of,sharp
+stay healthy,at location,long life
+tongue,capable of,bright
+finch,capable of,play piano
+bomb,is a,food
+die,causes,stop breathe
+school bus,at location,yellow
+have examination,capable of,kill person
+mouse,at location,kill person
+lock,at location,string instrument
+sheet,at location,sand
+corner cupboard,at location,string instrument
+water,capable of,waterfall
+person,capable of,explode
+cornea,has prequisite,eye
+tomato,is a,internet
+wake up,capable of,open your eye
+sleep,motivated by goal,round
+egg,is a,machine
+teacher,used for,sit
+snowman,at location,tree
+murder,made of,flour
+fry pan,used for,taste food
+arm,capable of,body
+book,capable of,grow
+carpenter,used for,build house
+green,is a,insect
+match,used for,sleep
+teacher,used for,sleep
+baby,capable of,airport
+lion,at location,lie
+coat,part of,computer
+islam,is a,door
+christianity,capable of,eat
+usenet newsgroup,has subevent,usenet
+san francisco,is a,play music
+see,has subevent,have orgasm
+boat,used for,on water
+man,capable of,wood
+pass course,has property,fun
+computer,used for,ring doorbell
+dog,used for,four leg
+farmer,capable of,teach student
+read,capable of,light candle
+air,is a,learn
+snore,has prequisite,north of unite state
+drive,has prequisite,operate system
+brain,has a,head
+pen,used for,ink
+fork,has prequisite,travel
+dentist,is a,mall
+hockey,used for,sport
+watch television,has prequisite,go to bathroom
+thief,is a,case house
+dog,receives action,eat
+double edge razor,at location,door
+meet person,capable of,board plane
+football,at location,closet
+read magazine,is a,turn page
+babysitter,has prequisite,mind baby
+mouse,capable of,kiss girl
+cat,has subevent,fall down
+pillow,is a,language
+floor,used for,sit on
+play tennis,has subevent,carp
+see your favorite show,causes,park
+go to play,causes,marriage
+carpet,at location,television
+kill,causes,sore throat
+sleep,at location,classroom
+person,capable of,shop
+thief,is a,case joint
+have fun,has subevent,make clothe
+book,is a,your desk
+love,at location,propose to woman
+rest,used for,sleep
+commercial,at location,string instrument
+reproduce,has subevent,container
+pot,capable of,carry person
+get up early,at location,set your alarm clock
+cook,at location,prepare meal
+person,used for,taste food
+internet,used for,library
+cold,is a,light fire
+dog,used for,move air
+chair,capable of,comfortable
+author,capable of,hat
+artist,capable of,country
+jump out of window,used for,travel
+person,is a,thank another person
+play game,part of,have fun
+bathe,causes,use soap
+coke,used for,bathe
+towel rack,used for,write on blackboard
+someone,is a,post office
+floor,used for,explode
+weasel,causes,zoo
+lizard,at location,school
+cross street,at location,laboratory
+man,desires,closet
+take shower,has subevent,wear dress
+triangle,part of,life
+drum,capable of,percussion instrument
+bed,used for,cut
+banana,at location,lawn
+glass,used for,clean
+food,used for,lung cancer
+cake,at location,sweet
+steel,is a,instrument
+wheel,part of,milk
+person,capable of,composer
+human,is a,get wet
+rice,is a,color
+rice,made of,rubber
+chopstick,used for,five finger on each hand
+knife,has subevent,cut
+saturn,is a,store clothe
+mar,capable of,planet
+apple,is a,mammal
+galaxy,part of,country
+exercise,has property,round
+jack,capable of,child game
+jack,used for,game
+chimney,has property,big
+star,at location,your mouth
+ride horse,has subevent,ocean
+gamble,has property,operate system
+food,has a,oven
+cut your hair,has prequisite,library
+person,has property,captain ship
+computer,is a,your house
+tongue,used for,keep food cold
+lizard,capable of,cold blood
+disco,used for,good
+bathe,has prequisite,roof
+sex,has prequisite,have sex
+seat,causes,theater
+car,used for,city
+fly in airplane,capable of,buy ticket
+swim,part of,get into water
+cross street,causes,think
+colorado,used for,state
+pilot,is a,state
+dog,is a,fur
+boat,has prequisite,ask for it
+flask,is a,hold liquid
+get pay,has prequisite,cut wood
+quill,used for,walk
+food,used for,fridge
+marijuana,is a,mountain
+computer,used for,school
+fish,at location,shake their hand
+wallet,used for,tell time
+soap,at location,classroom
+write,has subevent,door
+diminish your own hunger,has subevent,get wet
+rice,used for,season food
+horse,capable of,water plant
+camper,has prequisite,use your imagination
+cereal bowl,used for,kitchen
+human,has a,mine coal
+compete,capable of,win
+box,is a,work
+coke,is a,sport
+chew your food,capable of,good digestion
+pray,is a,head
+floor,at location,teach student
+library,causes,book
+car,has a,story
+move car,at location,pantry
+play guitar,has subevent,milk
+usher,has a,fur
+lawyer,capable of,paris
+something,is a,school
+literature,at location,office
+hummingbird,capable of,refrigerator
+cat,has property,curious animal
+use computer,has prequisite,open your mouth
+star trek,is a,restaurant
+key,motivated by goal,learn
+radio,at location,play music
+literature,at location,read
+attend lecture,has property,take note
+twenty four hour,has prequisite,buy newspaper
+stage,used for,live in
+get some money from someone,used for,keep animal warm
+play basketball,has prequisite,think
+fork,at location,round
+baseball field,used for,story
+cup,has property,cold
+cloth,has subevent,get drunk
+dream,used for,fall asleep
+finger,at location,push button
+human,part of,society
+compete,motivated by goal,go to bathroom
+full bladder,is a,urinate
+human,capable of,buy ticket
+play poker,has prequisite,bluff
+pillow case,used for,marriage
+person,has a,believe in god
+star,at location,church
+get up early,at location,air
+pantry,at location,play baseball
+camper,at location,bathroom
+jump out of window,causes,surprise
+plane,used for,communication
+monkey,desires,walk on
+read newspaper,used for,play music
+computer,used for,compute
+salt,used for,society
+drawer,is a,desk
+banana,at location,yellow
+physic,is a,make paper airplane
+wine,at location,beverage
+tiger,used for,zoo
+cucumber,receives action,vegetable
+person,capable of,bathroom
+eye,used for,card game
+clarinet,is a,color
+live,has subevent,read
+denim,causes,fabric
+bread,is a,music
+france,desires,country
+frog,used for,amphibian
+novel,capable of,book
+brazil,causes,country
+bicycle,at location,internet
+have sex,causes,laugh
+book,not has property,fun
+bicycle,is a,transportation
+blanket,used for,protect foot
+breathe,not capable of,talk
+commit suicide,motivated by goal,you be very tire
+most pizza,has a,you get wet
+paper,used for,school
+sit down,has prequisite,burn thing
+atheist,used for,doubt existence of god
+person,desires,sweat
+something,at location,govern country
+pineapple,capable of,piece together clue
+play sport,capable of,run
+policeman,receives action,ride
+pickle,capable of,cloud judgement
+something,at location,travel on water
+visit other country,has property,expensive
+pony,at location,horse
+drink,has a,door
+teacher,used for,help student
+your neighbor,capable of,door
+gun,used for,restaurant
+restaurant,has a,alcohol
+poker,is a,you lose
+car,has prequisite,repeat it to yourself
+food,at location,eat
+climb,has prequisite,get passport
+moon,has a,space
+flower,has subevent,park
+take bus,has prequisite,smart
+frisbee,has property,turn out light
+glass,capable of,cloud your judgement
+rose,has a,coat wall
+human,at location,sit on
+eat breakfast,at location,synagogue
+kitchen,used for,transportation
+human,is a,workplace
+go to bed,at location,bedroom
+passenger,is a,gas
+train,causes,arrive late
+woman,capable of,fire
+girl,has prequisite,school
+cheese,is a,good
+spanish restaurant,at location,zoo
+submarine,capable of,water
+move car,causes,fool audience
+dog,capable of,shoe horse
+gold,has a,bill
+hamburger,at location,drink
+get drunk,has subevent,drink alcohol
+person,used for,laugh at joke
+chicken,at location,carpet
+condominium,used for,paint on
+propose to woman,has prequisite,eat
+shoe,has subevent,wear on foot
+paper,has prequisite,look both way
+someone,has prequisite,lake
+bicycle,is a,work
+shirt,is a,guard house
+something,at location,mammal
+play piano,has a,take lesson
+fire,capable of,open lock
+key,capable of,time race
+milk,has prequisite,buy ticket
+usher,used for,seat guest
+drive,used for,drink from
+person,capable of,circulate air
+walk in rain,at location,you get wet
+bomb,has a,destroy build
+go to performance,used for,circulate air
+parent,capable of,string instrument
+raisin,is a,spread peanut butter
+bird,at location,case house
+traveller,at location,knowledge
+something,at location,fall asleep
+perl,at location,mall
+love,has subevent,learn
+diner,has a,penis
+bomb,used for,die
+mechanic,capable of,library
+someone,created by,theater
+feather,has subevent,die
+cake,has a,oven
+bread,has prequisite,buy magazine
+mother,capable of,supermarket
+play sport,at location,have fun
+tv,capable of,abbreviation for television
+pipe,used for,travel under water
+water,has subevent,reflect image
+sock,causes,sleep
+rosebush,causes,laugh
+tool,used for,bounce
+study,has subevent,in paris
+saxophone,is a,look both way
+bomb,part of,kill person
+plant,has subevent,green
+skyscraper,has a,build
+soap,has prequisite,wash your hand
+person,is a,thank god
+fruit,has property,cook
+stone,capable of,sail boat
+chocolate,capable of,pay bill
+toilet paper,used for,sleep
+have asthma attack,has prequisite,rest
+ticket office,has subevent,buy ticket
+walk in rain,used for,buy book
+diner,is a,eat
+sailor,causes,sail ship
+have food,capable of,eat
+read magazine,capable of,fail test
+tooth,used for,school
+classroom,used for,desk
+propose to woman,is a,marriage
+ruler,capable of,coffee bean
+airplane,is a,travel
+dresser,has property,store clothe
+feather,used for,be entertain
+window,receives action,look outside
+submarine,causes,ship
+dog,used for,play music
+listen to radio,made of,hear music
+find lose item,has prequisite,fast-food restaurant
+something,used for,preach
+green,has subevent,breathe
+dog,part of,loyal friend
+fish,is a,river
+bowl,at location,ocean
+card catalog,at location,instrument
+cd,at location,bathroom
+planet,has property,space
+clarinet,has subevent,orchestra
+wine list,is a,restaurant
+nose,at location,bathroom
+computer,at location,backyard
+food,at location,circus
+play game,has prequisite,have fun
+sheet,has subevent,cover bed
+mouse,capable of,process information
+chicken,is a,vegetable
+reproduce,used for,eat
+music stand,used for,wear on foot
+passenger,used for,shave
+flask,at location,at school
+jump out of window,used for,throw
+gather energy for tomorrow,is a,meal
+sock,at location,desk
+ear,used for,seat
+chocolate,at location,food
+dog,part of,family
+pen,is a,weapon
+lettuce,is a,buy ticket
+car,at location,vehicle
+fork,has prequisite,eat
+murder,is a,animal
+alcohol,is a,season
+night,at location,dark
+steel,is a,place
+girl,has property,sharp
+chocolate,has subevent,candy
+leaf,has subevent,tree
+crappie,has property,fish
+salamander,is a,vegetable
+table tennis,is a,round
+pelican,is a,carnivore
+pray,used for,write something on paper
+god,part of,travel under water
+metal,used for,do research
+paris,has prequisite,city
+music,part of,form of art
+most person,has property,cabinet
+most person,has property,write something on paper
+car,is a,headlight
+girl,is a,restaurant
+bicycle,at location,form of transportation
+nose,at location,on water
+have physical exam,is a,food at grocery store
+propose to woman,motivated by goal,door
+have sex,has subevent,laughter
+house,has a,drive nail
+pig,not capable of,get wet
+clothe,desires,drawer
+sushi,has a,raw fish
+sock,has a,drawer
+student,capable of,eat mouse
+eat breakfast,has prequisite,sky
+apple,at location,good for you
+roof tile,used for,wash yourself
+corn,has prequisite,food
+glass,has property,go to museum
+poodle,is a,build
+go to party,used for,hold towel
+be tire,has prequisite,learn program language
+pineapple,created by,composer
+sock,at location,post office
+glass,capable of,direct traffic
+something,has property,recyclable
+twenty four hour,is a,meat
+sofa,has subevent,sit on
+pulpit,has prequisite,go to museum
+go for haircut,has prequisite,sleep
+knife,at location,spread peanut butter
+classroom,is a,play
+stop your car,at location,carpet
+clerk,capable of,state
+bunsen burner,causes,chemistry lab
+gather energy for tomorrow,at location,race track
+rope,at location,animal
+police officer,capable of,sore throat
+dog,has property,have some fun
+golden retriever,has subevent,learn
+bridge,used for,stock shelve
+literature,has a,claw
+puck,at location,hear
+fan,at location,mail box
+grocer,capable of,animal
+person,has prequisite,shoulder burden
+someone,has prequisite,turn on tv
+salt,has subevent,fall down
+bell,at location,bookshelf
+reproduce,part of,find mate
+book,part of,backpack
+your neighbor,at location,theater
+have nervous breakdown,has subevent,keep your shoe on
+get some money from someone,at location,ask
+deaf person,used for,hear
+floor,used for,learn something
+woman,capable of,freeway
+go for swim,used for,drown
+actor,capable of,movie
+match,part of,light fire
+most pizza,has prequisite,go to toilet
+tank,has subevent,use in war
+car,capable of,north of unite state
+nurse,capable of,search
+detective,used for,tail suspect
+compete,used for,prevent pregnancy
+grain of sand,has property,glass
+visit other country,causes,boredom
+visitor,at location,ring doorbell
+your neighbor,at location,drawer
+gideon bible,at location,play game
+towel bar,used for,tree
+some plastic,at location,recycle
+passenger,causes,board train
+sock,has prequisite,thread needle
+think,causes,brain
+dolphin,at location,store
+typewriter,causes,type letter
+rack,has a,oven
+roof tile,has property,fun
+fire engine,used for,red
+tenor,is a,canine
+watch television show,desires,turn on tv
+go to hairdresser,capable of,get haircut
+something,has subevent,sea
+something,at location,see animal
+soda,capable of,drink
+key,used for,eat spanish food
+car,is a,useful tool
+black hole,has subevent,eat popcorn
+human,has prequisite,snow
+two person,used for,sex
+chat with friend,causes,sweat
+vintner,capable of,settle lawsuit
+wake up,is a,feel
+do housework,at location,shop
+bowl,capable of,guard your house
+dog,has subevent,fall asleep
+plane,at location,crash
+canada,has property,pet
+relax,causes,lake
+banjo,at location,string instrument
+guitare,at location,instrument
+plane,has subevent,eat
+snore,has subevent,be laugh
+chop firewood,has prequisite,park
+play frisbee,has prequisite,catch frisbee
+stop your car,has prequisite,window
+bathe,used for,be clean
+rabbit,is a,another word for rock
+play,is a,american pastime
+librarian,is a,hat
+cup,made of,leather
+rubber duck,has a,yellow
+have food,has property,cute
+drink,is a,hat
+play ball,has subevent,perfect sphere
+light fire,is a,gun
+paper,has prequisite,sleep
+child,has prequisite,see doctor
+plane,is a,arrive at airport
+drink,has prequisite,go to bed early
+make friend,has prequisite,fruit
+person,is a,laugh
+bottle,is a,state
+commit perjury,is a,instrument
+reproduce,causes,post office
+house,is a,vegetable
+play basketball,at location,dribble
+camper,is a,sleep in tent
+hear news,has prequisite,keep your shoe on
+hill,has subevent,climb
+play sport,used for,style hair
+turtle,has prequisite,live long time
+tie your shoelace,used for,smart
+paint house,has prequisite,school
+spider,capable of,wear dress
+president,capable of,sleep in tent
+piggy bank,used for,die
+think,is a,solve problem
+watch television,made of,turn television on
+paper,used for,sleep on
+classroom,has prequisite,go to store
+towel rack,not capable of,hold towel
+rifle,used for,live in
+lawyer,capable of,carry person
+fork,at location,eat food
+egg,has property,supermarket
+sun,at location,win
+knife,at location,opera
+audience,part of,theatre
+human,has subevent,church
+staple,related to,stapler
+motherboard,at location,purse
+trash,at location,fun
+city,at location,science
+wake up,at location,supermarket
+science,used for,university
+reproduce,at location,bedroom
+foot,at location,gun
+cavity,at location,buy ticket
+golden retriever,at location,museum
+person,desires,supermarket
+book,has property,writer
+xylophone,is a,hold liquid
+dog,used for,sweep
+knife,used for,metal
+english,is a,wear on foot
+pass course,has property,sour
+trigger,capable of,gun
+closet,used for,play baseball
+money,at location,kitchen
+oil,has property,imagine
+cup,receives action,drink
+tree,at location,school
+think,made of,wood
+restaurant,is a,city
+pea,is a,sport
+child,has a,play
+door,part of,game
+pot,used for,good
+someone,has property,heavy
+bed,part of,hand
+night,made of,coffee bean
+paper,has property,buy ticket
+fish,is a,object in court
+person,made of,denim
+jack,has property,edible
+hawk,is a,machine
+pilot,is a,fly helicopter
+someone,is a,game
+jupiter,at location,planet
+lake,is a,earth
+spider,is a,sky
+whale,used for,mammal
+beaver,is a,bathroom
+glass,is a,bird
+crow,is a,cut wood
+hawk,is a,useful tool
+human,is a,bird
+perl,is a,store liquid
+c,is a,sew
+bird,at location,sing
+sex,causes,put thing on
+fish,at location,you be very tire
+dog,used for,chew on bone
+dog,has prequisite,sweat
+sex,is a,carnivore
+bill,has prequisite,have money
+twenty four hour,not has property,day
+phone,used for,your desk
+atheist,not capable of,city
+dog,used for,hold tissue
+golden retriever,at location,city
+feather,has prequisite,bird
+football,used for,dig hole
+soap,used for,bird
+apple,has prequisite,good to eat
+eat breakfast in bed,used for,watch tv
+commit to memory,has subevent,sail boat
+pillow case,has prequisite,study
+unix,is a,sharp
+unix,at location,system
+write term paper,part of,research
+pool,receives action,propel by wind
+compete,defined as,baby cat
+pray,has prequisite,kneel down
+shop,has prequisite,dry grape
+kill,has property,land plane
+bottle,used for,jail
+sleep,has prequisite,dig hole
+music,has property,fly helicopter
+usenet newsgroup,has property,different
+water,at location,your mouth
+plate,at location,theater
+snow,has prequisite,drink alcohol
+sail,has property,city
+boy,is a,book
+beer,capable of,alcoholic beverage
+study,used for,concentration
+net,is a,place
+fart,capable of,bad smell
+sink,causes,lung cancer
+cat,has prequisite,enter competition
+person,at location,roof
+toothbrush,used for,study
+go to performance,has prequisite,your desk
+create idea,at location,think
+surprise someone,has prequisite,red
+lock,has subevent,talk to them
+take phone call,capable of,pick up phone
+reach tentative agreement,has prequisite,airport
+wheel,has subevent,you feel guilty
+key chain,receives action,keep key together
+go to bed,at location,desk
+pea,is a,eat
+compete,has subevent,kill
+submarine,capable of,zoo
+watch even news,at location,turn on television
+disco,has subevent,have fun
+have bath,has prequisite,get out of heat
+apple,at location,denim
+have rest,is a,person
+drive,has subevent,learn
+restaurant,used for,activity
+chess board,used for,64 square
+school,at location,cry loud
+cavity,has subevent,laugh
+have bath,at location,get wet
+play sport,at location,airport
+paint picture,has subevent,composer
+relax,has subevent,vegetable
+surprise someone,at location,jar
+baby,capable of,think
+strike match,causes,settle lawsuit
+banker,capable of,kitchen
+bury cat,capable of,dig hole
+pheasant,has prequisite,work
+twenty-four hour,at location,stock shelve
+person,used for,board plane
+beanie,at location,basement
+girl,used for,competition
+stair,used for,see animal
+blanket,used for,park car
+terrorist,capable of,cupboard
+wood,at location,fence in property
+pool,used for,get car
+play game,has prequisite,leave
+person,has a,web foot
+play basketball,at location,score point
+java,capable of,roll down hill
+stethoscope,has prequisite,doctor
+make patchwork quilt,has subevent,ask for it
+pheasant,at location,tree
+sushi,has a,green leave
+person,has prequisite,have money
+tire,used for,cover body
+spanish,is a,sleep
