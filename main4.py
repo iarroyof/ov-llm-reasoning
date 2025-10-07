@@ -77,8 +77,8 @@ def main(model_name, dataset):
     ap.add_argument("--nEpochs", type=int, default=4)
     ap.add_argument("--resPath", default=os.getcwd())
     ap.add_argument("--description", required=True)
-    ap.add_argument("--shuffle", default=True)
-    ap.add_argument("--save_f1score", default=True)
+    ap.add_argument("--shuffle", default=False)              #Parametro que control el aleatorizado de las goldlabes para toma de metricas
+    ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -98,6 +98,7 @@ def main(model_name, dataset):
     #test_pairs   = [prep(l) for l in val_lines]
     print("Descripcion del experimento: ", cfg.description)
     print("Modelo: ", cfg.modelName)
+
     ##########################################
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
@@ -206,8 +207,9 @@ def main(model_name, dataset):
                       callbacks=[OverfitCallback(cfg.nEpochs)])
 
     trainer.train()
-    model.save_pretrained(out_dir)
-    tokenizer.save_pretrained(out_dir)
+    # Se comenta  temporalmente el guradado del modelo jutno con el vocabulario para el tokenizado
+    # model.save_pretrained(out_dir)
+    # tokenizer.save_pretrained(out_dir)
 
     # Validation predictions   #Verificar que no se esten acumulando gradientes y revisar si se genero el archivo de predictions.tsv
     # buscar si se puede poner adafactor como optimizador 
@@ -255,6 +257,149 @@ def main(model_name, dataset):
         #prueba_part_triplets(hold_pairs, model, tokenizer, device)
         #prueba_tripletas(cfg.holdoutData, model, tokenizer, device, 1000)
 
+
+    ##########################################################################
+    # Proceso de entrenamiento con las tripletas medicas
+    ##########################################################################
+
+    print("Entrenamiento con tripletas medicas")
+
+    medical_data_train = 'data/filtered_train_triplets_shuffle.csv'
+    medical_data_test = 'data/filtered_test_triplets_shuffle.csv'
+
+    ##########################################
+    # Lectura de archivos csv
+    train_df = pd.read_csv(medical_data_train, encoding='utf-8')
+    test_df = pd.read_csv(medical_data_test, encoding='utf-8')
+    print('Train Data: ', medical_data_train)
+    print('Test Data: ', medical_data_test)
+
+    if not "shuffle" in cfg.trainData:
+        print("Aleatorizando")
+        train_df, test_df=aleatorizarData(train_df, test_df)
+        val_df = aleatorizarsingle(val_df)
+
+    ############################################################
+    # Proceso de entrenamiento y tokenizacion
+    train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
+    train_pairs = train_results.tolist()
+    train_pairs = train_pairs[0:10000]
+
+    test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    test_pairs = test_results.tolist()
+    hold_pairs = test_pairs[1200:1400]
+    test_pairs = test_pairs[0:1000]
+
+    train_inp, train_tgt = zip(*train_pairs)
+    test_inp,   test_tgt   = zip(*test_pairs)
+
+    print("="*100)
+    print("Probando holdoutdata previo al entrenamiento con las tripletas biomedicas")
+
+    # Hold‑out predictions
+    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
+        #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
+        #hold_pairs = [prep(l) for l in hold_lines]
+        hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
+        if hold_inp:
+            logging.info("Generating hold‑out predictions…")
+            hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
+            #pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
+            #    os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
+            bert_f1_score, SBertSr['previo'] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm='antes ajuste tgts no aleatorizadas')
+            if cfg.save_f1score:
+                auxname = "Obj_No_shuffle_antes_ajuste"
+                if 'pubmed' in cfg.modelName:
+                    auxname = auxname + '_Pubmed'
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='antes ajuste tgts aleatorizadas')
+                if cfg.save_f1score:
+                    auxname = "Obj_shuffle_antes_ajuste"
+                    if 'pubmed' in cfg.modelName:
+                        auxname = auxname + '_Pubmed'
+                    save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            RScores['previo'] = calcRouge(hold_preds, hold_tgt)
+
+
+    def tok(batch):
+        enc = tokenizer(batch["input"], max_length=cfg.seqLen, padding="max_length", truncation=True)
+        dec = tokenizer(batch["target"], max_length=cfg.seqLen+1, padding="max_length", truncation=True)
+        batch["input_ids"]      = enc.input_ids
+        batch["attention_mask"] = enc.attention_mask
+        batch["labels"]         = dec.input_ids
+        return batch
+
+    ds_train = Dataset.from_dict({"input": train_inp, "target": train_tgt}).map(tok, batched=True, remove_columns=["input","target"])
+    ds_test   = Dataset.from_dict({"input": test_inp,   "target": test_tgt}).map(tok,   batched=True, remove_columns=["input","target"])
+
+    collator = DataCollatorForSeq2Seq(tokenizer, model=model)
+
+    train_args = TrainingArguments(
+        output_dir=out_dir,
+        num_train_epochs=cfg.nEpochs,
+        per_device_train_batch_size=cfg.batchSize,
+        per_device_eval_batch_size=cfg.batchSize,
+        evaluation_strategy="epoch",
+        save_strategy="epoch",
+        logging_strategy="epoch",
+        report_to=["wandb"],
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        adafactor = True,
+        optim = "adafactor"
+    )
+
+    trainer = Trainer(model=model,
+                      args=train_args,
+                      train_dataset=ds_train,
+                      eval_dataset=ds_test,
+                      tokenizer=tokenizer,
+                      data_collator=collator,
+                      callbacks=[OverfitCallback(cfg.nEpochs)])
+
+    print("Entrenando modelo despues del ajuste de conceptnet")
+    trainer.train()
+
+    print("="*100)
+    print('Holdoutpairs predictions')
+    # Hold‑out predictions
+    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
+        #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
+        #hold_pairs = [prep(l) for l in hold_lines]
+        hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
+        if hold_inp:
+            logging.info("Generating hold‑out predictions…")
+            hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
+            pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
+                os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")
+            bert_f1_score, SBertSr['despues'] = calcBert(hold_preds, list(hold_tgt), run=run, save=cfg.save_f1score, tm='despues ajuste tgts no aleatorizadas')
+            if cfg.save_f1score:
+                auxname = "Obj_No_Shuffle_Finetuned"
+                if 'pubmed' in cfg.modelName:
+                    auxname = auxname + '_Pubmed'
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            if cfg.shuffle:
+                print("="*10)
+                print("Resultados con goldlabes aleatorizadas")
+                print("="*10)
+                tgt_shuffled = aleatorizar_column(hold_tgt)
+                bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm='despues ajuste tgts aleatorizadas')
+                if cfg.save_f1score:
+                    auxname = "Obj_Shuffle_Finetuned"
+                    if 'pubmed' in cfg.modelName:
+                        auxname = auxname + '_Pubmed'
+                    save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+            RScores['despues'] = calcRouge(hold_preds, hold_tgt)
+            
+    
     wandb.finish()
 
     return SBertSr, RScores, args
