@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 baseball,is a,sport
 yo-yo,is a,toy
 dog,capable of,bark

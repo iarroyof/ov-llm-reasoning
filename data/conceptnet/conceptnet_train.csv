@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 hockey,receives action,play on ice
 restroom,at location,rest area
 eat breakfast,has prequisite,make breakfast

@@ -18,7 +18,7 @@ import logging
 from functools import partial
 from rouge import Rouge
 from nltk.corpus import stopwords
-from Utils import prepare_data2, generate_text, generate_text_2, aleatorizarData, aleatorizar_column, calcBert, save_colum_csv, calcRouge
+from Utils import prepare_data2, generate_text, generate_text_2, aleatorizarData, aleatorizar_column, calcBert, save_colum_csv, calcRouge,aleatorizarsingle
 
 
 import torch
@@ -64,13 +64,13 @@ class OverfitCallback(TrainerCallback):
         self.epoch += 1
 
 
-def main(model_name):
+def main(model_name, dataset):
     ap = argparse.ArgumentParser("Fine‑tune T5‑small for SPO generation")
-    ap.add_argument("--trainData", default='data/filtered_train_triplets_shuffle.csv')
-    ap.add_argument("--testData", default='data/filtered_test_triplets_shuffle.csv')
+    ap.add_argument("--trainData", default=f'/data/{dataset}/{dataset}_train.csv')
+    ap.add_argument("--testData", default=f'/data/{dataset}/{dataset}_test.csv')
     #ap.add_argument("--trainData", required=True)   #CUDA_VISIBLE_DEVICES=0 python main3.py --trainData /app/data/triplets_CC0_part1_and_part2_sin_vector.csv --testData /app/data/triplets_CC0_part3_with_header_sin_vector.csv
     #ap.add_argument("--testData",required=True)
-    ap.add_argument("--holdoutData", default="/app/data/triplets_CC0_part3_with_header_sin_vector.csv") # Si no se requiere sustituir por ""
+    ap.add_argument("--holdoutData", default=f'/data/{dataset}/{dataset}_dev.csv') # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
@@ -98,20 +98,26 @@ def main(model_name):
     #test_pairs   = [prep(l) for l in val_lines]
     print("Descripcion del experimento: ", cfg.description)
     print("Modelo: ", cfg.modelName)
+    ##########################################
     # Lectura de archivos csv
     train_df = pd.read_csv(cfg.trainData, encoding='utf-8')
     test_df = pd.read_csv(cfg.testData, encoding='utf-8')
+    val_df = pd.read_csv(cfg.holdoutData, encoding='utf-8')
     print('Train Data: ',cfg.trainData)
     print('Test Data: ',cfg.testData)
+    print('holdout Data: ',cfg.holdoutData)
 
     if not "shuffle" in cfg.trainData:
         print("Aleatorizando")
         train_df, test_df=aleatorizarData(train_df, test_df)
+        val_df = aleatorizarsingle(val_df)
 
+    ############################################################
+    # Proceso de entrenamiento y tokenizacion
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:10000]
+    #train_pairs = train_pairs[0:10000]     # Se pausa la seleccion de datos para el entrenmaiento con concepnet
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
@@ -473,8 +479,10 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    datasets = ['concepnet']
     for modelname in models:
-        dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname)
+        for dataset in datasets:
+            dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
 
     print("Resumen:")
     print(f"Data\n{arguments}")

@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 tool,is a,object
 ferret,at location,pet store
 get onto web,has prequisite,turn on your computer

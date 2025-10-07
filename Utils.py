@@ -75,6 +75,14 @@ def aleatorizarData(train_df, test_df):
     
     return train_df, test_df
 
+def aleatorizarsingle(df):
+    """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
+
+    df = shuffle(df, random_state = 42)
+    df.reset_index(inplace=True, drop=True)
+    
+    return df
+
 def aleatorizar_column(hold_tgt):
     """Funcion que mezcala una columna, recibe como entrada una lista de objetos y devuleve la lista aleatorizada"""
     random.seed(42)
