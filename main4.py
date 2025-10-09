@@ -132,7 +132,7 @@ def main(model_name, dataset):
     medical_data_train = 'data/filtered_train_triplets_shuffle.csv'
     medical_data_test = 'data/filtered_test_triplets_shuffle.csv'
 
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=10000)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento con bases de razonamiento")
@@ -140,17 +140,19 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
 
+    ############################################################
+    # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
+    ############################################################
 
-    ##########################################
     # Lectura de archivos csv
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, cfg.trainData, cfg.testData, cfg.holdoutData)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, cfg.trainData, cfg.testData, cfg.holdoutData, numdata_train=0)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     # Desempaquetado solo para entrenamiento
     train_inp, train_tgt = zip(*train_pairs)
     test_inp,   test_tgt   = zip(*test_pairs)
 
     print("="*100)
-    print("Probando holdoutdata previo al entrenamiento")
+    print(f"Probando holdoutdata {dataset} previo al entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
@@ -209,7 +211,7 @@ def main(model_name, dataset):
     #    os.path.join(out_dir, "predictions.tsv"), sep="\t", index=False)
 
     print("="*100)
-    print('Holdoutpairs predictions')
+    print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'despues', save_data = True)
@@ -227,7 +229,7 @@ def main(model_name, dataset):
     
     print("Iniciando proceso de evaluacion de tripletas biomedicas despues de ajustes con bases de razonamiento...")
     # Lectura de archivos csv
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=10000)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     train_inp, train_tgt = zip(*train_pairs)
     test_inp,   test_tgt   = zip(*test_pairs)

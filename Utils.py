@@ -166,7 +166,11 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
 
     return SBertSr, RScores
 
-def preprocesado_datos(cfg, data_train, data_test, val_data):
+def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
+    """Funcion que se encarga de la lectura, aleatorizado, procesado  y seleccion de los datos
+    para probar resultados o entrenar el modelo.
+    El paramtro numdata realiza el contro de los datos de entrenamiento que se estan seleccionando
+    se se le pasa 0 se seleccionan todos los datos en otro casi toma el valor que se recibe"""
     train_df = pd.read_csv(data_train, encoding='utf-8')
     test_df = pd.read_csv(data_test, encoding='utf-8')
     val_df = pd.read_csv(val_data, encoding='utf-8')
@@ -182,7 +186,8 @@ def preprocesado_datos(cfg, data_train, data_test, val_data):
     train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
-    train_pairs = train_pairs[0:10000]
+    if numdata_train != 0:
+        train_pairs = train_pairs[0:numdata_train]
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
