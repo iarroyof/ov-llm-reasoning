@@ -128,6 +128,69 @@ def save_colum_csv(title_colum, title_arch, colum, out_dir):
     print(f"archivo: {title_arch}.tsv, guardado en: {out_dir}")
     print(f'Ruta: {out_dir}/{title_arch}.tsv')
 
+def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after, save_data):
+    """Funcion que prueba un dataset de validacion
+        bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
+        save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
+    """
+    #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
+    #hold_pairs = [prep(l) for l in hold_lines]
+    #Desempaquetado para la evaluacion
+    hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
+    if hold_inp:
+        logging.info("Generating hold‑out predictions…")
+        hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
+        if save_data:
+            pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
+                os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
+        
+        bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
+        if cfg.save_f1score:
+            auxname = f"Obj_No_shuffle_{bef_after}_ajuste"
+            if 'pubmed' in cfg.modelName:
+                auxname = auxname + '_Pubmed'
+            save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+        if cfg.shuffle:
+            print("="*10)
+            print("Resultados con goldlabes aleatorizadas")
+            print("="*10)
+            tgt_shuffled = aleatorizar_column(hold_tgt)
+            bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
+            if cfg.save_f1score:
+                auxname = f"Obj_shuffle_{bef_after}_ajuste"
+                if 'pubmed' in cfg.modelName:
+                    auxname = auxname + '_Pubmed'
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+        RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
+
+    return SBertSr, RScores
+
+def preprocesado_datos(cfg, data_train, data_test, val_data):
+    train_df = pd.read_csv(data_train, encoding='utf-8')
+    test_df = pd.read_csv(data_test, encoding='utf-8')
+    val_df = pd.read_csv(val_data, encoding='utf-8')
+    print('Train Data: ', data_train)
+    print('Test Data: ', data_test)
+    print('holdout Data: ', val_data)
+
+    if not "shuffle" in cfg.trainData:
+        print("Aleatorizando")
+        train_df, test_df=aleatorizarData(train_df, test_df)
+        val_df = aleatorizarsingle(val_df)
+
+    train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
+    train_pairs = train_results.tolist()
+    train_pairs = train_pairs[0:10000]
+
+    test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    test_pairs = test_results.tolist()
+    hold_pairs = test_pairs[1200:1400]
+    test_pairs = test_pairs[0:1000]
+
+    return train_pairs, test_pairs, hold_pairs
+
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
