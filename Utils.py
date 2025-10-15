@@ -9,6 +9,8 @@ from evaluate import load
 from rouge_score import rouge_scorer
 from sklearn.utils import shuffle
 from bert_score import score
+from sacrebleu.metrics import BLEU
+
 
 
 bertscore = load("bertscore")
@@ -121,6 +123,15 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
     
     return Bert_F1, bertscores
 
+def cal_BLUE(gen, refer):
+    """La funcion recibe las respuestas generadas por el modelo y las referencias con las cuales se va acomparar"""
+    bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing
+    #references = [[t] for t in target_text]  # Proper reference format
+    
+    for word, ref in zip(gen, refer):
+        bleu_score = bleu.corpus_score(list(word), ref).score
+        print(f"Word: {word}\tRef: {ref}\nBlueScore: {bleu_score}")
+
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
     pd.DataFrame({title_colum: colum}).to_csv(os.path.join(out_dir, title_arch+".tsv"), sep="\t", index=False)
@@ -135,7 +146,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
     """
     #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
     #hold_pairs = [prep(l) for l in hold_lines]
-    #Desempaquetado para la evaluacion
+    #Desempaquetado para la evaluacion, se reciben las enradas y las referencias
     hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
     if hold_inp:
         logging.info("Generating hold‑out predictions…")
@@ -191,8 +202,8 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
-    hold_pairs = test_pairs[1200:1400]
     test_pairs = test_pairs[0:1000]
+    hold_pairs = test_pairs[1395:1400]
 
     return train_pairs, test_pairs, hold_pairs
 

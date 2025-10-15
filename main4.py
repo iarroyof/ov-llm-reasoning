@@ -59,7 +59,6 @@ logging.basicConfig(
 
 STRIP_CHARS = string.punctuation.replace("[", "").replace("]", "")
 
-
 class OverfitCallback(TrainerCallback):
     def __init__(self, total_epochs: int, a=6.0, b=4.0, c=-2.0):
         self.total_epochs = total_epochs
@@ -114,6 +113,8 @@ def main(model_name, dataset):
     print("Modelo: ", cfg.modelName)
 
     ############################################################
+    # Inicializacion
+    ############################################################
     # Se carga el modelo y el tokenizador
     if 'pubmed' in cfg.modelName:
         tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
@@ -140,6 +141,7 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
 
+    print(asdad)
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
     ############################################################
