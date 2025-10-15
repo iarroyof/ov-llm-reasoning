@@ -141,7 +141,7 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
 
-    print(asdad)
+    return 0
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
     ############################################################
