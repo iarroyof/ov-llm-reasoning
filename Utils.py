@@ -144,6 +144,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
         save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
     """
+    BleuScores = {}
     #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
     #hold_pairs = [prep(l) for l in hold_lines]
     #Desempaquetado para la evaluacion, se reciben las enradas y las referencias
@@ -151,20 +152,27 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
     if hold_inp:
         logging.info("Generating hold‑out predictions…")
         hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
-        if save_data:
+        
+        if save_data: # se guardan los datos que el modelo predijo con la tripleta y el objeto real
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
+            print(f"Datos de validacion(Holdoutdata) guardados en: {out_dir}/test_predictions.tsv")
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
         
         bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
-        if cfg.save_f1score:
+        
+        # Se guardan los BertScores que contienen las metricas con los objetos no aleatorizados en un archivo csv
+        if cfg.save_f1score: 
             auxname = f"Obj_No_shuffle_{bef_after}_ajuste"
             if 'pubmed' in cfg.modelName:
                 auxname = auxname + '_Pubmed'
             save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+        
+        # En este proceso se aleatorizan los objetos verdaderos y se vuelven a comparar contra los inferidos por el modelo
+        # Finalmente se guardan los resultados de los bertScores con los objetos reales aleatorizados
         if cfg.shuffle:
             print("="*10)
-            print("Resultados con goldlabes aleatorizadas")
+            print("Resultados Bertscore con goldlabes aleatorizadas")
             print("="*10)
             tgt_shuffled = aleatorizar_column(hold_tgt)
             bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
@@ -173,7 +181,12 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
                 if 'pubmed' in cfg.modelName:
                     auxname = auxname + '_Pubmed'
                 save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+        
+        # Calcula la metric ade Rouge
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
+        # Calcula la metrica de Bleu
+        BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt)
+        print(f"Bleu Scores:\n{BleuScores}")
 
     return SBertSr, RScores
 
@@ -202,8 +215,8 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
-    test_pairs = test_pairs[0:1000]
-    hold_pairs = test_pairs[1395:1400]
+    hold_pairs = test_pairs[1390:1400]
+    test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs
 
