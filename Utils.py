@@ -16,7 +16,7 @@ from sacrebleu.metrics import BLEU
 bertscore = load("bertscore")
 scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
-def prepare_data2(subject, relation, obj, all_start_end=True):
+def prepare_data2(subject, relation, obj, all_start_end=False):
     """Devuelve tuplas con pares de input y tragets"""
     start_token = "[start] "
     end_token = " [end]"
