@@ -30,11 +30,11 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
     processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
 
     # Construcción de la entrada y el objetivo
-    input_text = f"{subject} {processed_relation}"
+    input_text = f"Complet the triplet only with the object given the subject and the relation {subject} {processed_relation}"
     if all_start_end:
         input_text = f"{start_token}{input_text}{end_token}"
     
-    target_text = f"{obj}."
+    target_text = obj
 
     return (input_text, target_text)
 

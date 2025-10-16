@@ -85,7 +85,7 @@ def main(model_name, dataset):
     #ap.add_argument("--testData",required=True)
     ap.add_argument("--holdoutData", default=f'data/{dataset}/{dataset}_dev.csv') # Si no se requiere sustituir por ""
     ap.add_argument("--modelName", default=model_name)
-    ap.add_argument("--seqLen", type=int, default=20)
+    ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=10)
     ap.add_argument("--resPath", default=os.getcwd())
