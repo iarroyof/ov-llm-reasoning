@@ -87,7 +87,7 @@ def main(model_name, dataset):
     ap.add_argument("--modelName", default=model_name)
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
-    ap.add_argument("--nEpochs", type=int, default=10)
+    ap.add_argument("--nEpochs", type=int, default=5)
     ap.add_argument("--resPath", default=os.getcwd())
     ap.add_argument("--description", required=True)
     ap.add_argument("--shuffle", default=False)              #Parametro que control el aleatorizado de las goldlabes para toma de metricas
