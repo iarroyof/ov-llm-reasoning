@@ -134,9 +134,9 @@ def cal_BLUE(gen, refer):
     bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing
     #references = [[t] for t in target_text]  # Proper reference format
     
-    for word, ref in zip(gen, refer):
+    for word, ref in zip([gen], [refer]):
         bleu_score = bleu.corpus_score(word, ref).score
-        print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {bleu_score}")
+        print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {bleu_score}")
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
