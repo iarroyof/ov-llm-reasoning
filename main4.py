@@ -92,6 +92,8 @@ def main(model_name, dataset):
     ap.add_argument("--description", required=True)
     ap.add_argument("--shuffle", default=False)              #Parametro que control el aleatorizado de las goldlabes para toma de metricas
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
+    ap.add_argument("--numTrainData_razon", default=10)
+    ap.add_argument("--numTrainData_biomed", default=10)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -133,7 +135,8 @@ def main(model_name, dataset):
     medical_data_train = 'data/filtered_train_triplets_shuffle.csv'
     medical_data_test = 'data/filtered_test_triplets_shuffle.csv'
 
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=10000)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    # No son necesarios los datos de entrenamiento
+    _, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=1)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento con bases de razonamiento")
@@ -141,13 +144,13 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         SBertSr, RScores = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
 
-    return 0
+
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
     ############################################################
 
     # Lectura de archivos csv
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, cfg.trainData, cfg.testData, cfg.holdoutData, numdata_train=0)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, cfg.trainData, cfg.testData, cfg.holdoutData, numdata_train=cfg.numTrainData_razon)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     # Desempaquetado solo para entrenamiento
     train_inp, train_tgt = zip(*train_pairs)
@@ -231,7 +234,7 @@ def main(model_name, dataset):
     
     print("Iniciando proceso de evaluacion de tripletas biomedicas despues de ajustes con bases de razonamiento...")
     # Lectura de archivos csv
-    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=10000)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
+    train_pairs, test_pairs, hold_pairs = preprocesado_datos(cfg, medical_data_train, medical_data_test, medical_data_test, numdata_train=cfg.numTrainData_biomed)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
 
     train_inp, train_tgt = zip(*train_pairs)
     test_inp,   test_tgt   = zip(*test_pairs)
@@ -520,8 +523,6 @@ if __name__ == "__main__":
     for modelname in models:
         for dataset in datasets:
             dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
-            break
-        break
 
     print("Resumen:")
     print(f"Data\n{arguments}")
