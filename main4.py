@@ -520,6 +520,8 @@ if __name__ == "__main__":
     for modelname in models:
         for dataset in datasets:
             dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
+            break
+        break
 
     print("Resumen:")
     print(f"Data\n{arguments}")
