@@ -34,7 +34,7 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
     if all_start_end:
         input_text = f"{start_token}{input_text}{end_token}"
     
-    target_text = obj
+    target_text = f"{obj}."
 
     return (input_text, target_text)
 
