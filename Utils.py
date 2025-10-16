@@ -16,7 +16,7 @@ from sacrebleu.metrics import BLEU
 bertscore = load("bertscore")
 scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
-def prepare_data2(subject, relation, obj, all_start_end=False):
+def prepare_data2(subject, relation, obj, all_start_end=True):
     """Devuelve tuplas con pares de input y tragets"""
     start_token = "[start] "
     end_token = " [end]"
@@ -30,7 +30,7 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
     processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
 
     # Construcción de la entrada y el objetivo
-    input_text = f"With only one word infer the object given: {subject} {processed_relation}"
+    input_text = f"{subject} {processed_relation}"
     if all_start_end:
         input_text = f"{start_token}{input_text}{end_token}"
     
