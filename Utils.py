@@ -136,7 +136,7 @@ def cal_BLUE(gen, refer):
     
     for word, ref in zip(gen, refer):
         bleu_score = bleu.corpus_score([word], [ref]).score
-        print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {bleu_score}")
+        #print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {bleu_score}")
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
@@ -221,7 +221,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
-    hold_pairs = test_pairs[1395:1400]
+    hold_pairs = test_pairs[1200:1400]
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs
