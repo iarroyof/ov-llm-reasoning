@@ -141,8 +141,8 @@ def main(model_name, dataset):
     print("="*100)
     print("Probando holdoutdata previo al entrenamiento con bases de razonamiento")
     # Hold‑out predictions
-    if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
+    if cfg.holdoutData and os.path.exists(cfg.holdoutData):                                                                           #SBertSr, RScores
+        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'antes', save_data = False)
 
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
@@ -159,7 +159,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} previo al entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-       SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'antes', save_data = False)
+       SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'antes', save_data = False)
 
 
     ###########################################################
@@ -225,7 +225,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'despues', save_data = True)
+        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'despues', save_data = True)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -249,7 +249,7 @@ def main(model_name, dataset):
     print("Probando holdoutdata previo al entrenamiento con las tripletas biomedicas")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'despues_dataset_gral', save_data = False)
+        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'despues_dataset_gral', save_data = False)
 
     ##########################################################################
     # Proceso de entrenamiento con las tripletas biomedicas
@@ -299,7 +299,7 @@ def main(model_name, dataset):
     print('Holdoutpairs predictions despues de ajuste con las tripletas biomedicas')
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after = 'despues', save_data = True)
+        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'despues', save_data = True)
             
     wandb.finish()
 
