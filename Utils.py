@@ -4,6 +4,8 @@ import torch
 import random
 import wandb
 import pandas as pd
+import numpy as np
+from scipy import stats
 
 from evaluate import load
 from rouge_score import rouge_scorer
@@ -104,7 +106,12 @@ def aleatorizar_column(hold_tgt):
     return tgt_aleatorizadas
 
 def calcBert(hold_preds, hold_tgt, run, save, tm):
-    """Funcion para calcular la metrica berscore para precision, recall y f1score"""
+    """Funcion para calcular la metrica berscore para precision, recall y f1score
+    
+    Returns:
+        Bert_F1: Vector de valores f1 score para las tripletas
+        
+        bertscores (dict): Promedio de las bertsocres en Recal F1 y prec"""
 
     Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, hold_tgt, lang="en", model_type="distilbert-base-uncased")
     #Bert_Pres, Bert_Recall, Bert_F1 = score(hold_preds, list(hold_tgt), lang="en")  #Sin modelo
@@ -145,6 +152,29 @@ def save_colum_csv(title_colum, title_arch, colum, out_dir):
     print(f"archivo: {title_arch}.tsv, guardado en: {out_dir}")
     print(f'Ruta: {out_dir}/{title_arch}.tsv')
 
+def p_value(a: np.ndarray, b: np.ndarray):
+    """Two-sample independent t-test."""
+    _, p_val = stats.ttest_ind(a, b)
+    return p_val
+
+def calc_gap(mu1: float, mu2: float, mode: str = "symmetric") -> float:
+    """Compute percentage gap between two means."""
+    diff = abs(mu1 - mu2)
+    if mode == "absolute":
+        return diff * 100.0
+    # symmetric default: 2·diff/(mu1+mu2)×100
+    return diff / ((mu1 + mu2) / 2) * 100.0
+
+def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
+    """Recibe los f1 scores aleatorizados y no aleatorizados para deviolver un dic con el gap y pvalue"""
+    ret = {
+        'p_value': p_value(np.array(bert_f1_score_Shuffle), np.array(bert_f1_score)),
+        'gap': calc_gap(np.array(bert_f1_score_Shuffle), np.array(bert_f1_score))
+    }
+
+    return ret
+
+
 def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after, save_data):
     """Funcion que prueba un dataset de validacion
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
@@ -167,7 +197,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         
         bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
         
-        # Se guardan los BertScores que contienen las metricas con los objetos no aleatorizados en un archivo csv
+        # Se guardan los BertScores que contienen las metricas con los objetos NO aleatorizados en un archivo csv
         if cfg.save_f1score: 
             auxname = f"Obj_No_shuffle_{bef_after}_ajuste"
             if 'pubmed' in cfg.modelName:
@@ -181,14 +211,16 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             print("Resultados Bertscore con goldlabes aleatorizadas")
             print("="*10)
             tgt_shuffled = aleatorizar_column(hold_tgt)
-            bert_f1_score, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
+            bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
             if cfg.save_f1score:
                 auxname = f"Obj_shuffle_{bef_after}_ajuste"
                 if 'pubmed' in cfg.modelName:
                     auxname = auxname + '_Pubmed'
-                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score, out_dir)
+                save_colum_csv("F1_BERT_Score", auxname, bert_f1_score_Shuffle, out_dir)
         
-        # Calcula la metric ade Rouge
+        # Calcula el p_value y el gap
+        SBertSr[bef_after] = gap_pvalue(bert_f1_score_Shuffle, bert_f1_score)
+        # Calcula la metrica de Rouge
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
         # Calcula la metrica de Bleu
         BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt)
