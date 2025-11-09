@@ -535,14 +535,20 @@ if __name__ == "__main__":
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
         for dataset_tipe in dic_save_BERT_Scores[namemodel].keys():
+            print(dataset_tipe)
             print(dic_save_BERT_Scores[namemodel][dataset_tipe])
     
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
-        print(pd.DataFrame.from_dict(dic_save_BERT_Scores[namemodel]))
+        for dataset_tipe in dic_save_BERT_Scores[namemodel].keys():
+            print(dataset_tipe)
+            print(pd.DataFrame.from_dict(dic_save_BERT_Scores[namemodel][dataset_tipe]))
+            print()
         print()
     
     for namemodel in dic_save_Rouge_Scores.keys():
         print(namemodel)
-        print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel]))
+        for dataset_tipe in dic_save_Rouge_Scores[namemodel].keys():
+            print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel][dataset_tipe]))
+            print()
         print()
