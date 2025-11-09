@@ -142,6 +142,8 @@ def main(model_name, dataset):
     print("Probando holdoutdata previo al entrenamiento con bases de razonamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):                                                                           #SBertSr, RScores
+        SBertSr["Biomedico"] = {}
+        RScores["Biomedico"] = {}
         SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'antes', save_data = False)
 
     ############################################################
