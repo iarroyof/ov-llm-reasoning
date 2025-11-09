@@ -534,7 +534,8 @@ if __name__ == "__main__":
     print(f"Data\n{arguments}")
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
-        print(dic_save_BERT_Scores[namemodel])
+        for dataset_tipe in dic_save_BERT_Scores[namemodel].keys():
+            print(dic_save_BERT_Scores[namemodel][dataset_tipe])
     
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
