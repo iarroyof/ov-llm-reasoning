@@ -167,9 +167,15 @@ def calc_gap(mu1: float, mu2: float, mode: str = "symmetric") -> float:
 
 def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
     """Recibe los f1 scores aleatorizados y no aleatorizados para deviolver un dic con el gap y pvalue"""
+
+    s1 = np.array(bert_f1_score_Shuffle)
+    s2 = np.array(bert_f1_score)
+
+    mu1, mu2 = s1.mean(), s2.mean()
+
     ret = {
-        'p_value': p_value(np.array(bert_f1_score_Shuffle), np.array(bert_f1_score)),
-        'gap': calc_gap(np.array(bert_f1_score_Shuffle), np.array(bert_f1_score))
+        'p_value': p_value(s1, s2),
+        'gap': calc_gap(mu1, mu2)
     }
 
     return ret
