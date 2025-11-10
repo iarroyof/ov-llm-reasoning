@@ -161,7 +161,9 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} previo al entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-       SBertSr[dataset], RScores[dataset]= eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'antes', save_data = False)
+       SBertSr[dataset] = {}
+       RScores[dataset] = {}
+       SBertSr[dataset], RScores[dataset]= eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'antes', save_data = False)
 
 
     ###########################################################
@@ -227,7 +229,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, {}, {}, bef_after = 'despues', save_data = True)
+        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'despues', save_data = True)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
