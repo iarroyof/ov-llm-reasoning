@@ -553,6 +553,7 @@ if __name__ == "__main__":
     for namemodel in dic_save_Rouge_Scores.keys():
         print(namemodel)
         for dataset_tipe in dic_save_Rouge_Scores[namemodel].keys():
-            print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel][dataset_tipe]))
+            print(dataset_tipe)
+            print(f'{pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel][dataset_tipe]):.4f}')
             print()
         print()
