@@ -204,7 +204,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
         
         bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
-        
+        f1R_1, f1R_2, f1R_l = calcRouge_F1(hold_preds, hold_tgt)
         # Se guardan los BertScores que contienen las metricas con los objetos NO aleatorizados en un archivo csv
         if cfg.save_f1score: 
             auxname = f"Obj_No_shuffle_{bef_after}_ajuste"
@@ -214,12 +214,14 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         
         # En este proceso se aleatorizan los objetos verdaderos y se vuelven a comparar contra los inferidos por el modelo
         # Finalmente se guardan los resultados de los bertScores con los objetos reales aleatorizados
+        aux_gp = {}
         if cfg.shuffle:
             print("="*10)
             print("Resultados Bertscore con goldlabes aleatorizadas")
             print("="*10)
             tgt_shuffled = aleatorizar_column(hold_tgt)
             bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
+            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(hold_preds, tgt_shuffled)
             if cfg.save_f1score:
                 auxname = f"Obj_shuffle_{bef_after}_ajuste"
                 if 'pubmed' in cfg.modelName:
@@ -228,8 +230,12 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
                 
             # Calcula el p_value y el gap
             SBertSr[bef_after].update(gap_pvalue(bert_f1_score_Shuffle, bert_f1_score))
+            aux_gp['fR1-1'] = gap_pvalue(f1R_1_shuf, f1R_1)
+            aux_gp['fR1-2'] = gap_pvalue(f1R_2_shuf, f1R_2)
+            aux_gp['fR1-l'] = gap_pvalue(f1R_l_shuff, f1R_l)
         # Calcula la metrica de Rouge
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
+        RScores[bef_after].update(aux_gp)
         # Calcula la metrica de Bleu
         BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt)
         print(f"Bleu Scores:\n{BleuScores}")
@@ -265,6 +271,31 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs
+
+def calcRouge_F1(hold_preds, hold_tgt):
+    """Funcion que calcula el f1score de la metrica Rouge"""
+
+    rouge_scores ={
+        "f1-1" : [],
+        "f1-2" : [],
+        "f1-l" : []
+    }
+    # Calcular ROUGE
+    for i in range(len(hold_preds)):
+        try:
+            scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
+            #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+            rouge_scores['f1-1'].append(scores['rouge1'].fmeasure)
+            rouge_scores['f1-2'].append(scores['rouge2'].fmeasure)
+            rouge_scores['f1-l'].append(scores['rougeL'].fmeasure)
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            rouge_scores['f1-1'].append(0)
+            rouge_scores['f1-2'].append(0)
+            rouge_scores['f1-l'].append(0)
+
+    return rouge_scores['f1-1'], rouge_scores['f1-2'], rouge_scores['f1-l']
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
