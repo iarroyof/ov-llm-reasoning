@@ -225,7 +225,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
                 save_colum_csv("F1_BERT_Score", auxname, bert_f1_score_Shuffle, out_dir)
                 
             # Calcula el p_value y el gap
-            SBertSr[bef_after] = gap_pvalue(bert_f1_score_Shuffle, bert_f1_score)
+            SBertSr[bef_after].update(gap_pvalue(bert_f1_score_Shuffle, bert_f1_score))
         # Calcula la metrica de Rouge
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
         # Calcula la metrica de Bleu
