@@ -177,6 +177,8 @@ def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
         'p_value': p_value(s1, s2),
         'gap': calc_gap(mu1, mu2)
     }
+    print(f"p_value: {ret['p_value']}")
+    print(f"gap: {ret['gap']}")
 
     return ret
 
