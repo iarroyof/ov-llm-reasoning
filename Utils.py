@@ -229,7 +229,9 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
                 save_colum_csv("F1_BERT_Score", auxname, bert_f1_score_Shuffle, out_dir)
                 
             # Calcula el p_value y el gap
+            print("Gap y p_value de los F1 berscores")
             SBertSr[bef_after].update(gap_pvalue(bert_f1_score_Shuffle, bert_f1_score))
+            print("Gap y p_value de los F1 Rouge")
             aux_gp['fR1-1'] = gap_pvalue(f1R_1_shuf, f1R_1)
             aux_gp['fR1-2'] = gap_pvalue(f1R_2_shuf, f1R_2)
             aux_gp['fR1-l'] = gap_pvalue(f1R_l_shuff, f1R_l)
