@@ -265,6 +265,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
     if numdata_train != 0:
+        print("Num train data: ", numdata_train)
         train_pairs = train_pairs[0:numdata_train]
 
     test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
