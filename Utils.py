@@ -275,7 +275,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         train_df, test_df=aleatorizarData(train_df, test_df)
         val_df = aleatorizarsingle(val_df)
 
-    if 'conceptnet' in data_train:
+    if 'conceptnet' in data_train or 'triplets' in data_train:
         train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     elif 'SNLI' in data_train:
         train_results = train_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
@@ -288,9 +288,9 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         #print("Tipo de dato: ", type(numdata_train))
         train_pairs = train_pairs[0:numdata_train]
     
-    if 'conceptnet' in data_train:
+    if 'conceptnet' in data_test or 'triplets' in data_train:
         test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
-    elif 'SNLI' in data_train:
+    elif 'SNLI' in data_test:
         test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
 
     test_pairs = test_results.tolist()
