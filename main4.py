@@ -562,6 +562,7 @@ if __name__ == "__main__":
     
     print(type(vars(arguments)))
     print(vars(arguments).keys())
+    print(vars(arguments)['save_experiment'])
 """"
     out_dir = "resultados/experimento_concepnet"
     os.makedirs(out_dir, exist_ok=True)
