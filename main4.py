@@ -561,7 +561,7 @@ if __name__ == "__main__":
         print()
     
     print(type(vars(arguments)))
-    print(type(vars(arguments).keys()))
+    print(vars(arguments).keys())
 """"
     out_dir = "resultados/experimento_concepnet"
     os.makedirs(out_dir, exist_ok=True)
