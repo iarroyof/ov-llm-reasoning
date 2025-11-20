@@ -5,8 +5,9 @@ import random
 import wandb
 import pandas as pd
 import numpy as np
-from scipy import stats
+import evaluate
 
+from scipy import stats
 from evaluate import load
 from rouge_score import rouge_scorer
 from sklearn.utils import shuffle
@@ -14,7 +15,7 @@ from bert_score import score
 from sacrebleu.metrics import BLEU
 
 
-
+google_bleu = evaluate.load("google_bleu")
 bertscore = load("bertscore")
 scorer_rou = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
@@ -152,12 +153,13 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
 
 def cal_BLUE(gen, refer):
     """La funcion recibe las respuestas generadas por el modelo y las referencias con las cuales se va acomparar"""
-    bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing
+    #bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing    # Metrica que solo funciona cuando hay mas de una palabra
     #references = [[t] for t in target_text]  # Proper reference format
-    
+
     for word, ref in zip(gen, refer):
-        bleu_score = bleu.corpus_score([word], [ref]).score
-        #print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {bleu_score}")
+        #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
+        result = google_bleu.compute(predictions=[word], references=[[ref]])
+        print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {result}")
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
