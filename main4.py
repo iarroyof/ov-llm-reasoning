@@ -535,7 +535,7 @@ if __name__ == "__main__":
     datasets = ['conceptnet','SNLI']
     for modelname in models:
         for dataset in datasets:
-            dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
+            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
 
     print("Resumen:")
     print(f"Data\n{arguments}")
