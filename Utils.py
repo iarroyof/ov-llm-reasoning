@@ -296,7 +296,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
 
     test_pairs = test_results.tolist()
-    hold_pairs = test_pairs[1200:1400]
+    hold_pairs = test_pairs[1200:1210]
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs
