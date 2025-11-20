@@ -92,7 +92,7 @@ def main(model_name, dataset):
     ap.add_argument("--description", required=True)
     ap.add_argument("--shuffle", default=True)              #Parametro que control el aleatorizado de las goldlabes para toma de metricas
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
-    ap.add_argument("--numTrainData_razon", default=10000)
+    ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
     ap.add_argument("--numTrainData_biomed", default=10000)
     args = ap.parse_args()
 
