@@ -34,6 +34,7 @@ import logging
 from functools import partial
 from rouge import Rouge
 from nltk.corpus import stopwords
+from datetime import datetime
 from Utils import eval_holdoutdata, preprocesado_datos
 
 import torch
@@ -95,7 +96,7 @@ def main(model_name, dataset):
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
     ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
     ap.add_argument("--numTrainData_biomed", default=10000)
-    ap.add_argument("--save_experiment", default=False)
+    ap.add_argument("--save_experiment", default='True')
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -560,31 +561,38 @@ if __name__ == "__main__":
             print()
         print()
     
-    print(type(vars(arguments)))
-    print(vars(arguments).keys())
+
     print(vars(arguments)['save_experiment'])
-""""
-    out_dir = "resultados/experimento_concepnet"
-    os.makedirs(out_dir, exist_ok=True)
 
-    # --- 2. Guardar la configuración (arguments) ---
-    # Usamos vars() para convertir el objeto argparse a diccionario
-    ruta_config = os.path.join(out_dir, "config.json")
-    with open(ruta_config, "w", encoding="utf-8") as f:
-        json.dump(vars(arguments), f, indent=4)
+    if vars(arguments)['save_experiment'] == 'True':
 
-    # --- 3. Guardar los Scores ---
-    # Guardar ambos diccionarios en un solo archivo 'metrics.json'
-    resultados_completos = {
-        "bert_scores": dic_save_BERT_Scores,
-        "rouge_scores": dic_save_Rouge_Scores
-    }
+        # 1. Generar el nombre de la carpeta con fecha y hora
+        ahora = datetime.now()
+        timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
 
-    ruta_metrics = os.path.join(out_dir, "metrics.json")
-    with open(ruta_metrics, "w", encoding="utf-8") as f:
-        json.dump(resultados_completos, f, indent=4)
+        base_dir = "experimentos"
+        out_dir = os.path.join(base_dir, timestamp)
 
-    print("Guardado exitoso:")
-    print(f" - Configuración: {ruta_config}")
-    print(f" - Métricas: {ruta_metrics}")
-    """
+        os.makedirs(out_dir, exist_ok=True)
+
+        # --- 2. Guardar la configuración (arguments) ---
+        # Usamos vars() para convertir el objeto argparse a diccionario
+        ruta_config = os.path.join(out_dir, "config.json")
+        with open(ruta_config, "w", encoding="utf-8") as f:
+            json.dump(vars(arguments), f, indent=4)
+
+        # --- 3. Guardar los Scores ---
+        # Guardar ambos diccionarios en un solo archivo 'metrics.json'
+        resultados_completos = {
+            "bert_scores": dic_save_BERT_Scores,
+            "rouge_scores": dic_save_Rouge_Scores
+        }
+
+        ruta_metrics = os.path.join(out_dir, "metrics.json")
+        with open(ruta_metrics, "w", encoding="utf-8") as f:
+            json.dump(resultados_completos, f, indent=4)
+
+        print("Guardado exitoso:")
+        print(f"Experimento registrado en la carpeta: {out_dir}")
+        print(f"Configuración: {ruta_config}")
+        print(f"Métricas: {ruta_metrics}")
