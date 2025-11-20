@@ -39,6 +39,7 @@ from Utils import eval_holdoutdata, preprocesado_datos
 import torch
 import pandas as pd
 import wandb
+import json
 from datasets import Dataset
 from transformers import (
     T5Tokenizer,
@@ -94,6 +95,7 @@ def main(model_name, dataset):
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
     ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
     ap.add_argument("--numTrainData_biomed", default=10000)
+    ap.add_argument("--save_experiment", default=False)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -529,7 +531,7 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['conceptnet']
+    datasets = ['SNLI']
     for modelname in models:
         for dataset in datasets:
             dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
@@ -557,3 +559,31 @@ if __name__ == "__main__":
             print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel][dataset_tipe]))
             print()
         print()
+    
+    print(type(vars(arguments)))
+    print(type(vars(arguments).keys()))
+""""
+    out_dir = "resultados/experimento_concepnet"
+    os.makedirs(out_dir, exist_ok=True)
+
+    # --- 2. Guardar la configuración (arguments) ---
+    # Usamos vars() para convertir el objeto argparse a diccionario
+    ruta_config = os.path.join(out_dir, "config.json")
+    with open(ruta_config, "w", encoding="utf-8") as f:
+        json.dump(vars(arguments), f, indent=4)
+
+    # --- 3. Guardar los Scores ---
+    # Guardar ambos diccionarios en un solo archivo 'metrics.json'
+    resultados_completos = {
+        "bert_scores": dic_save_BERT_Scores,
+        "rouge_scores": dic_save_Rouge_Scores
+    }
+
+    ruta_metrics = os.path.join(out_dir, "metrics.json")
+    with open(ruta_metrics, "w", encoding="utf-8") as f:
+        json.dump(resultados_completos, f, indent=4)
+
+    print("Guardado exitoso:")
+    print(f" - Configuración: {ruta_config}")
+    print(f" - Métricas: {ruta_metrics}")
+    """

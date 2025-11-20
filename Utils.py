@@ -41,6 +41,20 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
 
     return (input_text, target_text)
 
+def prepare_dataSNLI(premisa, answer, all_start_end=False):
+    """Devuelve tuplas con pares de input y tragets"""
+    start_token = "[start] "
+    end_token = " [end]"
+
+    # Asegurarnos de que todos los datos son strings
+    input_text = str(premisa)
+    target_text = str(answer)
+
+    if all_start_end:
+        input_text = f"{start_token}{input_text}{end_token}"
+
+    return (input_text, target_text)
+
 # Ambas funciones realizan lo mismo sin embargo la numero 2 genera las predicciones por chunks para no sobre cargar la memoria
 # de la ram
 def generate_text(model, tokenizer, texts, max_len, device):
@@ -261,7 +275,11 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         train_df, test_df=aleatorizarData(train_df, test_df)
         val_df = aleatorizarsingle(val_df)
 
-    train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    if 'conceptnet' in data_train:
+        train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    elif 'SNLI' in data_train:
+        train_results = train_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
+        
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
     numdata_train = int(numdata_train)
@@ -269,8 +287,12 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         print("Num train data: ", numdata_train)
         #print("Tipo de dato: ", type(numdata_train))
         train_pairs = train_pairs[0:numdata_train]
+    
+    if 'conceptnet' in data_train:
+        test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+    elif 'SNLI' in data_train:
+        test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
 
-    test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     test_pairs = test_results.tolist()
     hold_pairs = test_pairs[1200:1400]
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
