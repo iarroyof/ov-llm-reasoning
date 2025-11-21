@@ -155,11 +155,18 @@ def cal_BLUE(gen, refer):
     """La funcion recibe las respuestas generadas por el modelo y las referencias con las cuales se va acomparar"""
     #bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing    # Metrica que solo funciona cuando hay mas de una palabra
     #references = [[t] for t in target_text]  # Proper reference format
-
+    results = []
+    i = 0
     for word, ref in zip(gen, refer):
         #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
         result = google_bleu.compute(predictions=[word], references=[[ref]])
-        print(f"\nWord: {[word]}\nRef: {[ref]}\nBlueScore: {result}")
+        results.append(result)
+        if i % 50 == 0:
+            print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
+        i+=1
+    
+    return {'prom_bleu': np.array(results).mean()}
+
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
@@ -258,7 +265,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt)
         print(f"Bleu Scores:\n{BleuScores}")
 
-    return SBertSr, RScores
+    return SBertSr, RScores, BleuScores
 
 def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     """Funcion que se encarga de la lectura, aleatorizado, procesado  y seleccion de los datos
@@ -296,7 +303,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
         test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
 
     test_pairs = test_results.tolist()
-    hold_pairs = test_pairs[1200:1210]
+    hold_pairs = test_pairs[1200:1400]
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs

@@ -107,6 +107,7 @@ def main(model_name, dataset):
     #Declarando variable para guradar las distintas metricas de los bertscores y los rougescores
     SBertSr = {} # Guarda prec, recall y f1-score de los bertsocres
     RScores = {} # Guarda los rouge scores
+    BlueScores = {} #Guarda los BlueScores
 
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
@@ -147,7 +148,7 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):                                                                           #SBertSr, RScores
         SBertSr["Biomedico"] = {}
         RScores["Biomedico"] = {}
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'antes', save_data = False)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'antes', save_data = False)
 
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
@@ -166,7 +167,7 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
        SBertSr[dataset] = {}
        RScores[dataset] = {}
-       SBertSr[dataset], RScores[dataset]= eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'antes', save_data = False)
+       SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'antes', save_data = False)
 
 
     ###########################################################
@@ -232,7 +233,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'despues', save_data = True)
+        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'despues', save_data = True)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -256,7 +257,7 @@ def main(model_name, dataset):
     print("Probando holdoutdata previo al entrenamiento con las tripletas biomedicas")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = False)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = False)
 
     ##########################################################################
     # Proceso de entrenamiento con las tripletas biomedicas
@@ -306,11 +307,11 @@ def main(model_name, dataset):
     print('Holdoutpairs predictions despues de ajuste con las tripletas biomedicas')
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues', save_data = True)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues', save_data = True)
             
     wandb.finish()
 
-    return SBertSr, RScores, args
+    return SBertSr, RScores, BlueScores, args
 
 def prueba_part_triplets(pair, model, tokenizer, device):
 
@@ -531,11 +532,12 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
+    dic_save_Blue_Scores = {}
     models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     datasets = ['conceptnet','SNLI']
     for modelname in models:
         for dataset in datasets:
-            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
+            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
 
     print("Resumen:")
     print(f"Data\n{arguments}")
@@ -545,6 +547,14 @@ if __name__ == "__main__":
             print(dataset_tipe)
             print(dic_save_BERT_Scores[namemodel][dataset_tipe])
     
+    for namemodel in dic_save_Blue_Scores.keys():
+        print(namemodel)
+        for dataset_tipe in dic_save_Blue_Scores[namemodel].keys():
+            print(dataset_tipe)
+            print(pd.DataFrame.from_dict(dic_save_Blue_Scores[namemodel][dataset_tipe]))
+            print()
+        print()
+
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
         for dataset_tipe in dic_save_BERT_Scores[namemodel].keys():
