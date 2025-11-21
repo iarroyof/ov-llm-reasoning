@@ -160,12 +160,13 @@ def cal_BLUE(gen, refer):
     for word, ref in zip(gen, refer):
         #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
         result = google_bleu.compute(predictions=[word], references=[[ref]])
-        results.append(result)
+        results.append(result['google_bleu'])
         if i % 50 == 0:
             print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
         i+=1
-        
+
     print('prom_bleu', np.array(results).mean())
+
     return {'prom_bleu': np.array(results).mean()}
 
 
