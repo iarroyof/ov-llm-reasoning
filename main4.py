@@ -597,7 +597,8 @@ if __name__ == "__main__":
         # Guardar ambos diccionarios en un solo archivo 'metrics.json'
         resultados_completos = {
             "bert_scores": dic_save_BERT_Scores,
-            "rouge_scores": dic_save_Rouge_Scores
+            "rouge_scores": dic_save_Rouge_Scores,
+            "blue_scores":dic_save_Blue_Scores
         }
 
         ruta_metrics = os.path.join(out_dir, "metrics.json")
