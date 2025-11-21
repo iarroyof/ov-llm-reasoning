@@ -208,12 +208,11 @@ def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
     return ret
 
 
-def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, bef_after, save_data):
+def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data):
     """Funcion que prueba un dataset de validacion
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
         save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
     """
-    BleuScores = {}
     #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
     #hold_pairs = [prep(l) for l in hold_lines]
     #Desempaquetado para la evaluacion, se reciben las enradas y las referencias
