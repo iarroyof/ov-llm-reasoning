@@ -164,7 +164,8 @@ def cal_BLUE(gen, refer):
         if i % 50 == 0:
             print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
         i+=1
-    
+        
+    print('prom_bleu', np.array(results).mean())
     return {'prom_bleu': np.array(results).mean()}
 
 
