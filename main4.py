@@ -168,6 +168,7 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
        SBertSr[dataset] = {}
        RScores[dataset] = {}
+       BlueScores[dataset] = {}
        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'antes', save_data = False)
 
 
