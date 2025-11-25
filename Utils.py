@@ -151,17 +151,18 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
     
     return Bert_F1, bertscores
 
-def cal_BLUE(gen, refer):
+def cal_BLUE(gen, refer, inp):
     """La funcion recibe las respuestas generadas por el modelo y las referencias con las cuales se va acomparar"""
     #bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing    # Metrica que solo funciona cuando hay mas de una palabra
     #references = [[t] for t in target_text]  # Proper reference format
     results = []
     i = 0
-    for word, ref in zip(gen, refer):
+    for word, ref, entrada in zip(gen, refer, inp):
         #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
         result = google_bleu.compute(predictions=[word], references=[[ref]])
         results.append(result['google_bleu'])
         if i % 50 == 0:
+            print(f'Entrada: {entrada}')
             print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
         i+=1
 
@@ -263,7 +264,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
         RScores[bef_after].update(aux_gp)
         # Calcula la metrica de Bleu
-        BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt)
+        BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt, hold_inp)
         print(f"Bleu Scores:\n{BleuScores}")
 
     return SBertSr, RScores, BleuScores
