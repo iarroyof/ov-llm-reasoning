@@ -274,6 +274,14 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     para probar resultados o entrenar el modelo.
     El paramtro numdata realiza el contro de los datos de entrenamiento que se estan seleccionando
     se se le pasa 0 se seleccionan todos los datos en otro casi toma el valor que se recibe"""
+
+    # Cargando segunda version de SNLI
+    if 'SNLI' in str(data_train):
+        dataset = 'SNLI'
+        data_train = f'data/{dataset}/{dataset}_train_v2.csv'
+        data_test = f'data/{dataset}/{dataset}_test_v2.csv'
+        val_data = f'data/{dataset}/{dataset}_val_v2.csv'
+
     train_df = pd.read_csv(data_train, encoding='utf-8')
     test_df = pd.read_csv(data_test, encoding='utf-8')
     val_df = pd.read_csv(val_data, encoding='utf-8')
