@@ -45,8 +45,9 @@ from datasets import Dataset
 from transformers import (
     T5Tokenizer,
     T5TokenizerFast,
-    AutoTokenizer,
     T5ForConditionalGeneration,
+    BartTokenizer,
+    BartForConditionalGeneration,
     DataCollatorForSeq2Seq,
     Trainer,
     TrainingArguments,
@@ -124,10 +125,16 @@ def main(model_name, dataset):
     # Se carga el modelo y el tokenizador
     if 'pubmed' in cfg.modelName:
         tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
+    elif 'bart' in cfg.modelName:
+        tokenizer = BartTokenizer.from_pretrained(cfg.modelName)
     else:
         tokenizer = T5Tokenizer.from_pretrained(cfg.modelName)
+    
+    if 'bart' in cfg.modelName:
+        model = BartForConditionalGeneration.from_pretrained(cfg.modelName)
+    else:
+        model = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
 
-    model     = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
