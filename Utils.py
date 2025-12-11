@@ -276,9 +276,9 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             print("="*50)
             tgt_shuffled = aleatorizar_column(hold_tgt)
             bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
-            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(hold_preds, tgt_shuffled)
-            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts aleatorizadas')
-            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts aleatorizadas')
+            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas')
+            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas')
+            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas')
             Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas')
 
             if cfg.save_f1score:
