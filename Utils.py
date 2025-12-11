@@ -309,7 +309,7 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
         RScores[bef_after].update(aux_gp)
         # Se calcula el promedio de la metrica de bleu
-        BleuScores[bef_after] = cal_BLUE(run, hold_preds, hold_tgt, hold_inp)
+        BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt, hold_inp)
         print(f"Bleu Scores:\n{BleuScores}")
 
     return SBertSr, RScores, BleuScores
