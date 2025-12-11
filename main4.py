@@ -24,8 +24,6 @@ Para cada modelo
 
 """
 
-
-
 import os
 import math
 import string

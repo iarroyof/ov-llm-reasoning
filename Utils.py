@@ -140,21 +140,29 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
         "Recall": Bert_Recall.mean().item(),
         "F1Score": Bert_F1.mean().item()
     }
-
-    if save:
-        my_table = wandb.Table(
-            columns=["F1 Bert Score"],
-            data=[[x] for x in list(Bert_F1)]
-        )
-        # Log the table to W&B
-        run.log({"F1 BERTScore " + tm: my_table})
     
+    # Guardando valores de F1 bertscores
+    save_on_wandb(run, Bert_F1, tm, 'F1', 'BERTScore')
+    # Guardando valores de recall bertscores
+    save_on_wandb(run, Bert_Recall, tm, 'Recall', 'BERTScore')
+    # Guardando valores de presicion bertscores
+    save_on_wandb(run, Bert_Pres, tm, 'Presicion', 'BERTScore')
+
     return Bert_F1, bertscores
+
+def save_on_wandb(run, list_result, tm, kindmetric, metric):
+    my_table = wandb.Table(
+        columns=[f"{kindmetric} {metric}"],
+        data=[[x] for x in list(list_result)]
+    )
+    # Log the table to W&B
+    run.log({f"{kindmetric} {metric} " + tm: my_table})
 
 def cal_BLUE(gen, refer, inp):
     """La funcion recibe las respuestas generadas por el modelo y las referencias con las cuales se va acomparar"""
     #bleu = BLEU(smooth_method='exp')  # Changed to exp smoothing    # Metrica que solo funciona cuando hay mas de una palabra
     #references = [[t] for t in target_text]  # Proper reference format
+    
     results = []
     i = 0
     for word, ref, entrada in zip(gen, refer, inp):
@@ -170,6 +178,19 @@ def cal_BLUE(gen, refer, inp):
 
     return {'prom_bleu': np.array(results).mean()}
 
+def cal_BLUE_colum(run, gen, refer, tm):
+
+    results = []
+    i = 0
+    for word, ref in zip(gen, refer):
+        #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
+        result = google_bleu.compute(predictions=[word], references=[[ref]])
+        results.append(result['google_bleu'])
+
+    # Guardando metricas de Bleu
+    save_on_wandb(run, np.array(results), tm, 'pr', 'Blue')
+
+    return np.array(results)
 
 def save_colum_csv(title_colum, title_arch, colum, out_dir):
     """Esta funcion esta pensafa para guardar los datos de una columna como los bertsocres en un archivo ya sea csv o tsv"""
@@ -216,20 +237,29 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
     """
     #with open(cfg.holdoutData) as f: hold_lines = f.readlines()
     #hold_pairs = [prep(l) for l in hold_lines]
+
     #Desempaquetado para la evaluacion, se reciben las enradas y las referencias
     hold_inp, hold_tgt = zip(*hold_pairs) if hold_pairs else ([], [])
     if hold_inp:
         logging.info("Generating hold‑out predictions…")
+        
+        #Se genera el texto de inferencia del modelo
         hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
         
-        if save_data: # se guardan los datos que el modelo predijo con la tripleta y el objeto real
+        # Se guardan los datos que el modelo predijo con la tripleta y el objeto real del dataset de validacion
+        if save_data: 
             pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
                 os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
             print(f"Datos de validacion(Holdoutdata) guardados en: {out_dir}/test_predictions.tsv")
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
         
+        # Se guardan los bertscores NO aleatorizados
         bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
-        f1R_1, f1R_2, f1R_l = calcRouge_F1(hold_preds, hold_tgt)
+        f1R_1, f1R_2, f1R_l = calcRouge_F1(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas')
+        RecR_1, RecR_2, RecR_l = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas')
+        PrR_1, PrR_2, PrR_l = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas')
+        Bleu_score = cal_BLUE_colum(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas')
+
         # Se guardan los BertScores que contienen las metricas con los objetos NO aleatorizados en un archivo csv
         if cfg.save_f1score: 
             auxname = f"Obj_No_shuffle_{bef_after}_ajuste"
@@ -241,12 +271,16 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         # Finalmente se guardan los resultados de los bertScores con los objetos reales aleatorizados
         aux_gp = {}
         if cfg.shuffle:
-            print("="*10)
-            print("Resultados Bertscore con goldlabes aleatorizadas")
-            print("="*10)
+            print("="*50)
+            print("Resultados BERTScore ROUGEScore BLEUScore con goldlabes aleatorizadas")
+            print("="*50)
             tgt_shuffled = aleatorizar_column(hold_tgt)
             bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
             f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(hold_preds, tgt_shuffled)
+            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts aleatorizadas')
+            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts aleatorizadas')
+            Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas')
+
             if cfg.save_f1score:
                 auxname = f"Obj_shuffle_{bef_after}_ajuste"
                 if 'pubmed' in cfg.modelName:
@@ -260,11 +294,22 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             aux_gp['fR1-1'] = gap_pvalue(f1R_1_shuf, f1R_1)
             aux_gp['fR1-2'] = gap_pvalue(f1R_2_shuf, f1R_2)
             aux_gp['fR1-l'] = gap_pvalue(f1R_l_shuff, f1R_l)
+            print("Gap y p_value de los recall Rouge")
+            _ = gap_pvalue(RecR_1_shuff, RecR_1)
+            _ = gap_pvalue(RecR_2_shuff, RecR_2)
+            _ = gap_pvalue(RecR_l_shuff, RecR_l)
+            print("Gap y p_value de los presicion Rouge")
+            _ = gap_pvalue(PrR_1_shuff, PrR_1)
+            _ = gap_pvalue(PrR_2_shuff, PrR_2)
+            _ = gap_pvalue(PrR_l_shuff, PrR_l)
+            print("Gap y p_value de Bleu")
+            _ = gap_pvalue(Bleu_shuffle, Bleu_score)
+        
         # Calcula la metrica de Rouge
         RScores[bef_after] = calcRouge(hold_preds, hold_tgt)
         RScores[bef_after].update(aux_gp)
-        # Calcula la metrica de Bleu
-        BleuScores[bef_after] = cal_BLUE(hold_preds, hold_tgt, hold_inp)
+        # Se calcula el promedio de la metrica de bleu
+        BleuScores[bef_after] = cal_BLUE(run, hold_preds, hold_tgt, hold_inp)
         print(f"Bleu Scores:\n{BleuScores}")
 
     return SBertSr, RScores, BleuScores
@@ -318,7 +363,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     return train_pairs, test_pairs, hold_pairs
 
-def calcRouge_F1(hold_preds, hold_tgt):
+def calcRouge_F1(run, hold_preds, hold_tgt, tm):
     """Funcion que calcula el f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -341,7 +386,78 @@ def calcRouge_F1(hold_preds, hold_tgt):
             rouge_scores['f1-2'].append(0)
             rouge_scores['f1-l'].append(0)
 
+    # Guardando valores de F1 Rougescores-1
+    save_on_wandb(run, rouge_scores['f1-1'], tm, 'F1', 'ROUGEScore-1')
+    # Guardando valores de F1 Rougescores-2
+    save_on_wandb(run, rouge_scores['f1-2'], tm, 'F1', 'ROUGEScore-2')
+    # Guardando valores de F1 Rougescores-1
+    save_on_wandb(run, rouge_scores['f1-l'], tm, 'F1', 'ROUGEScore-L')
+
     return rouge_scores['f1-1'], rouge_scores['f1-2'], rouge_scores['f1-l']
+
+def calcRouge_recall(run, hold_preds, hold_tgt, tm):
+    """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
+
+    rouge_scores ={
+        "recall-1" : [],
+        "recall-2" : [],
+        "recall-l" : []
+    }
+    # Calcular ROUGE
+    for i in range(len(hold_preds)):
+        try:
+            scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
+            #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+            rouge_scores['recall-1'].append(scores['rouge1'].recall)
+            rouge_scores['recall-2'].append(scores['rouge2'].recall)
+            rouge_scores['recall-l'].append(scores['rougeL'].recall)
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            rouge_scores['recall-1'].append(0)
+            rouge_scores['recall-2'].append(0)
+            rouge_scores['recall-l'].append(0)
+    
+    # Guardando valores de recall Rougescores-1
+    save_on_wandb(run, rouge_scores['recall-1'], tm, 'recall', 'ROUGEScore-1')
+    # Guardando valores de recall Rougescores-2
+    save_on_wandb(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2')
+    # Guardando valores de recall Rougescores-1
+    save_on_wandb(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L')
+
+    return rouge_scores['recall-1'], rouge_scores['recall-2'], rouge_scores['recall-l']
+
+def calcRouge_presicion(run, hold_preds, hold_tgt, tm):
+    """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
+
+    rouge_scores ={
+        "precision-1": [],
+        "precision-2": [],
+        "precision-l": []
+    }
+    # Calcular ROUGE
+    for i in range(len(hold_preds)):
+        try:
+            scores = scorer_rou.score(hold_preds[i], list(hold_tgt)[i])
+            #scores = rouge.get_scores(hold_preds[i], list(hold_tgt)[i])[0]
+            rouge_scores["precision-1"].append(scores['rouge1'].precision)
+            rouge_scores["precision-2"].append(scores['rouge2'].precision)
+            rouge_scores["precision-l"].append(scores['rougeL'].precision)
+        except Exception as e:
+            print(f"Error calculando ROUGE: {str(e)}")
+            # Añadir valores cero si hay error
+            rouge_scores["precision-1"].append(0)
+            rouge_scores["precision-2"].append(0)
+            rouge_scores["precision-l"].append(0)
+
+    # Guardando valores de F1 Rougescores-1
+    save_on_wandb(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1')
+    # Guardando valores de F1 Rougescores-2
+    save_on_wandb(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2')
+    # Guardando valores de F1 Rougescores-1
+    save_on_wandb(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L')
+
+    return rouge_scores['precision-1'], rouge_scores['precision-2'], rouge_scores['precision-l']
 
 def calcRouge(hold_preds, hold_tgt):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
