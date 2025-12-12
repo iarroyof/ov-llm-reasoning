@@ -240,7 +240,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'despues', save_data = False, save_to_wandb = True)
+        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'despues', save_data = False, save_to_wandb = False)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
