@@ -120,7 +120,7 @@ def aleatorizar_column(hold_tgt):
 
     return tgt_aleatorizadas
 
-def calcBert(hold_preds, hold_tgt, run, save, tm):
+def calcBert(hold_preds, hold_tgt, run, save, tm, save_to_wandb):
     """Funcion para calcular la metrica berscore para precision, recall y f1score
     
     Returns:
@@ -141,12 +141,13 @@ def calcBert(hold_preds, hold_tgt, run, save, tm):
         "F1Score": Bert_F1.mean().item()
     }
     
-    # Guardando valores de F1 bertscores
-    save_on_wandb(run, Bert_F1, tm, 'F1', 'BERTScore')
-    # Guardando valores de recall bertscores
-    save_on_wandb(run, Bert_Recall, tm, 'Recall', 'BERTScore')
-    # Guardando valores de presicion bertscores
-    save_on_wandb(run, Bert_Pres, tm, 'Presicion', 'BERTScore')
+    if save_to_wandb:
+        # Guardando valores de F1 bertscores
+        save_on_wandb(run, Bert_F1, tm, 'F1', 'BERTScore')
+        # Guardando valores de recall bertscores
+        save_on_wandb(run, Bert_Recall, tm, 'Recall', 'BERTScore')
+        # Guardando valores de presicion bertscores
+        save_on_wandb(run, Bert_Pres, tm, 'Presicion', 'BERTScore')
 
     return Bert_F1, bertscores
 
@@ -169,7 +170,7 @@ def cal_BLUE(gen, refer, inp):
         #bleu_score = bleu.corpus_score([word], [ref]).score        # Metrica que solo funciona cuando hay mas de una palabra
         result = google_bleu.compute(predictions=[word], references=[[ref]])
         results.append(result['google_bleu'])
-        if i % 50 == 0:
+        if i % 10 == 0:
             print(f'Entrada: {entrada}')
             print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
         i+=1
@@ -178,7 +179,7 @@ def cal_BLUE(gen, refer, inp):
 
     return {'prom_bleu': np.array(results).mean()}
 
-def cal_BLUE_colum(run, gen, refer, tm):
+def cal_BLUE_colum(run, gen, refer, tm, save_to_wandb):
 
     results = []
     i = 0
@@ -187,8 +188,9 @@ def cal_BLUE_colum(run, gen, refer, tm):
         result = google_bleu.compute(predictions=[word], references=[[ref]])
         results.append(result['google_bleu'])
 
-    # Guardando metricas de Bleu
-    save_on_wandb(run, np.array(results), tm, 'pr', 'Blue')
+    if save_to_wandb:
+        # Guardando metricas de Bleu
+        save_on_wandb(run, np.array(results), tm, 'pr', 'Blue')
 
     return np.array(results)
 
@@ -230,7 +232,7 @@ def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
     return ret
 
 
-def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data):
+def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data, save_to_wandb):
     """Funcion que prueba un dataset de validacion
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
         save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
@@ -254,11 +256,11 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
         
         # Se guardan los bertscores NO aleatorizados
-        bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas')
-        f1R_1, f1R_2, f1R_l = calcRouge_F1(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas')
-        RecR_1, RecR_2, RecR_l = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas')
-        PrR_1, PrR_2, PrR_l = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas')
-        Bleu_score = cal_BLUE_colum(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas')
+        bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
+        f1R_1, f1R_2, f1R_l = calcRouge_F1(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
+        RecR_1, RecR_2, RecR_l = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
+        PrR_1, PrR_2, PrR_l = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
+        Bleu_score = cal_BLUE_colum(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
 
         # Se guardan los BertScores que contienen las metricas con los objetos NO aleatorizados en un archivo csv
         if cfg.save_f1score: 
@@ -275,11 +277,11 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             print("Resultados BERTScore ROUGEScore BLEUScore con goldlabes aleatorizadas")
             print("="*50)
             tgt_shuffled = aleatorizar_column(hold_tgt)
-            bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas')
-            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas')
-            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas')
-            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas')
-            Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas')
+            bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
+            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
+            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
+            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
+            Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
 
             if cfg.save_f1score:
                 auxname = f"Obj_shuffle_{bef_after}_ajuste"
@@ -363,7 +365,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     return train_pairs, test_pairs, hold_pairs
 
-def calcRouge_F1(run, hold_preds, hold_tgt, tm):
+def calcRouge_F1(run, hold_preds, hold_tgt, tm, save_to_wandb):
     """Funcion que calcula el f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -385,17 +387,17 @@ def calcRouge_F1(run, hold_preds, hold_tgt, tm):
             rouge_scores['f1-1'].append(0)
             rouge_scores['f1-2'].append(0)
             rouge_scores['f1-l'].append(0)
-
-    # Guardando valores de F1 Rougescores-1
-    save_on_wandb(run, rouge_scores['f1-1'], tm, 'F1', 'ROUGEScore-1')
-    # Guardando valores de F1 Rougescores-2
-    save_on_wandb(run, rouge_scores['f1-2'], tm, 'F1', 'ROUGEScore-2')
-    # Guardando valores de F1 Rougescores-1
-    save_on_wandb(run, rouge_scores['f1-l'], tm, 'F1', 'ROUGEScore-L')
+    if save_to_wandb:
+        # Guardando valores de F1 Rougescores-1
+        save_on_wandb(run, rouge_scores['f1-1'], tm, 'F1', 'ROUGEScore-1')
+        # Guardando valores de F1 Rougescores-2
+        save_on_wandb(run, rouge_scores['f1-2'], tm, 'F1', 'ROUGEScore-2')
+        # Guardando valores de F1 Rougescores-1
+        save_on_wandb(run, rouge_scores['f1-l'], tm, 'F1', 'ROUGEScore-L')
 
     return rouge_scores['f1-1'], rouge_scores['f1-2'], rouge_scores['f1-l']
 
-def calcRouge_recall(run, hold_preds, hold_tgt, tm):
+def calcRouge_recall(run, hold_preds, hold_tgt, tm, save_to_wandb):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -418,16 +420,17 @@ def calcRouge_recall(run, hold_preds, hold_tgt, tm):
             rouge_scores['recall-2'].append(0)
             rouge_scores['recall-l'].append(0)
     
-    # Guardando valores de recall Rougescores-1
-    save_on_wandb(run, rouge_scores['recall-1'], tm, 'recall', 'ROUGEScore-1')
-    # Guardando valores de recall Rougescores-2
-    save_on_wandb(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2')
-    # Guardando valores de recall Rougescores-1
-    save_on_wandb(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L')
+    if save_to_wandb:
+        # Guardando valores de recall Rougescores-1
+        save_on_wandb(run, rouge_scores['recall-1'], tm, 'recall', 'ROUGEScore-1')
+        # Guardando valores de recall Rougescores-2
+        save_on_wandb(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2')
+        # Guardando valores de recall Rougescores-1
+        save_on_wandb(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L')
 
     return rouge_scores['recall-1'], rouge_scores['recall-2'], rouge_scores['recall-l']
 
-def calcRouge_presicion(run, hold_preds, hold_tgt, tm):
+def calcRouge_presicion(run, hold_preds, hold_tgt, tm, save_to_wandb):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -449,13 +452,13 @@ def calcRouge_presicion(run, hold_preds, hold_tgt, tm):
             rouge_scores["precision-1"].append(0)
             rouge_scores["precision-2"].append(0)
             rouge_scores["precision-l"].append(0)
-
-    # Guardando valores de F1 Rougescores-1
-    save_on_wandb(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1')
-    # Guardando valores de F1 Rougescores-2
-    save_on_wandb(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2')
-    # Guardando valores de F1 Rougescores-1
-    save_on_wandb(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L')
+    if save_to_wandb:
+        # Guardando valores de F1 Rougescores-1
+        save_on_wandb(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1')
+        # Guardando valores de F1 Rougescores-2
+        save_on_wandb(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2')
+        # Guardando valores de F1 Rougescores-1
+        save_on_wandb(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L')
 
     return rouge_scores['precision-1'], rouge_scores['precision-2'], rouge_scores['precision-l']
 
