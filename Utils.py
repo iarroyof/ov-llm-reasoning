@@ -172,7 +172,7 @@ def cal_BLUE(gen, refer, inp):
         results.append(result['google_bleu'])
         if i % 10 == 0:
             print(f'Entrada: {entrada}')
-            print(f"\nWord: {word}\nRef: {ref}\nBlueScore: {result}")
+            print(f"Word: {word}\nRef: {ref}\nBlueScore: {result}")
         i+=1
 
     print('prom_bleu', np.array(results).mean())
