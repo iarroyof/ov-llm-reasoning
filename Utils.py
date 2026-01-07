@@ -246,7 +246,12 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
         logging.info("Generating hold‑out predictions…")
         
         #Se genera el texto de inferencia del modelo
-        hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
+        if "t5-large" in cfg.modelName:
+            print("Funcion Generate text 2")
+            hold_preds = generate_text_2(model, tokenizer, hold_inp, cfg.seqLen, device)
+        else:
+            print("Funcion Generate text")
+            hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
         
         # Se guardan los datos que el modelo predijo con la tripleta y el objeto real del dataset de validacion
         if save_data: 
