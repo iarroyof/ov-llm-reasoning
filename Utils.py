@@ -79,7 +79,12 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
         enc = tokenizer(batch_texts, padding=True, truncation=True, max_length=max_len, return_tensors="pt").to(device)
         
         with torch.no_grad():                                  # Reduce memory (disable beam search)
-            outs = model.generate(**enc, max_length=max_len+10, num_beams=1)
+            outs = model.generate(**enc,
+                              max_length=max_len+10,
+                              repetition_penalty=1.3, # Penaliza repeticiones
+                              no_repeat_ngram_size=2, # Evita que se repitan pares de palabras
+                              num_beams=4, # Usa beam search para buscar mejores secuencias
+                              early_stopping=True) # Detiene la generación cuando las 'beams' convergen
         
         dec = tokenizer.batch_decode(outs, skip_special_tokens=True)
         all_outputs.extend(dec)
