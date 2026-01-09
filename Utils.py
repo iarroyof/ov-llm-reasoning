@@ -366,7 +366,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     
     if 'conceptnet' in data_test or 'triplets' in data_train:
         test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
-    elif 'SNLI' in data_test:
+    elif 'SNLI' or 'atomic' in data_test:
         test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
 
     test_pairs = test_results.tolist()
