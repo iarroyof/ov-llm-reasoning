@@ -1,4 +1,4 @@
-premise,implication
+premisa,answer
 Given the premise: PersonX sits at PersonY's desk,PersonX needs 'to get a job at the same place as PersonY.'
 Given the premise: PersonX finds ___ PersonY wanted,other want 'an item'
 Given the premise: PersonX kicks PersonY when they are down,PersonX feels 'adrenaline'

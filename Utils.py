@@ -353,7 +353,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
 
     if 'conceptnet' in data_train or 'triplets' in data_train:
         train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
-    elif 'SNLI' in data_train:
+    elif 'SNLI' or 'atomic' in data_train:
         train_results = train_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
         
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas

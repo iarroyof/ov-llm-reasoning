@@ -540,8 +540,8 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     dic_save_Blue_Scores = {}
-    models = ["t5-large"] ## "t5-small" #facebook/bart-large #'t5-base' #facebook/bart-base #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['SNLI'] #'conceptnet',
+    models = ["t5-small"] ## "t5-small" #facebook/bart-large #'t5-base' #facebook/bart-base #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    datasets = ['atomic'] #'conceptnet','SNLI'
     for modelname in models:
         for dataset in datasets:
             dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
