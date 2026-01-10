@@ -193,11 +193,18 @@ def main(model_name, dataset):
 
     collator = DataCollatorForSeq2Seq(tokenizer, model=model)
 
+    # Dado que atomic tiene secuencias muy larjas y no caben en la memoria se les asigna
+    # un batch size de 32 en otro casi queda el de 50
+    if "atomic" in cfg.trainData and "t5-large" in cfg.modelName:
+        evalbatchsize = 32
+    else:
+        evalbatchsize = cfg.batchSize
+
     train_args = TrainingArguments(
         output_dir=out_dir,
         num_train_epochs=cfg.nEpochs,
         per_device_train_batch_size=cfg.batchSize,
-        per_device_eval_batch_size=cfg.batchSize,
+        per_device_eval_batch_size=evalbatchsize,
 
         learning_rate=5e-5,  # Se establece un learinig rate
         weight_decay=0.01,   # Ayuda a prevenir el sobreajuste
@@ -540,7 +547,7 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     dic_save_Blue_Scores = {}
-    models = ["t5-small",'t5-base','t5-large'] ## "t5-small" #facebook/bart-large #'t5-base' #facebook/bart-base #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    models = ['t5-large'] ## "t5-small" #facebook/bart-large #'t5-base' #facebook/bart-base #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     datasets = ['atomic'] #'conceptnet','SNLI'
     for modelname in models:
         for dataset in datasets:
