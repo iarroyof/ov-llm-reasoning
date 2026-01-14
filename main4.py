@@ -215,6 +215,9 @@ def main(model_name, dataset):
         evaluation_strategy="epoch",
         save_strategy="epoch",
         logging_strategy="epoch",
+
+        save_total_limit=1,         # Solo mantiene 1 checkpoint en el disco. Borra los anteriores automáticamente
+
         report_to=["wandb"],
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
@@ -295,15 +298,25 @@ def main(model_name, dataset):
         output_dir=out_dir,
         num_train_epochs=cfg.nEpochs,
         per_device_train_batch_size=cfg.batchSize,
-        per_device_eval_batch_size=cfg.batchSize,
+        per_device_eval_batch_size=evalbatchsize,
+
+        learning_rate=5e-5,  # Se establece un learinig rate
+        weight_decay=0.01,   # Ayuda a prevenir el sobreajuste
+        lr_scheduler_type='linear', # Un scheduler lineal con calentamiento para un proceso efectivo
+        warmup_steps=500,    # Numero de pasos de calentamiento para estabilizar el inicio
+        optim="adamw_torch",
+
         evaluation_strategy="epoch",
         save_strategy="epoch",
         logging_strategy="epoch",
+
+        save_total_limit=1,         # Solo mantiene 1 checkpoint en el disco. Borra los anteriores automáticamente
+
         report_to=["wandb"],
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
-        adafactor = True,
-        optim = "adafactor"
+        #adafactor = True,
+        #optim = "adafactor"
     )
 
     trainer = Trainer(model=model,

@@ -24,8 +24,6 @@ Para cada modelo
 
 """
 
-
-
 import os
 import math
 import string
@@ -34,17 +32,20 @@ import logging
 from functools import partial
 from rouge import Rouge
 from nltk.corpus import stopwords
+from datetime import datetime
 from Utils import eval_holdoutdata, preprocesado_datos
 
 import torch
 import pandas as pd
 import wandb
+import json
 from datasets import Dataset
 from transformers import (
     T5Tokenizer,
     T5TokenizerFast,
-    AutoTokenizer,
     T5ForConditionalGeneration,
+    BartTokenizer,
+    BartForConditionalGeneration,
     DataCollatorForSeq2Seq,
     Trainer,
     TrainingArguments,
@@ -94,6 +95,7 @@ def main(model_name, dataset):
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
     ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
     ap.add_argument("--numTrainData_biomed", default=10000)
+    ap.add_argument("--save_experiment", default='True')
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -104,6 +106,7 @@ def main(model_name, dataset):
     #Declarando variable para guradar las distintas metricas de los bertscores y los rougescores
     SBertSr = {} # Guarda prec, recall y f1-score de los bertsocres
     RScores = {} # Guarda los rouge scores
+    BlueScores = {} #Guarda los BlueScores
 
     # Lectura de archivos tsv junto con la funcion prepare_data
     #with open(cfg.trainData) as f: train_lines = f.readlines()
@@ -120,10 +123,16 @@ def main(model_name, dataset):
     # Se carga el modelo y el tokenizador
     if 'pubmed' in cfg.modelName:
         tokenizer = T5TokenizerFast.from_pretrained(cfg.modelName)
+    elif 'bart' in cfg.modelName:
+        tokenizer = BartTokenizer.from_pretrained(cfg.modelName)
     else:
         tokenizer = T5Tokenizer.from_pretrained(cfg.modelName)
+    
+    if 'bart' in cfg.modelName:
+        model = BartForConditionalGeneration.from_pretrained(cfg.modelName)
+    else:
+        model = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
 
-    model     = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
@@ -144,7 +153,8 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):                                                                           #SBertSr, RScores
         SBertSr["Biomedico"] = {}
         RScores["Biomedico"] = {}
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'antes', save_data = False)
+        BlueScores["Biomedico"] = {}
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'antes', save_data = False, save_to_wandb = True)
 
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
@@ -163,7 +173,8 @@ def main(model_name, dataset):
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
        SBertSr[dataset] = {}
        RScores[dataset] = {}
-       SBertSr[dataset], RScores[dataset]= eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'antes', save_data = False)
+       BlueScores[dataset] = {}
+       SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'antes', save_data = False, save_to_wandb = False)
 
 
     ###########################################################
@@ -182,11 +193,18 @@ def main(model_name, dataset):
 
     collator = DataCollatorForSeq2Seq(tokenizer, model=model)
 
+    # Dado que atomic tiene secuencias muy larjas y no caben en la memoria se les asigna
+    # un batch size de 32 en otro casi queda el de 50
+    if "atomic" in cfg.trainData and "t5-large" in cfg.modelName:
+        evalbatchsize = 8
+    else:
+        evalbatchsize = cfg.batchSize
+
     train_args = TrainingArguments(
         output_dir=out_dir,
         num_train_epochs=cfg.nEpochs,
         per_device_train_batch_size=cfg.batchSize,
-        per_device_eval_batch_size=cfg.batchSize,
+        per_device_eval_batch_size=evalbatchsize,
 
         learning_rate=5e-5,  # Se establece un learinig rate
         weight_decay=0.01,   # Ayuda a prevenir el sobreajuste
@@ -229,7 +247,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], bef_after = 'despues', save_data = True)
+        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'despues', save_data = False, save_to_wandb = False)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -253,7 +271,7 @@ def main(model_name, dataset):
     print("Probando holdoutdata previo al entrenamiento con las tripletas biomedicas")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = False)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = False, save_to_wandb = True)
 
     ##########################################################################
     # Proceso de entrenamiento con las tripletas biomedicas
@@ -303,11 +321,11 @@ def main(model_name, dataset):
     print('Holdoutpairs predictions despues de ajuste con las tripletas biomedicas')
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], bef_after = 'despues', save_data = True)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues', save_data = True, save_to_wandb = True)
             
     wandb.finish()
 
-    return SBertSr, RScores, args
+    return SBertSr, RScores, BlueScores, args
 
 def prueba_part_triplets(pair, model, tokenizer, device):
 
@@ -528,11 +546,12 @@ def prueba_tripletas(file_path, model, tokenizer, device, chunk_size):
 if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
-    models = ["t5-base"] #'t5-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['conceptnet']
+    dic_save_Blue_Scores = {}
+    models = ["t5-small", 't5-base'] # "t5-small", 't5-base', 't5-large' #'facebook/bart-large' #'facebook/bart-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    datasets = ['atomic'] #'conceptnet','SNLI'
     for modelname in models:
         for dataset in datasets:
-            dic_save_BERT_Scores[modelname], dic_save_Rouge_Scores[modelname], arguments = main(modelname, dataset)
+            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
 
     print("Resumen:")
     print(f"Data\n{arguments}")
@@ -542,6 +561,14 @@ if __name__ == "__main__":
             print(dataset_tipe)
             print(dic_save_BERT_Scores[namemodel][dataset_tipe])
     
+    for namemodel in dic_save_Blue_Scores.keys():
+        print(namemodel)
+        for dataset_tipe in dic_save_Blue_Scores[namemodel].keys():
+            print(dataset_tipe)
+            print(pd.DataFrame.from_dict(dic_save_Blue_Scores[namemodel][dataset_tipe]))
+            print()
+        print()
+
     for namemodel in dic_save_BERT_Scores.keys():
         print(namemodel)
         for dataset_tipe in dic_save_BERT_Scores[namemodel].keys():
@@ -557,3 +584,40 @@ if __name__ == "__main__":
             print(pd.DataFrame.from_dict(dic_save_Rouge_Scores[namemodel][dataset_tipe]))
             print()
         print()
+    
+
+    print(vars(arguments)['save_experiment'])
+
+    if vars(arguments)['save_experiment'] == 'True':
+
+        # 1. Generar el nombre de la carpeta con fecha y hora
+        ahora = datetime.now()
+        timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
+
+        base_dir = "experimentos"
+        out_dir = os.path.join(base_dir, timestamp)
+
+        os.makedirs(out_dir, exist_ok=True)
+
+        # --- 2. Guardar la configuración (arguments) ---
+        # Usamos vars() para convertir el objeto argparse a diccionario
+        ruta_config = os.path.join(out_dir, "config.json")
+        with open(ruta_config, "w", encoding="utf-8") as f:
+            json.dump(vars(arguments), f, indent=4)
+
+        # --- 3. Guardar los Scores ---
+        # Guardar ambos diccionarios en un solo archivo 'metrics.json'
+        resultados_completos = {
+            "bert_scores": dic_save_BERT_Scores,
+            "rouge_scores": dic_save_Rouge_Scores,
+            "blue_scores":dic_save_Blue_Scores
+        }
+
+        ruta_metrics = os.path.join(out_dir, "metrics.json")
+        with open(ruta_metrics, "w", encoding="utf-8") as f:
+            json.dump(resultados_completos, f, indent=4)
+
+        print("Guardado exitoso:")
+        print(f"Experimento registrado en la carpeta: {out_dir}")
+        print(f"Configuración: {ruta_config}")
+        print(f"Métricas: {ruta_metrics}")
