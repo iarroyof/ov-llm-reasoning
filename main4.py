@@ -310,7 +310,7 @@ def main(model_name, dataset):
         save_strategy="epoch",
         logging_strategy="epoch",
 
-        save_total_limit=1,         # Solo mantiene 1 checkpoint en el disco. Borra los anteriores automáticamente
+        save_total_limit=1,  # Solo mantiene 1 checkpoint en el disco. Borra los anteriores automáticamente
 
         report_to=["wandb"],
         load_best_model_at_end=True,
