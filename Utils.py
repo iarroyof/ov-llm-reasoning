@@ -30,29 +30,17 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
     obj = str(obj)
 
     # La lógica de procesado de la relación se mantiene
-    processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
+    #processed_relation = " ".join(re.findall(r"[A-Z][a-z]*", relation)).lower() or relation
 
     # Construcción de la entrada y el objetivo
     #input_text = f"complete the triplet subject: {subject} relation:{processed_relation} object:"
-    input_text = f"{subject} {processed_relation}"
+    #input_text = f"{subject} {processed_relation}" # Sescomentar si se activa la logica de procesado de la relacion
+    input_text = f"{subject} {relation}"
+
     if all_start_end:
         input_text = f"{start_token}{input_text}{end_token}"
     
     target_text = obj
-
-    return (input_text, target_text)
-
-def prepare_dataSNLI(premisa, answer, all_start_end=False):
-    """Devuelve tuplas con pares de input y tragets"""
-    start_token = "[start] "
-    end_token = " [end]"
-
-    # Asegurarnos de que todos los datos son strings
-    input_text = str(premisa)
-    target_text = str(answer)
-
-    if all_start_end:
-        input_text = f"{start_token}{input_text}{end_token}"
 
     return (input_text, target_text)
 
@@ -347,7 +335,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     if 'conceptnet' in data_train or 'triplets' in data_train:
         train_results = train_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     elif 'SNLI' or 'atomic' in data_train:
-        train_results = train_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
+        train_results = train_df.apply(lambda row: prepare_data2(row['S'], row['R'], row['O']), axis=1)
         
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
@@ -360,7 +348,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     if 'conceptnet' in data_test or 'triplets' in data_train:
         test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     elif 'SNLI' or 'atomic' in data_test:
-        test_results = test_df.apply(lambda row: prepare_dataSNLI(row['premisa'], row['answer']), axis=1)
+        test_results = test_df.apply(lambda row: prepare_data2(row['S'], row['R'], row['O']), axis=1)
 
     test_pairs = test_results.tolist()
     hold_pairs = test_pairs[1200:1400]
