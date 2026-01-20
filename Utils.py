@@ -13,6 +13,7 @@ from rouge_score import rouge_scorer
 from sklearn.utils import shuffle
 from bert_score import score
 from sacrebleu.metrics import BLEU
+from datetime import datetime
 
 
 google_bleu = evaluate.load("google_bleu")
@@ -34,7 +35,7 @@ def prepare_data2(subject, relation, obj, all_start_end=False):
 
     # Construcción de la entrada y el objetivo
     #input_text = f"complete the triplet subject: {subject} relation:{processed_relation} object:"
-    #input_text = f"{subject} {processed_relation}" # Sescomentar si se activa la logica de procesado de la relacion
+    #input_text = f"{subject} {processed_relation}" # Descomentar si se activa la logica de procesado de la relacion
     input_text = f"{subject} {relation}"
 
     if all_start_end:
@@ -113,7 +114,7 @@ def aleatorizar_column(hold_tgt):
 
     return tgt_aleatorizadas
 
-def calcBert(hold_preds, hold_tgt, run, save, tm, save_to_wandb):
+def calcBert(hold_preds, hold_tgt, run, tm, save_data, save_to_wandb, hold_inp, out_dir, biomedic_part, cfg):
     """Funcion para calcular la metrica berscore para precision, recall y f1score
     
     Returns:
@@ -142,8 +143,31 @@ def calcBert(hold_preds, hold_tgt, run, save, tm, save_to_wandb):
         # Guardando valores de presicion bertscores
         save_on_wandb(run, Bert_Pres, tm, 'Presicion', 'BERTScore')
 
+    if save_data:
+        # Guardando valores de F1 bertscores
+        save_metrics(run, Bert_F1, tm, 'F1', 'BERTScore', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de recall bertscores
+        save_metrics(run, Bert_Recall, tm, 'Recall', 'BERTScore', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de presicion bertscores
+        save_metrics(run, Bert_Pres, tm, 'Presicion', 'BERTScore', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+
     return Bert_F1, bertscores
 
+def save_metrics(run, list_result, tm, kindmetric, metric, biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir):
+    "Funcion encargada de guardar los metricas junto con la emtrada y salida dentro del servidor"
+
+    out_dir = os.path.join(out_dir, str(metric)) # Se Genera el nombre de la carpeta con fecha y hora
+    os.makedirs(out_dir, exist_ok=True) # Crea la carpeta si no existe exp/time/modelname/dataset
+
+    if biomedic_part:
+        pref_bio = "Bio"
+    else:
+        pref_bio = str(cfg.datasetName)
+
+    pd.DataFrame({"Subject": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt, f"{metric}_{kindmetric}" : list_result}).to_csv(
+        os.path.join(out_dir, f"{pref_bio}_{tm}_{metric}_{kindmetric}_{run.project}_{run.id}.tsv"), sep="\t", index=False)
+    print(f"{metric}_{kindmetric} guardadas en: {out_dir}/{pref_bio}_{tm}_{metric}_{kindmetric}_{run.project}_{run.id}.tsv")
+    
 def save_on_wandb(run, list_result, tm, kindmetric, metric):
     my_table = wandb.Table(
         columns=[f"{kindmetric} {metric}"],
@@ -172,7 +196,7 @@ def cal_BLUE(gen, refer, inp):
 
     return {'prom_bleu': np.array(results).mean()}
 
-def cal_BLUE_colum(run, gen, refer, tm, save_to_wandb):
+def cal_BLUE_colum(run, gen, refer, tm, save_data, save_to_wandb, hold_inp, out_dir, biomedic_part, cfg):
 
     results = []
     i = 0
@@ -184,6 +208,9 @@ def cal_BLUE_colum(run, gen, refer, tm, save_to_wandb):
     if save_to_wandb:
         # Guardando metricas de Bleu
         save_on_wandb(run, np.array(results), tm, 'pr', 'Blue')
+    if save_data:
+        # Guardando valores
+        save_metrics(run, np.array(results), tm, 'pr', 'Blue', biomedic_part, cfg, gen, refer, hold_inp, out_dir)
 
     return np.array(results)
 
@@ -225,7 +252,7 @@ def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
     return ret
 
 
-def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data, save_to_wandb):
+def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data, save_to_wandb, biomedic_part):
     """Funcion que prueba un dataset de validacion
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
         save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
@@ -247,18 +274,30 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             hold_preds = generate_text(model, tokenizer, hold_inp, cfg.seqLen, device)
         
         # Se guardan los datos que el modelo predijo con la tripleta y el objeto real del dataset de validacion
-        if save_data: 
-            pd.DataFrame({"Subj_Pred": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
-                os.path.join(out_dir, "test_predictions.tsv"), sep="\t", index=False)
-            print(f"Datos de validacion(Holdoutdata) guardados en: {out_dir}/test_predictions.tsv")
+        ahora = datetime.now()
+        timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
+        base_dir = "experimentos_compl"
+        out_dir = os.path.join(base_dir, timestamp, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
+        if save_data:
+            os.makedirs(out_dir, exist_ok=True) # Crea la carpeta si no existe exp/time/modelname/dataset
+
+            if biomedic_part:
+                pref_bio = "Bio"
+            else:
+                pref_bio = str(cfg.datasetName)
+
+            pd.DataFrame({"Subject": hold_inp, "Obj": hold_preds, "Obj_true": hold_tgt}).to_csv(
+                os.path.join(out_dir, f"{pref_bio}_{bef_after}_test_predictions_{run.project}_{run.id}.tsv"), sep="\t", index=False)
+            
+            print(f"Datos de validacion(Holdoutdata) guardados en: {out_dir}/{pref_bio}_{bef_after}_test_predictions{run.project}_{run.id}.tsv")
             #Bert_Pres = bertscore.compute(predictions=hold_preds, references=list(hold_tgt), lang="en")    # solo calcula la presicion
         
         # Se guardan los bertscores NO aleatorizados
-        bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
-        f1R_1, f1R_2, f1R_l = calcRouge_F1(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
-        RecR_1, RecR_2, RecR_l = calcRouge_recall(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
-        PrR_1, PrR_2, PrR_l = calcRouge_presicion(run, hold_preds, hold_tgt, tm = f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
-        Bleu_score = cal_BLUE_colum(run, hold_preds, hold_tgt, tm=f'{bef_after} ajuste tgts no aleatorizadas', save_to_wandb = save_to_wandb)
+        bert_f1_score, SBertSr[bef_after] = calcBert(hold_preds, list(hold_tgt), run = run, tm = bef_after, save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+        f1R_1, f1R_2, f1R_l = calcRouge_F1(run, hold_preds, hold_tgt, tm = bef_after, save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+        RecR_1, RecR_2, RecR_l = calcRouge_recall(run, hold_preds, hold_tgt, tm = bef_after, save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+        PrR_1, PrR_2, PrR_l = calcRouge_presicion(run, hold_preds, hold_tgt, tm = bef_after, save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+        Bleu_score = cal_BLUE_colum(run, hold_preds, hold_tgt, tm = bef_after, save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
 
         # Se guardan los BertScores que contienen las metricas con los objetos NO aleatorizados en un archivo csv
         if cfg.save_f1score: 
@@ -274,19 +313,21 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, out_dir, hold_
             print("="*50)
             print("Resultados BERTScore ROUGEScore BLEUScore con goldlabes aleatorizadas")
             print("="*50)
-            tgt_shuffled = aleatorizar_column(hold_tgt)
-            bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, save=cfg.save_f1score, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
-            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
-            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
-            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, tgt_shuffled, tm = f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
-            Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after} ajuste tgts aleatorizadas', save_to_wandb = save_to_wandb)
+            tgt_shuffled = aleatorizar_column(hold_tgt) # Se aleatorizan las goldlabels
+
+            bert_f1_score_Shuffle, _ = calcBert(hold_preds, tgt_shuffled, run = run, tm=f'{bef_after}_tgt_Shuffled', save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+            f1R_1_shuf, f1R_2_shuf, f1R_l_shuff = calcRouge_F1(run, hold_preds, tgt_shuffled, tm=f'{bef_after}_tgt_Shuffled', save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+            RecR_1_shuff, RecR_2_shuff, RecR_l_shuff = calcRouge_recall(run, hold_preds, tgt_shuffled, tm = f'{bef_after}_tgt_Shuffled', save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+            PrR_1_shuff, PrR_2_shuff, PrR_l_shuff = calcRouge_presicion(run, hold_preds, tgt_shuffled, tm = f'{bef_after}_tgt_Shuffled', save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
+            Bleu_shuffle = cal_BLUE_colum(run, hold_preds, tgt_shuffled, tm=f'{bef_after}_tgt_Shuffled', save_data = save_data, save_to_wandb = save_to_wandb, hold_inp = hold_inp, out_dir = out_dir, biomedic_part = biomedic_part, cfg=cfg)
 
             if cfg.save_f1score:
                 auxname = f"Obj_shuffle_{bef_after}_ajuste"
                 if 'pubmed' in cfg.modelName:
                     auxname = auxname + '_Pubmed'
                 save_colum_csv("F1_BERT_Score", auxname, bert_f1_score_Shuffle, out_dir)
-                
+            
+            #################################
             # Calcula el p_value y el gap
             print("Gap y p_value de los F1 berscores")
             SBertSr[bef_after].update(gap_pvalue(bert_f1_score_Shuffle, bert_f1_score))
@@ -340,6 +381,7 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     # El resultado es una "Serie" de pandas, la convertimos a una lista de tuplas
     train_pairs = train_results.tolist()
     numdata_train = int(numdata_train)
+    # Si no se especifica que se tomara un numero concreto de datos se toma una sola porcion
     if  numdata_train != 0:
         print("Num train data: ", numdata_train)
         #print("Tipo de dato: ", type(numdata_train))
@@ -347,16 +389,26 @@ def preprocesado_datos(cfg, data_train, data_test, val_data, numdata_train):
     
     if 'conceptnet' in data_test or 'triplets' in data_train:
         test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
+        val_results = val_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     elif 'SNLI' or 'atomic' in data_test:
         test_results = test_df.apply(lambda row: prepare_data2(row['S'], row['R'], row['O']), axis=1)
+        val_results = val_df.apply(lambda row: prepare_data2(row['S'], row['R'], row['O']), axis=1)
 
     test_pairs = test_results.tolist()
-    hold_pairs = test_pairs[1200:1400]
+    val_pairs = val_results.tolist()
+
+    # Esta linea de codigo asegura que si no se proporciona un dataset de validacion distinto se toman trpletas del dataset de
+    # prueba
+    if data_test == val_data:
+        hold_pairs = test_pairs[1200:1400]
+    else:
+        hold_pairs = val_pairs[0:200]
+
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
     return train_pairs, test_pairs, hold_pairs
 
-def calcRouge_F1(run, hold_preds, hold_tgt, tm, save_to_wandb):
+def calcRouge_F1(run, hold_preds, hold_tgt, tm, save_data, save_to_wandb, hold_inp, out_dir, biomedic_part, cfg):
     """Funcion que calcula el f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -386,9 +438,17 @@ def calcRouge_F1(run, hold_preds, hold_tgt, tm, save_to_wandb):
         # Guardando valores de F1 Rougescores-1
         save_on_wandb(run, rouge_scores['f1-l'], tm, 'F1', 'ROUGEScore-L')
 
+    if save_data:
+        # Guardando valores de F1 bertscores
+        save_metrics(run, rouge_scores['f1-1'], tm, 'F1', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de recall bertscores
+        save_metrics(run, rouge_scores['f1-2'], tm, 'F1', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de presicion bertscores
+        save_metrics(run, rouge_scores['f1-l'], tm, 'F1', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+
     return rouge_scores['f1-1'], rouge_scores['f1-2'], rouge_scores['f1-l']
 
-def calcRouge_recall(run, hold_preds, hold_tgt, tm, save_to_wandb):
+def calcRouge_recall(run, hold_preds, hold_tgt, tm, save_data, save_to_wandb, hold_inp, out_dir, biomedic_part, cfg):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -418,10 +478,18 @@ def calcRouge_recall(run, hold_preds, hold_tgt, tm, save_to_wandb):
         save_on_wandb(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2')
         # Guardando valores de recall Rougescores-1
         save_on_wandb(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L')
+    
+    if save_data:
+        # Guardando valores de F1 bertscores
+        save_metrics(run, rouge_scores['recall-1'], tm, 'recall', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de recall bertscores
+        save_metrics(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de presicion bertscores
+        save_metrics(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
 
     return rouge_scores['recall-1'], rouge_scores['recall-2'], rouge_scores['recall-l']
 
-def calcRouge_presicion(run, hold_preds, hold_tgt, tm, save_to_wandb):
+def calcRouge_presicion(run, hold_preds, hold_tgt, tm, save_data, save_to_wandb, hold_inp, out_dir, biomedic_part, cfg):
     """Funcion que calcula precision, recall y f1score de la metrica Rouge"""
 
     rouge_scores ={
@@ -450,6 +518,14 @@ def calcRouge_presicion(run, hold_preds, hold_tgt, tm, save_to_wandb):
         save_on_wandb(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2')
         # Guardando valores de F1 Rougescores-1
         save_on_wandb(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L')
+    
+    if save_data:
+        # Guardando valores de F1 bertscores
+        save_metrics(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de recall bertscores
+        save_metrics(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        # Guardando valores de presicion bertscores
+        save_metrics(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
 
     return rouge_scores['precision-1'], rouge_scores['precision-2'], rouge_scores['precision-l']
 
