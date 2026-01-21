@@ -610,7 +610,7 @@ if __name__ == "__main__":
         timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
 
         #base_dir = "experimentos"
-        base_dir = vars(arguments)['cfg.nameFile']
+        base_dir = vars(arguments)['nameFile']
         out_dir = os.path.join(base_dir, timestamp) # Se Genera el nombre de la carpeta con fecha y hora
 
         os.makedirs(out_dir, exist_ok=True) # Crea la carpeta si no existe
