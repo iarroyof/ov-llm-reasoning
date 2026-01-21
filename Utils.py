@@ -275,9 +275,11 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SB
         
         # Se guardan los datos que el modelo predijo con la tripleta y el objeto real del dataset de validacion
         ahora = datetime.now()
-        timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
+        #timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
         base_dir = "experimentos_compl"
-        out_dir = os.path.join(base_dir, timestamp, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
+        # Descomentar esta linea y comentar la siguiente si se activa la hora
+        #out_dir = os.path.join(base_dir, timestamp, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
+        out_dir = os.path.join(base_dir, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
         if save_data:
             os.makedirs(out_dir, exist_ok=True) # Crea la carpeta si no existe exp/time/modelname/dataset
 
