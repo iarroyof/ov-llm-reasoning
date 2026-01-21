@@ -97,6 +97,7 @@ def main(model_name, dataset):
     ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
     ap.add_argument("--numTrainData_biomed", default=10000)
     ap.add_argument("--save_experiment", default='True')
+    ap.add_argument("--nameFile", type=str, required=True)
     args = ap.parse_args()
 
     run = wandb.init(project="t5_spo_generation", config=vars(args))
@@ -155,7 +156,7 @@ def main(model_name, dataset):
         SBertSr["Biomedico"] = {}
         RScores["Biomedico"] = {}
         BlueScores["Biomedico"] = {}
-        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'antes', save_data = True, save_to_wandb = True, biomedic_part = True)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'antes', save_data = True, save_to_wandb = True, biomedic_part = True, name_root_file=cfg.nameFile)
 
     ############################################################
     # iniciando proceso de evaluacion y entrenamiento con las bases de datos de razonamiento
@@ -175,7 +176,7 @@ def main(model_name, dataset):
        SBertSr[dataset] = {}
        RScores[dataset] = {}
        BlueScores[dataset] = {}
-       SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'antes', save_data = True, save_to_wandb = False, biomedic_part = False)
+       SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'antes', save_data = True, save_to_wandb = False, biomedic_part = False, name_root_file=cfg.nameFile)
 
 
     ###########################################################
@@ -251,7 +252,7 @@ def main(model_name, dataset):
     print(f"Probando holdoutdata {dataset} despues del entrenamiento")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'despues', save_data = True, save_to_wandb = False, biomedic_part = False)
+        SBertSr[dataset], RScores[dataset], BlueScores[dataset] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr[dataset], RScores[dataset], BlueScores[dataset], bef_after = 'despues', save_data = True, save_to_wandb = False, biomedic_part = False, name_root_file=cfg.nameFile)
 
     #if cfg.holdoutData and os.path.exists(cfg.holdoutData):
         #print("="*100)
@@ -275,7 +276,7 @@ def main(model_name, dataset):
     print("Probando holdoutdata previo al entrenamiento con las tripletas biomedicas")
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = True, save_to_wandb = True, biomedic_part = True)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues_dataset_gral', save_data = True, save_to_wandb = True, biomedic_part = True, name_root_file=cfg.nameFile)
 
     ##########################################################################
     # Proceso de entrenamiento con las tripletas biomedicas
@@ -335,7 +336,7 @@ def main(model_name, dataset):
     print('Holdoutpairs predictions despues de ajuste con las tripletas biomedicas')
     # Hold‑out predictions
     if cfg.holdoutData and os.path.exists(cfg.holdoutData):
-        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues', save_data = True, save_to_wandb = True, biomedic_part = True)
+        SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"] = eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr["Biomedico"], RScores["Biomedico"], BlueScores["Biomedico"], bef_after = 'despues', save_data = True, save_to_wandb = True, biomedic_part = True, name_root_file=cfg.nameFile)
             
     wandb.finish()
 
@@ -608,7 +609,8 @@ if __name__ == "__main__":
         ahora = datetime.now()
         timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
 
-        base_dir = "experimentos"
+        #base_dir = "experimentos"
+        base_dir = vars(arguments)['cfg.nameFile']
         out_dir = os.path.join(base_dir, timestamp) # Se Genera el nombre de la carpeta con fecha y hora
 
         os.makedirs(out_dir, exist_ok=True) # Crea la carpeta si no existe

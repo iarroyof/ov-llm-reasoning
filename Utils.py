@@ -252,7 +252,7 @@ def gap_pvalue(bert_f1_score_Shuffle, bert_f1_score):
     return ret
 
 
-def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data, save_to_wandb, biomedic_part):
+def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SBertSr, RScores, BleuScores, bef_after, save_data, save_to_wandb, biomedic_part, name_root_file):
     """Funcion que prueba un dataset de validacion
         bef_after(str) : Se encarga de llevar el control para el guardado de datos de si es antes o despues del ajuste fino
         save_data(boolean) : Se encarga de controlar si los datos de las predicciones son guardados o no
@@ -276,7 +276,8 @@ def eval_holdoutdata(logging, model, tokenizer, cfg, device, run, hold_pairs, SB
         # Se guardan los datos que el modelo predijo con la tripleta y el objeto real del dataset de validacion
         ahora = datetime.now()
         #timestamp = ahora.strftime("%Y-%m-%d_%H-%M-%S") # Ej: 2025-11-20_10-30-15
-        base_dir = "experimentos_compl"
+        #base_dir = "experimentos_compl"
+        base_dir = str(name_root_file)
         # Descomentar esta linea y comentar la siguiente si se activa la hora
         #out_dir = os.path.join(base_dir, timestamp, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
         out_dir = os.path.join(base_dir, str(cfg.modelName), str(cfg.datasetName)) # Se Genera el nombre de la carpeta con fecha y hora
