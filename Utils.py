@@ -207,10 +207,10 @@ def cal_BLUE_colum(run, gen, refer, tm, save_data, save_to_wandb, hold_inp, out_
 
     if save_to_wandb:
         # Guardando metricas de Bleu
-        save_on_wandb(run, np.array(results), tm, 'pr', 'Blue')
+        save_on_wandb(run, np.array(results), tm, 'Presicion', 'Bleu')
     if save_data:
         # Guardando valores
-        save_metrics(run, np.array(results), tm, 'pr', 'Blue', biomedic_part, cfg, gen, refer, hold_inp, out_dir)
+        save_metrics(run, np.array(results), tm, 'Presicion', 'Bleu', biomedic_part, cfg, gen, refer, hold_inp, out_dir)
 
     return np.array(results)
 
@@ -484,11 +484,11 @@ def calcRouge_recall(run, hold_preds, hold_tgt, tm, save_data, save_to_wandb, ho
     
     if save_data:
         # Guardando valores de F1 bertscores
-        save_metrics(run, rouge_scores['recall-1'], tm, 'recall', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['recall-1'], tm, 'Recall', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
         # Guardando valores de recall bertscores
-        save_metrics(run, rouge_scores['recall-2'], tm, 'recall', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['recall-2'], tm, 'Recall', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
         # Guardando valores de presicion bertscores
-        save_metrics(run, rouge_scores['recall-l'], tm, 'recall', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['recall-l'], tm, 'Recall', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
 
     return rouge_scores['recall-1'], rouge_scores['recall-2'], rouge_scores['recall-l']
 
@@ -516,19 +516,19 @@ def calcRouge_presicion(run, hold_preds, hold_tgt, tm, save_data, save_to_wandb,
             rouge_scores["precision-l"].append(0)
     if save_to_wandb:
         # Guardando valores de F1 Rougescores-1
-        save_on_wandb(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1')
+        save_on_wandb(run, rouge_scores['precision-1'], tm, 'Presicion', 'ROUGEScore-1')
         # Guardando valores de F1 Rougescores-2
-        save_on_wandb(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2')
+        save_on_wandb(run, rouge_scores['precision-2'], tm, 'Presicion', 'ROUGEScore-2')
         # Guardando valores de F1 Rougescores-1
-        save_on_wandb(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L')
+        save_on_wandb(run, rouge_scores['precision-l'], tm, 'Presicion', 'ROUGEScore-L')
     
     if save_data:
         # Guardando valores de F1 bertscores
-        save_metrics(run, rouge_scores['precision-1'], tm, 'precision', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['precision-1'], tm, 'Presicion', 'ROUGEScore-1', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
         # Guardando valores de recall bertscores
-        save_metrics(run, rouge_scores['precision-2'], tm, 'precision', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['precision-2'], tm, 'Presicion', 'ROUGEScore-2', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
         # Guardando valores de presicion bertscores
-        save_metrics(run, rouge_scores['precision-l'], tm, 'precision', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
+        save_metrics(run, rouge_scores['precision-l'], tm, 'Presicion', 'ROUGEScore-L', biomedic_part, cfg, hold_preds, hold_tgt, hold_inp, out_dir)
 
     return rouge_scores['precision-1'], rouge_scores['precision-2'], rouge_scores['precision-l']
 
