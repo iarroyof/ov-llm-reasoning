@@ -39,6 +39,8 @@ import torch
 import pandas as pd
 import wandb
 import json
+import gc
+import time
 from datasets import Dataset
 from transformers import (
     T5Tokenizer,
@@ -566,8 +568,13 @@ if __name__ == "__main__":
     datasets = ['atomic','conceptnet','SNLI'] #'conceptnet','SNLI'
     for modelname in models:
         for dataset in datasets:
-            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
-
+            try:
+                dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
+            finally:
+                gc.collect()
+                torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+                time.sleep(2)  # Pausa para asegurar liberación
     print("Resumen:")
     print(f"Data\n{arguments}")
     for namemodel in dic_save_BERT_Scores.keys():
