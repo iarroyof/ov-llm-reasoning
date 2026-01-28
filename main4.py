@@ -565,16 +565,20 @@ if __name__ == "__main__":
     dic_save_Rouge_Scores = {}
     dic_save_Blue_Scores = {}
     models = ["t5-large"] # "t5-small", 't5-base', 't5-large' #'facebook/bart-large' #'facebook/bart-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['conceptnet','SNLI'] #'conceptnet','SNLI'
+    datasets = ['SNLI'] #'conceptnet','SNLI', atomic
     for modelname in models:
         for dataset in datasets:
-            try:
-                dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
-            finally:
-                gc.collect()
-                torch.cuda.empty_cache()
-                torch.cuda.synchronize()
-                time.sleep(2)  # Pausa para asegurar liberación
+            # Limpieza ANTES de cada experimento
+            gc.collect()
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            time.sleep(1)
+            dic_save_BERT_Scores[f'{modelname}_{dataset}'], dic_save_Rouge_Scores[f'{modelname}_{dataset}'], dic_save_Blue_Scores[f'{modelname}_{dataset}'], arguments = main(modelname, dataset)
+            gc.collect()
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            time.sleep(2)
+
     print("Resumen:")
     print(f"Data\n{arguments}")
     for namemodel in dic_save_BERT_Scores.keys():
