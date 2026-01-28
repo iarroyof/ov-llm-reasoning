@@ -24,7 +24,6 @@ Para cada modelo
 
 """
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import math
 import string
 import argparse
@@ -137,13 +136,7 @@ def main(model_name, dataset):
     else:
         model = T5ForConditionalGeneration.from_pretrained(cfg.modelName)
 
-    #device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-
-    # Forzar GPU específica explícitamente
-    device_id = 0  # IMPORTANTE: Cuando CUDA_VISIBLE_DEVICES="1", la GPU física 1 se ve como dispositivo 0
-    device = torch.device(f"cuda:{device_id}" if torch.cuda.is_available() else "cpu")
-
+    device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
     ############################################################
@@ -571,7 +564,7 @@ if __name__ == "__main__":
     dic_save_Rouge_Scores = {}
     dic_save_Blue_Scores = {}
     models = ["t5-large"] # "t5-small", 't5-base', 't5-large' #'facebook/bart-large' #'facebook/bart-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
-    datasets = ['atomic','conceptnet','SNLI'] #'conceptnet','SNLI', atomic
+    datasets = ['SNLI'] #'conceptnet','SNLI', atomic
     for modelname in models:
         for dataset in datasets:
             # Limpieza ANTES de cada experimento
