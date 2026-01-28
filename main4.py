@@ -23,8 +23,8 @@ Para cada modelo
     Realizar el ajuste fino de los modelos con los dataset proporcionados
 
 """
-
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import math
 import string
 import argparse
