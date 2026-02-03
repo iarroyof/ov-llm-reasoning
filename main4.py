@@ -563,7 +563,7 @@ if __name__ == "__main__":
     dic_save_BERT_Scores = {}
     dic_save_Rouge_Scores = {}
     dic_save_Blue_Scores = {}
-    models = ["facebook/bart-lare"] # "t5-small", 't5-base', 't5-large' #'facebook/bart-large' #'facebook/bart-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
+    models = ["facebook/bart-large"] # "t5-small", 't5-base', 't5-large' #'facebook/bart-large' #'facebook/bart-base' #,"Kevincp560/t5-base-finetuned-pubmed", 'bleuLabs/t5-small-finetuned-pubmedSum'
     datasets = ['SNLI'] #'conceptnet','SNLI', 'atomic'
     for modelname in models:
         for dataset in datasets:
