@@ -2,34 +2,86 @@
 ##### con un dataset de tipo biomedico y distintas semillas, guardando las metricas
 
 import os
-import math
-import string
 import argparse
 
-def main():
+from utils_eval_chunkls import (
+    devuelve_valid_data,
+    load_model,
+    eval_for_chunks
+)
+
+
+def main(models_dic):
     ap = argparse.ArgumentParser("Evaluacion de modelo con varias semillas")
-    ap.add_argument("--modelName", required=True)
+    ap.add_argument("--modelName", required=False)
     ap.add_argument("--seqLen", type=int, default=50)
     ap.add_argument("--batchSize", type=int, default=50)  # 32
     ap.add_argument("--nEpochs", type=int, default=5)
     ap.add_argument("--resPath", default=os.getcwd())
     ap.add_argument("--description", required=True)
-    ap.add_argument("--datasetName", default=dataset)
     ap.add_argument("--shuffle", default=True)              #Parametro que control el aleatorizado de las goldlabes para toma de metricas
     ap.add_argument("--save_f1score", default=False)        #Parametro que controla el exportado de los bertscores en formato tsv
-    ap.add_argument("--numTrainData_razon", default=400000)  # Si se colca cero se realiza el entrenamiento con el dataset completo
-    ap.add_argument("--numTrainData_biomed", default=10000)
-    ap.add_argument("--save_experiment", default='True')
     ap.add_argument("--nameFile", type=str, required=True)
     args = ap.parse_args()
 
-    medical_data_train = 'data/filtered_train_triplets_shuffle.csv'
+    print("Descripcion del experimento: ", args.description)
+    print("Modelo: ", args.modelName)
+
+    ############################################################
+    # Inicializacion
+    ############################################################
+    # Carga de tripletas biomedicas----------------------------------
+    print("Iniciando carga de tripletas biomedicas")
+    # Lectura de archivos csv
     medical_data_test = 'data/filtered_test_triplets_shuffle.csv'
-    out_dir = os.path.join(cfg.resPath, run.project, run.id)
+
+    # No son necesarios los datos de entrenamiento
+    hold_pairs = devuelve_valid_data(medical_data_test)  #Se le pasa el mismo dataset de prueba en caso de no haber tada set de validacion
     
+    # Definir tamaño del chunk
+    CHUNK_SIZE = 200
+    # Calcular número total de chunks
+    num_chunks = (len(hold_pairs) + CHUNK_SIZE - 1) // CHUNK_SIZE
+
+    # Iterar por chunks de 200 en 200
+    for i in range(num_chunks):
+        start_idx = i * CHUNK_SIZE
+        end_idx = min((i + 1) * CHUNK_SIZE, len(hold_pairs))  # Evita desbordamiento
+        
+        # Obtener el chunk actual
+        current_chunk = hold_pairs[start_idx:end_idx]
+        
+        nameFile_chunk = f'Chunk_{i}'
+        print(f"Carpeta: {nameFile_chunk}, Tripletas: {len(current_chunk)}")
+        out_dir = os.path.join(args.nameFile, nameFile_chunk)
+        os.makedirs(out_dir, exist_ok=True)
+        for modelName in models_dic.keys():
+            print("Modelo: ", modelName)
+            for particion in models_dic[modelName].keys():
+                print("Particion: ", particion)
+                for dataset in models_dic[modelName][particion].keys():
+                    print("Dataset: ", dataset)
+                    id = models_dic[modelName][particion][dataset]
+                    print("Id: ", id)
+                    # Creacion de ruta----------------------------------------------
+                    path = f"t5_spo_generation/{id}/checkpoint-1000"
+                    # Se carga el modelo y el tokenizador
+                    print("Iniciando carga del modelo ubicado en: ", path)
+                    model_temp, tokenizer_temp, device = load_model(path, modelName)
+                    print("Modelo cargado correctamente!!")
+
+                    ############################################################
+                    # Evaluacion de las tripletas biomedicas
+                    ############################################################
+                    print("Iniciando proceso de evaluacion de tripletas biomedicas")
+                    print("="*100)
+                    print("Probando holdoutdata previo al entrenamiento con bases de razonamiento")
+                    # Hold‑out predictions
+                    eval_for_chunks(model_temp, tokenizer_temp, device, current_chunk, out_dir, modelName, args.seqLen, dataset, id, particion, save_data = True, biomedic_part = True)
 
 if __name__ == '__main__':
-    t5_small = {'10k':{'atomic':'c7j4irjz',
+    models_dic = {
+    't5_small' : {'10k':{'atomic':'c7j4irjz',
         'conceptnet':'jhag9jeh',
         'SNLI':'3ixdn4af'},
 
@@ -39,9 +91,9 @@ if __name__ == '__main__':
 
         'full':{'atomic':'dcmgfv43',
         'conceptnet':'ai7kls8o',
-        'SNLI':'teszjxmy'}}
+        'SNLI':'teszjxmy'}},
 
-    t5_base = {'10k':{'atomic':'g8bm5ii0',
+    't5_base' : {'10k':{'atomic':'g8bm5ii0',
         'conceptnet':'cgd48lr9',
         'SNLI':'yinx5mgn'},
 
@@ -51,9 +103,9 @@ if __name__ == '__main__':
 
         'full' : {'atomic':'1v1poitr',
         'conceptnet':'z7laf3c5',
-        'SNLI':'cjrugfub'}}
+        'SNLI':'cjrugfub'}},
 
-    t5_large = {'10k':{'atomic':'y5tdrtba',
+    't5_large' : {'10k':{'atomic':'y5tdrtba',
         'conceptnet':'1s8eve3i',
-        'SNLI':'tde4shhu'}}
-    main(t5_small, t5_base, t5_large)
+        'SNLI':'tde4shhu'}}}
+    main(models_dic)
