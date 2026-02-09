@@ -107,5 +107,37 @@ if __name__ == '__main__':
 
     't5_large' : {'10k':{'atomic':'y5tdrtba',
         'conceptnet':'1s8eve3i',
-        'SNLI':'tde4shhu'}}}
+        'SNLI':'tde4shhu'},
+
+        '200k':{'atomic':'5adpy3g6',
+        'conceptnet':'a4k3dyoh',
+        'SNLI':'qzcczql1'},
+
+        'full':{'atomic':'6b7urd9p',
+        'conceptnet':'0tpxrys5',
+        'SNLI':'l6uvbqdz'}},
+
+    'bart_base' : {'10k':{'atomic':'rjvmoabv',
+        'conceptnet':'ss2csjy9',
+        'SNLI':'bmzps6e6'},
+
+        '200k':{'atomic':'kbs5xkx8',
+        'conceptnet':'7dm99ujf',
+        'SNLI':'scjr7c1x'},
+
+        'full':{'atomic':'xbxw3n8w',
+        'conceptnet':'cz6kfnkc',
+        'SNLI':'3xh0d615'}},
+
+    'bart_large' : {'10k':{'atomic':'xgkhotag',
+        'conceptnet':'9oi8f5vq',
+        'SNLI':'8kzowcaz'},
+
+        '200k':{'atomic':'y7avh2hb',
+        'conceptnet':'3bu6i1wx',
+        'SNLI':'w4aaielu'},
+
+        'full':{'atomic':'rlj3m9o5',
+        'conceptnet':'lhasqpo8',
+        'SNLI':'un48iuft'}}}
     main(models_dic)
