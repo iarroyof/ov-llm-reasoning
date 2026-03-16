@@ -87,8 +87,8 @@ def generate_text_2(model, tokenizer, texts, max_len, device, batch_size=8):
 def aleatorizarData(train_df, test_df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
-    train_df = shuffle(train_df, random_state = 42)
-    test_df = shuffle(test_df, random_state = 42)
+    train_df = shuffle(train_df, random_state = 40)     # Orignialmete tenia 42 pero con 200k de entrenamiento de conecptnet arroga un error entonces se cambia a 40
+    test_df = shuffle(test_df, random_state = 40)       # Orignialmete tenia 42 pero con 200k de entrenamiento de conecptnet arroga un error entonces se cambia a 40
     train_df.reset_index(inplace=True, drop=True)
     test_df.reset_index(inplace=True, drop=True)
     
@@ -97,7 +97,7 @@ def aleatorizarData(train_df, test_df):
 def aleatorizarsingle(df):
     """Funcion para aleatorizar dos data frame en caso de que no esten aleatorizados"""
 
-    df = shuffle(df, random_state = 42)
+    df = shuffle(df, random_state = 40)               # Orignialmete tenia 42 pero con 200k de entrenamiento de conecptnet arroga un error entonces se cambia a 40
     df.reset_index(inplace=True, drop=True)
     
     return df
