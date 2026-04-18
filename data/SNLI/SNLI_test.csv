@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 "Given the premise ""This church choir sings to the masses as they sing joyous songs from the book at a church.""",a conjecture is that:,The church has cracks in the ceiling.
 "Given the premise ""This church choir sings to the masses as they sing joyous songs from the book at a church.""",it is entails that:,The church is filled with song.
 "Given the premise ""This church choir sings to the masses as they sing joyous songs from the book at a church.""",it is false that:,A choir singing at a baseball game.

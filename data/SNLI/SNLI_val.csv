@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 "Given the premise ""Two women are embracing while holding to go packages.""",a conjecture is that:,The sisters are hugging goodbye while holding to go packages after just eating lunch.
 "Given the premise ""Two women are embracing while holding to go packages.""",it is entails that:,Two woman are holding packages.
 "Given the premise ""Two women are embracing while holding to go packages.""",it is false that:,The men are fighting outside a deli.

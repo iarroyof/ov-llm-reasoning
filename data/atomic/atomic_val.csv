@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 Given the premise: PersonX is cleaning PersonX's house,This suggests that PersonX is,hygienic person.
 Given the premise: PersonX is scared at first,"As a result, PersonX",faces fear
 Given the premise: PersonX drives too fast,"As a result, the other person feels",scared

@@ -1,4 +1,4 @@
-S,R,O
+subject,relation,object
 Given the premise: PersonX practices very hard,This suggests that PersonX is,committed
 Given the premise: PersonX visits PersonY in the hospital,PersonX does this in order,to comfort another
 Given the premise: PersonX tells PersonY's anything,"Before this, PersonX needs",a phone
