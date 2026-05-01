@@ -44,10 +44,13 @@ def devuelve_valid_data(data):
     test_pairs = test_results.tolist()
     
     #Se toman de las docientas tripletas en adelante
-    hold_pairs = test_pairs[1400:]
+    #hold_pairs = test_pairs[1400:]
 
-
-    return hold_pairs
+    # se toman todos los registos de la particion de test
+    # si no se quiere se decomenta la seccion de seleccione en los holdpairs y se enia esa particion
+    print(f"Registros de Test para {data}\nRegistros: {len(test_pairs)}")
+    
+    return test_pairs
 
 def load_model(checkpoint_path, modelName):
     """
