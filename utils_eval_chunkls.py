@@ -49,7 +49,7 @@ def devuelve_valid_data(data):
     # se toman todos los registos de la particion de test
     # si no se quiere se decomenta la seccion de seleccione en los holdpairs y se enia esa particion
     print(f"Registros de Test para {data}\nRegistros: {len(test_pairs)}")
-    
+
     return test_pairs
 
 def load_model(checkpoint_path, modelName):
@@ -100,7 +100,7 @@ def eval_for_chunks(model, tokenizer, device, hold_pairs, name_root_file, modelN
             hold_preds = generate_text_2(model, tokenizer, hold_inp, seqLen, device)
         else:
             print("Funcion Generate text")
-            hold_preds = generate_text(model, tokenizer, hold_inp, seqLen, device)
+            hold_preds = generate_text_2(model, tokenizer, hold_inp, seqLen, device)
         
         #base_dir = "experimentos_compl"
         base_dir = str(name_root_file)
