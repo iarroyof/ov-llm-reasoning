@@ -64,7 +64,7 @@ def main(models_dic):
                 eval_for_chunks(model_temp, tokenizer_temp, device, hold_pairs, out_dir, modelName, args.seqLen, dataset, id, particion, save_data = True, biomedic_part = False)
 
 if __name__ == '__main__':
-    models_dic = {
+    models_dic_1 = {
     't5_small' : {'10k':{'atomic':'c7j4irjz',
         'conceptnet':'jhag9jeh',
         'SNLI':'3ixdn4af'},
@@ -118,10 +118,17 @@ if __name__ == '__main__':
         'SNLI':'8kzowcaz'},
 
         '200k':{'atomic':'y7avh2hb',
-        'conceptnet':'3bu6i1wx',
+        'conceptnet':'3bu6i1wx',     ### 2arnjew2   <- Bueno
         'SNLI':'w4aaielu'},
 
         'full':{'atomic':'rlj3m9o5',
         'conceptnet':'lhasqpo8',
         'SNLI':'un48iuft'}}}
-    main(models_dic)
+    
+
+    conceptnet_dic = {
+        '200k':{
+        'conceptnet':'2arnjew2',     ### 2arnjew2   <- Bueno
+        }}
+
+    main(conceptnet_dic)
