@@ -118,7 +118,7 @@ if __name__ == '__main__':
         'SNLI':'8kzowcaz'},
 
         '200k':{'atomic':'y7avh2hb',
-        'conceptnet':'3bu6i1wx',     ### 2arnjew2   <- Bueno
+        'conceptnet':'3bu6i1wx',     ### cva7five   <- Bueno
         'SNLI':'w4aaielu'},
 
         'full':{'atomic':'rlj3m9o5',
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
     conceptnet_dic = {
         '200k':{
-        'conceptnet':'2arnjew2',     ### 2arnjew2   <- Bueno
+        'conceptnet':'cva7five',     ### cva7five   <- Bueno
         }}
 
     main(conceptnet_dic)
