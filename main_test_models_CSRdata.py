@@ -28,7 +28,7 @@ def main(models_dic):
     args = ap.parse_args()
 
     print("Descripcion del experimento: ", args.description)
-    print("Modelo: ", args.modelName)
+    #print("Modelo: ", args.modelName)
 
     for modelName in models_dic.keys():
         print("Modelo: ", modelName)
