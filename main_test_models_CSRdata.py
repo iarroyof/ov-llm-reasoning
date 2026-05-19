@@ -127,8 +127,8 @@ if __name__ == '__main__':
     
 
     conceptnet_dic = {
-        '200k':{
-        'conceptnet':'cva7five',     ### cva7five   <- Bueno
-        }}
+    'bart_large' : {'200k':{
+        'conceptnet':'cva7five'     ### cva7five   <- Bueno
+        }}}
 
     main(conceptnet_dic)
