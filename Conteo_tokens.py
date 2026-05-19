@@ -70,18 +70,26 @@ def preprocesado_datos(data_train, data_test, numdata_train):
         #print("Tipo de dato: ", type(numdata_train))
         train_pairs = train_pairs[0:numdata_train]
     
-    if 'conceptnet' in data_test or 'triplets' in data_train:
+    if 'conceptnet' in data_test or 'triplets' in data_test:
         test_results = test_df.apply(lambda row: prepare_data2(row['subject'], row['relation'], row['object']), axis=1)
     elif 'SNLI' or 'atomic' in data_test:
         test_results = test_df.apply(lambda row: prepare_data2(row['S'], row['R'], row['O']), axis=1)
 
     test_pairs = test_results.tolist()
 
+    if 'triplets' in data_test:
+        hold_pairs = test_pairs[1200:1400]
+
     test_pairs = test_pairs[0:1000]    #No mover esta linea de codigo
 
-    return train_pairs, test_pairs
+    print("Longitud para train_pairs", len(train_pairs))
+    print("Longitud para test_pairs", len(test_pairs))
+    print("Longitud para hold_pairs", len(hold_pairs))
+
+    return train_pairs, test_pairs, hold_pairs
 
 def main():
+    """Este main esta solo pensado para conteo de tokens de las particiones 10k, 200k y full"""
     models = ["t5-small", 't5-base', 't5-large', 'facebook/bart-large', 'facebook/bart-base', "Kevincp560/t5-base-finetuned-pubmed"]
     datasets = ['conceptnet', 'atomic', 'SNLI']
     numdata_trains = [10000, 200000, 0]
@@ -99,7 +107,7 @@ def main():
                 trainData=f'data/{dataset}/{dataset}_train.csv'
                 testData = f'data/{dataset}/{dataset}_test.csv'
 
-                train_pairs, test_pairs = preprocesado_datos(trainData, testData, numdata_train)
+                train_pairs, test_pairs, _ = preprocesado_datos(trainData, testData, numdata_train)
                 
 
                 total_tokens = 0
@@ -113,5 +121,54 @@ def main():
                 print(f"Total de tokens para:\nRegistros: {numdata_train}\nDataset: {dataset}\nModelo: {model}\nTokens: {total_tokens}")
                 print('-'*30)
 
+def main_2():
+    """Este main esta solo pensado para conteo de tokens de los datos biomedicos"""
+
+    models = ["t5-small", 't5-base', 't5-large', 'facebook/bart-large', 'facebook/bart-base', "Kevincp560/t5-base-finetuned-pubmed"]
+    datasets = ['filtered_train_triplets_shuffle', 'filtered_test_triplets_shuffle']
+
+    for model in models:
+        if 'pubmed' in model:
+            tokenizer = T5TokenizerFast.from_pretrained(model)
+        elif 'bart' in model:
+            tokenizer = BartTokenizer.from_pretrained(model)
+        else:
+            tokenizer = T5Tokenizer.from_pretrained(model)
+
+        trainData=f'data/{datasets[0]}.csv'
+        testData = f'data/{datasets[1]}.csv'
+
+        train_pairs, test_pairs, hold_pairs = preprocesado_datos(trainData, testData, 10000)
+        
+
+        total_tokens_train = 0
+        for x, y in train_pairs:
+            texto_combinado = f"{x} {y}"
+            tokens_totales_tupla_train = len(tokenizer.encode(texto_combinado))
+            
+            total_tokens_train += tokens_totales_tupla_train
+        
+        total_tokens_test = 0
+        for x, y in test_pairs:
+            texto_combinado = f"{x} {y}"
+            tokens_totales_tupla_test = len(tokenizer.encode(texto_combinado))
+            
+            total_tokens_test += tokens_totales_tupla_test
+        
+        total_tokens_valid = 0
+        for x, y in hold_pairs:
+            texto_combinado = f"{x} {y}"
+            tokens_totales_tupla_valid = len(tokenizer.encode(texto_combinado))
+            
+            total_tokens_valid += tokens_totales_tupla_valid
+            
+        print('-'*30)
+        print(f"Total de tokens para:\nRegistros: 10000\nDataset: {datasets[0]}\nModelo: {model}\nTokens: {total_tokens_train}")
+        print('-'*30)
+        print(f"Total de tokens para:\nRegistros: 1000\nDataset: {datasets[1]}\nModelo: {model}\nTokens: {total_tokens_test}")
+        print('-'*30)
+        print(f"Total de tokens para:\nRegistros: 200\nDataset: {datasets[1]}\nModelo: {model}\nTokens: {total_tokens_valid}")
+        print('='*30)
+
 if __name__ == '__main__':
-    main()
+    main_2()
